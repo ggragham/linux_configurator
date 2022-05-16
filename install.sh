@@ -10,11 +10,17 @@ backupDotfiles() {
     currentTimestamp=$(date +'%d_%m_%Y_%H_%M_%S')
     mkdir "$BACKUP_PATH/dotfiles_$currentTimestamp"
     fullBackupPath="$BACKUP_PATH/dotfiles_$currentTimestamp"
-    dotfileList=()
-    readarray -d '' dotfileList < <(find config/ -print0)
-    for (( i=1; i<${#dotfileList[*]}; i++ )); do
-        backupDotfiles="$(echo ${dotfileList[$i]} | sed "s:^$DOTFILES_PATH_NAME/::")"
-        cp "$HOME/$backupDotfiles" --target-directory="$fullBackupPath"
+    fileList=()
+    dirList=()
+    readarray -d '' fileList < <(find $DOTFILES_PATH_NAME/ -type f -print0)
+    readarray -d '' dirList < <(find $DOTFILES_PATH_NAME/ -type d -print0)
+    for ((i = 1; i < ${#dirList[*]}; i++)); do
+        backupDirs="$(echo ${dirList[$i]} | sed "s:^$DOTFILES_PATH_NAME/::")"
+        mkdir "$fullBackupPath/$backupDirs"
+    done
+    for ((i = 1; i < ${#fileList[*]}; i++)); do
+        backupFiles="$(echo ${fileList[$i]} | sed "s:^$DOTFILES_PATH_NAME/::")"
+        cp "$HOME/$backupFiles" "$fullBackupPath/$backupFiles"
     done
 }
 
