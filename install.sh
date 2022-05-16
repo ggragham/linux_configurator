@@ -25,8 +25,8 @@ backupDotfiles() {
 }
 
 makeDotfilesSymlink() {
-    cp --recursive --symbolic --force "$DOTFILES_PATH/." --target-directory="$SCRIPT_DIR/temp/"
+    cp --recursive --symbolic --force "$DOTFILES_PATH/." --target-directory="$HOME"
 }
 
-# makeDotfilesSymlink
+makeDotfilesSymlink
 backupDotfiles
