@@ -1,1 +1,0 @@
-/home/ggragham/Documents/dev/dotfiles/config/./.config/nvim/init.vim
