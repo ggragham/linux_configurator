@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+cd "$(dirname "$0")" || exit
 
 SCRIPT_PATH=$(readlink -f "$0")
 SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
