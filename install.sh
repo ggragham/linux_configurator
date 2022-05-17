@@ -36,5 +36,5 @@ setConfig() {
     dconf load / < "$DCONF_PATH"
 }
 
-setConfig
 backupConfig
+setConfig
