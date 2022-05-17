@@ -8,6 +8,7 @@ DOTFILES_PATH_NAME="config"
 DOTFILES_PATH="$SCRIPT_DIR/$DOTFILES_PATH_NAME"
 DCONF_NAME="gnome.dconf"
 DCONF_PATH="$SCRIPT_DIR/$DCONF_NAME"
+USER_UID="$(id -u)"
 
 backupConfig() {
     # Backup dotfiles
@@ -28,12 +29,13 @@ backupConfig() {
     done
 
     # Backup dconf
-    dconf dump / > "$fullBackupPath/$DCONF_NAME"
+    dconf dump / >"$fullBackupPath/$DCONF_NAME"
 }
 
 setConfig() {
     cp --recursive --symbolic --force "$DOTFILES_PATH/." --target-directory="$HOME"
-    dconf load / < "$DCONF_PATH"
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/$USER/$USER_UID/bus"
+    dconf load / <"$DCONF_PATH"
 }
 
 backupConfig
