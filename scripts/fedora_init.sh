@@ -63,6 +63,12 @@ setShell() {
     sudo -Eu "$SUDO_USER" sh "$OPT_DIR/install.sh"
 }
 
+installZshPlugins() {
+    pluginDir="$ZSH/custom/plugins"
+    sudo -u "$SUDO_USER" git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$pluginDir/zsh-syntax-highlighting"
+    sudo -u "$SUDO_USER" git clone https://github.com/zsh-users/zsh-autosuggestions.git "$pluginDir/zsh-autosuggestions"
+}
+
 dnfConfig
 disableOpenh264
 installRpmFusion
@@ -71,3 +77,4 @@ hideGrub
 installAdditionalPkgs
 makeOptDir
 setShell
+installZshPlugins
