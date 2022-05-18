@@ -15,7 +15,7 @@ isSudo() {
 
 cloneRepo() {
     sudo -u "$OWNER_USERNAME" mkdir -p "$DEST_PATH"
-    sudo -u "$OWNER_USERNAME" git clone --branch additional_configure https://github.com/ggragham/dotfiles.git "$DEST_PATH/$REPO_NAME"
+    sudo -u "$OWNER_USERNAME" git clone https://github.com/ggragham/dotfiles.git "$DEST_PATH/$REPO_NAME"
 }
 
 runConfig() {
