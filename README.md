@@ -11,11 +11,11 @@ curl https://raw.githubusercontent.com/ggragham/linux_configurator/master/init.s
 sudo bash init.sh
 ```
 3. Wait while script prepare the system to further configure
-4. Select required point
+4. Select required points
 5. ???
 6. Profit 
 
 ## TO DO
+* [ ] I need more configs (ﾉ◕ヮ◕)ﾉ*.✧
 * [ ] Make more convenient and beautiful menu
 * [ ] Add Debian configuration
-
