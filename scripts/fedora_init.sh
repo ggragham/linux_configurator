@@ -4,7 +4,7 @@ cd "$(dirname "$0")" || exit
 DNF_CONFIG_SOURCE="../system_conf/dnf.conf"
 DNF_CONFIG_DEST="/etc/dnf/dnf.conf"
 PKG_DIR="../pkgs"
-LOCAL_DIR="/home/$SUDO_USER/.local/opt"
+LOCAL_DIR="/home/$SUDO_USER/.local"
 OPT_DIR="$LOCAL_DIR/opt"
 
 dnfConfig() {
