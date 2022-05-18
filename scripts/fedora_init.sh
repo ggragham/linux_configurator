@@ -67,6 +67,6 @@ disableOpenh264
 installRpmFusion
 baseConfigure
 hideGrub
-#installAdditionalPkgs
+installAdditionalPkgs
 makeOptDir
 setShell
