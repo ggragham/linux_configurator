@@ -60,7 +60,7 @@ setShell() {
     export ZSH=$OPT_DIR/oh-my-zsh
     export CHSH=no
     export RUNZSH=no
-    sudo -u "$SUDO_USER" sh "$OPT_DIR/install.sh"
+    sudo -Eu "$SUDO_USER" sh "$OPT_DIR/install.sh"
 }
 
 dnfConfig
