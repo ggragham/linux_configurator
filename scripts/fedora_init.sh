@@ -59,6 +59,7 @@ setShell() {
     chown "$SUDO_USER" "$OPT_DIR/install.sh"
     export ZSH=$OPT_DIR/oh-my-zsh
     export CHSH=no
+    export RUNZSH=no
     sudo -u "$SUDO_USER" sh "$OPT_DIR/install.sh"
 }
 
