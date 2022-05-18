@@ -4,7 +4,7 @@ export MINIKUBE_IN_STYLE=false
 export GROFF_NO_SGR=1         # For Konsole and Gnome-terminal
 
 # Path to your oh-my-zsh installation.
-export ZSH="$HOME/.bin/lib/oh-my-zsh"
+export ZSH="$HOME/.local/opt/oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
