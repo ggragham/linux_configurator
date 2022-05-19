@@ -1,2 +1,4 @@
 backup/*
 !backup/README.md
+tmp/*
+!tmp/README.md
