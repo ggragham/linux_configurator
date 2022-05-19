@@ -20,7 +20,7 @@ cloneRepo() {
 
 runConfig() {
     cd "$DEST_PATH/$REPO_NAME" || exit
-    sudo -u "$OWNER_USERNAME" bash "$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
+    bash "$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
 }
 
 isSudo
