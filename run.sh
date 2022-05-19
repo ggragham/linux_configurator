@@ -22,6 +22,7 @@ while :; do
     echo "2. Load dotfile"
     echo "3. Load dconf"
     echo "4. Install flatpak apps"
+    echo "5. Fix gnome extensions compability"
     echo
     case $select in
     1)
@@ -38,6 +39,10 @@ while :; do
         ;;
     4)
         bash "$SCRIPT_PATH/flatpak.sh"
+        select="*"
+        ;;
+    5)
+        sudo -u "$USERNAME" bash "$SCRIPT_PATH/fix_gnome_extensions.sh"
         select="*"
         ;;
     *)
