@@ -21,6 +21,7 @@ while :; do
     echo "1. Base system configuration"
     echo "2. Load dotfile"
     echo "3. Load dconf"
+    echo "4. Install flatpak apps"
     echo
     case $select in
     1)
@@ -33,6 +34,10 @@ while :; do
         ;;
     3)
         sudo -u "$USERNAME" bash "$SCRIPT_PATH/dconf.sh"
+        select="*"
+        ;;
+    4)
+        bash "$SCRIPT_PATH/flatpak.sh"
         select="*"
         ;;
     *)
