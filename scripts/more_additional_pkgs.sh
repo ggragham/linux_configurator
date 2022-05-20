@@ -13,6 +13,8 @@ while :; do
     echo "3. Install nvim"
     echo "4. I want play the games"
     echo
+    echo "0. Back"
+    echo
     case $select in
     1)
         dnf install -y $(cat "$PKG_DIR/more_additional.pkgs")
@@ -30,7 +32,9 @@ while :; do
         bash "$SCRIPT_PATH/games.sh"
         select="*"
         ;;
-
+    0)
+        exit
+        ;;
     *)
         read -rp "Select: " select
         continue
