@@ -6,6 +6,8 @@ DNF_CONFIG_DEST="/etc/dnf/dnf.conf"
 PKG_DIR="../pkgs"
 LOCAL_DIR="/home/$SUDO_USER/.local"
 OPT_DIR="$LOCAL_DIR/opt"
+BIN_DIR="$LOCAL_DIR/bin"
+GAMES_DIR="$LOCAL_DIR/games"
 
 dnfConfig() {
     dnfConfFile="$(cat $DNF_CONFIG_SOURCE)"
@@ -48,8 +50,10 @@ installAdditionalPkgs() {
     dnf install -y $(cat "$PKG_DIR/additional.pkgs")
 }
 
-makeOptDir() {
+makeLocalDir() {
     sudo -u "$SUDO_USER" mkdir -p "$OPT_DIR"
+    sudo -u "$SUDO_USER" mkdir -p "$BIN_DIR"
+    sudo -u "$SUDO_USER" mkdir -p "$GAMES_DIR"
 }
 
 setShell() {
@@ -75,6 +79,6 @@ installRpmFusion
 baseConfigure
 hideGrub
 installAdditionalPkgs
-makeOptDir
+makeLocalDir
 setShell
 installZshPlugins

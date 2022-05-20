@@ -1,0 +1,5 @@
+@virtualization
+awscli
+pipenv
+python3-pip
+vagrant

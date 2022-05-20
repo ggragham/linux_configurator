@@ -1,10 +1,10 @@
 NetworkManager-openvpn-gnome
 NetworkManager-wifi
 baobab
+dnf-plugins-core
 eog
 evince
 file-roller
-gnome-boxes
 gnome-calculator
 gnome-calendar
 gnome-clocks
@@ -21,11 +21,11 @@ gnome-tweaks
 gnome-usage
 gnome-weather
 htop
-jetbrains-mono-fonts
 nautilus
 nautilus-gsconnect
 nautilus-image-converter
 nautilus-open-terminal
 nautilus-search-tool
+power-profiles-daemon
 sqlite
 sushi
