@@ -58,9 +58,14 @@ installKubectl() {
     sudo -u "$USERNAME" chmod +x "$BIN_PATH/$kubectlFileName"
 }
 
+cleanTmp() {
+    bash "$SCRIPT_PATH/clean_tmp.sh"
+}
+
 isSudo
 installPkgsFromRepo
 installDocker
 installTerraform
 installMinikube
 installKubectl
+cleanTmp
