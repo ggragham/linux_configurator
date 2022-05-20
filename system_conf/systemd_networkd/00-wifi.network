@@ -1,0 +1,7 @@
+[Match]
+MACAddress=$SET_MAC
+
+[Link]
+Name=wifi
+MACAddressPolicy=random
+

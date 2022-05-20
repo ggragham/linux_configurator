@@ -1,0 +1,9 @@
+[Match]
+Name=*
+
+[Network]
+DHCP=yes
+IPv6PrivacyExtensions=true
+
+[DHCP]
+Anonymize=true
