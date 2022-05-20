@@ -25,6 +25,8 @@ while :; do
     echo "5. Load dconf"
     echo "6. Fix gnome extensions compability"
     echo
+    echo "0. Exit"
+    echo
     case $select in
     1)
         bash "$SCRIPT_PATH/fedora_init.sh"
@@ -49,6 +51,9 @@ while :; do
     6)
         sudo -u "$USERNAME" bash "$SCRIPT_PATH/fix_gnome_extensions.sh"
         select="*"
+        ;;
+    0)
+        exit
         ;;
     *)
         read -rp "Select: " select
