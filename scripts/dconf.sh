@@ -3,15 +3,12 @@ cd "$(dirname "$0")" || exit
 
 BACKUP_PATH="../backup"
 DCONF_PATH="../gnome.dconf"
-USERNAME=""
 USER_UID=""
 
 isSudo() {
     if [ "$(id -u)" -eq 0 ]; then
-        USERNAME="$SUDO_USER"
-        USER_UID="$(id -u "$USERNAME")"
+        USER_UID="$(id -u "$SUDO_USER")"
     else
-        USERNAME="$USER"
         USER_UID="$(id -u)"
     fi
 }
@@ -26,6 +23,6 @@ loadDconf() {
 }
 
 isSudo
-export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/$USERNAME/$USER_UID/bus"export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/$USER/$USER_UID/bus"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$USER_UID/bus"
 backupDconf
 loadDconf
