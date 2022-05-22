@@ -103,7 +103,7 @@ night-light-temperature=uint32 2838
 
 [org/gnome/settings-daemon/plugins/media-keys]
 control-center=['Tools']
-custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom7/']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6/']
 home=['<Super>t']
 screensaver=['<Shift><Super>w']
 www=['<Super>b']
@@ -115,7 +115,7 @@ name='Gnome Terminal'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1]
 binding='<Super>e'                                                              
-command='~/.local/bin/telegram'                                      
+command='flatpak run org.telegram.desktop'                                      
 name='Telegram'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2]
@@ -139,14 +139,9 @@ command="gsettings set org.gnome.desktop.input-sources sources \"[('xkb','us'),(
 name='UA&EN Layout'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6]
-binding=''
-command='brave'
-name='Start Brave Browser'
-
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom7]
 binding='<Alt><Super>b'
 command='brave-browser'
-name='Brave Browser'
+name='Start Brave Browser'
 
 [org/gnome/shell/extensions/appindicator]                                       
 icon-size=0                                                                     
