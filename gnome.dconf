@@ -1,3 +1,46 @@
+[org/gnome/desktop/app-folders]
+folder-children=['d26ce578-47b1-4df1-942e-c65f1f4e2cea', 'e41a3e03-69da-4bc4-96c1-d11cd44386e8', 'f1be9c2f-bb85-41c9-8aff-9c698633801e', '07455dc8-f438-43a3-88a1-084c8f59ab62', '6c0bfcec-f4a8-4a98-88c8-f69d9c10f269', '82395747-b2b1-4036-b943-8579c5f7d229', '1aa2a011-7211-4f53-b598-9f5db7fce795', '6b0c392e-f91e-433a-a126-4826c61b3303']
+
+[org/gnome/desktop/app-folders/folders/07455dc8-f438-43a3-88a1-084c8f59ab62]
+apps=['org.gnome.Weather.desktop', 'org.gnome.clocks.desktop', 'io.bassi.Amberol.desktop']
+name='Accessories'
+translate=false
+
+[org/gnome/desktop/app-folders/folders/1aa2a011-7211-4f53-b598-9f5db7fce795]
+apps=['virt-manager.desktop', 'remote-viewer.desktop']
+name='Dev'
+translate=false
+
+[org/gnome/desktop/app-folders/folders/6b0c392e-f91e-433a-a126-4826c61b3303]
+apps=['htop.desktop', 'nvim.desktop']
+name='Term'
+translate=false
+
+[org/gnome/desktop/app-folders/folders/6c0bfcec-f4a8-4a98-88c8-f69d9c10f269]
+apps=['org.gnome.eog.desktop', 'org.gnome.Evince.desktop', 'org.gnome.FileRoller.desktop', 'gnome-search-tool.desktop']
+name='Utilities'
+translate=false
+
+[org/gnome/desktop/app-folders/folders/82395747-b2b1-4036-b943-8579c5f7d229]
+apps=['gnome-system-monitor.desktop', 'org.gnome.Usage.desktop', 'org.gnome.DiskUtility.desktop', 'org.gnome.baobab.desktop', 'org.bleachbit.BleachBit.desktop']
+name='System'
+translate=false
+
+[org/gnome/desktop/app-folders/folders/d26ce578-47b1-4df1-942e-c65f1f4e2cea]
+apps=['wine-wineboot.desktop', 'wine-winecfg.desktop', 'wine-winhelp.desktop', 'wine-uninstaller.desktop', 'wine-oleview.desktop', 'wine-winefile.desktop', 'wine-wordpad.desktop', 'wine-winemine.desktop', 'wine-regedit.desktop', 'wine-notepad.desktop']
+name='Wine'
+translate=false
+
+[org/gnome/desktop/app-folders/folders/e41a3e03-69da-4bc4-96c1-d11cd44386e8]
+apps=['org.gnome.Settings.desktop', 'org.gnome.Extensions.desktop', 'com.github.tchx84.Flatseal.desktop', 'org.gnome.tweaks.desktop']
+name='Preferences'
+translate=false
+
+[org/gnome/desktop/app-folders/folders/f1be9c2f-bb85-41c9-8aff-9c698633801e]
+apps=['org.libreoffice.LibreOffice.writer.desktop', 'org.libreoffice.LibreOffice.calc.desktop', 'org.libreoffice.LibreOffice.impress.desktop', 'org.libreoffice.LibreOffice.draw.desktop', 'org.libreoffice.LibreOffice.math.desktop', 'org.libreoffice.LibreOffice.base.desktop', 'org.libreoffice.LibreOffice.desktop']
+name='Office'
+translate=false
+
 [org/gnome/desktop/calendar]
 show-weekdate=false
 
@@ -15,6 +58,7 @@ color-scheme='prefer-dark'
 enable-hot-corners=true
 font-antialiasing='grayscale'                                                   
 font-hinting='slight'                                                       
+gtk-theme='Adwaita-dark'
 show-battery-percentage=true
 
 [org/gnome/desktop/media-handling]
@@ -142,6 +186,16 @@ name='UA&EN Layout'
 binding='<Alt><Super>b'
 command='brave-browser'
 name='Start Brave Browser'
+
+[org/gnome/settings-daemon/plugins/power]
+power-button-action='suspend'
+sleep-inactive-ac-timeout=3600
+sleep-inactive-ac-type='nothing'
+sleep-inactive-battery-timeout=3600
+
+[org/gnome/shell]
+app-picker-layout=[{'e41a3e03-69da-4bc4-96c1-d11cd44386e8': <{'position': <0>}>, '82395747-b2b1-4036-b943-8579c5f7d229': <{'position': <1>}>, '6c0bfcec-f4a8-4a98-88c8-f69d9c10f269': <{'position': <2>}>, 'd26ce578-47b1-4df1-942e-c65f1f4e2cea': <{'position': <3>}>, '6b0c392e-f91e-433a-a126-4826c61b3303': <{'position': <4>}>, '07455dc8-f438-43a3-88a1-084c8f59ab62': <{'position': <5>}>, 'f1be9c2f-bb85-41c9-8aff-9c698633801e': <{'position': <6>}>, '1aa2a011-7211-4f53-b598-9f5db7fce795': <{'position': <7>}>}]
+favorite-apps=['org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Calendar.desktop', 'org.gnome.Calculator.desktop', 'org.gnome.gitlab.somas.Apostrophe.desktop', 'org.gnome.Boxes.desktop', 'codium.desktop', 'net.lutris.Lutris.desktop', 'io.freetubeapp.FreeTube.desktop', 'com.spotify.Client.desktop', 'com.bitwarden.desktop.desktop', 'org.telegram.desktop.desktop', 'io.gitlab.librewolf-community.desktop']
 
 [org/gnome/shell/extensions/appindicator]                                       
 icon-size=0                                                                     
