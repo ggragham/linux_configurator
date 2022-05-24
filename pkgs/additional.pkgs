@@ -1,7 +1,6 @@
 NetworkManager-openvpn-gnome
 NetworkManager-wifi
 baobab
-dnf-plugins-core
 eog
 evince
 file-roller
