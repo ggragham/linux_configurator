@@ -3,6 +3,7 @@ cd "$(dirname "$0")" || exit
 
 USERNAME=""
 PKG_DIR="../pkgs"
+SCRIPT_PATH="../scripts"
 
 isSudo() {
     if [ "$(id -u)" -eq 0 ]; then
@@ -18,3 +19,4 @@ flatpak config --set languages "en;ru;ua;po;jp"
 
 isSudo
 sudo -u "$USERNAME" flatpak install -y $(cat "$PKG_DIR/flatpak.pkgs")
+bash $SCRIPT_PATH/flatpak_perm.sh
