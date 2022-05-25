@@ -184,7 +184,7 @@ name='UA&EN Layout'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6]
 binding='<Alt><Super>b'
-command='brave-browser'
+command='flatpak run com.brave.Browser'
 name='Start Brave Browser'
 
 [org/gnome/settings-daemon/plugins/power]
