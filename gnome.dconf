@@ -228,3 +228,5 @@ scrollbar-policy='never'
 title=' '
 title-mode='ignore'
 
+[org/gtk/settings/file-chooser]
+sort-directories-first=true

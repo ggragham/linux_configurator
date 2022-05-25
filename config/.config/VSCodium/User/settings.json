@@ -1,0 +1,15 @@
+{
+    "editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace",
+    "editor.fontSize": 14,
+    "editor.fontLigatures": true,
+    "terminal.integrated.fontFamily": "monospace",
+    "terminal.integrated.fontSize": 12,
+    "redhat.telemetry.enabled": false,
+    "telemetry.enableTelemetry": false,
+    "explorer.confirmDelete": false,
+    "files.associations": {
+        "*.yml": "ansible"
+    },
+    "workbench.colorTheme": "Monokai++",
+    "git.autofetch": true,
+}
