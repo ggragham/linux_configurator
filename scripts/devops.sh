@@ -4,6 +4,7 @@ cd "$(dirname "$0")" || exit
 USERNAME=""
 PKG_DIR="../pkgs"
 TMP_PATH="../tmp"
+SCRIPT_PATH="../scripts"
 BIN_PATH=""
 
 isSudo() {
