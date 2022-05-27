@@ -10,10 +10,8 @@ gnome-clocks
 gnome-disk-utility
 gnome-extensions-app
 gnome-shell-extension-appindicator
-gnome-shell-extension-background-logo
 gnome-shell-extension-drive-menu
 gnome-shell-extension-gsconnect
-gnome-shell-extension-netspeed
 gnome-shell-extension-sound-output-device-chooser
 gnome-system-monitor
 gnome-tweaks
