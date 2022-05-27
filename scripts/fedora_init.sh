@@ -4,10 +4,13 @@ cd "$(dirname "$0")" || exit
 DNF_CONFIG_SOURCE="../system_conf/dnf.conf"
 DNF_CONFIG_DEST="/etc/dnf/dnf.conf"
 PKG_DIR="../pkgs"
-LOCAL_DIR="/home/$SUDO_USER/.local"
+HOME_DIR="/home/$SUDO_USER"
+LOCAL_DIR="$HOME_DIR/.local"
 OPT_DIR="$LOCAL_DIR/opt"
 BIN_DIR="$LOCAL_DIR/bin"
 GAMES_DIR="$LOCAL_DIR/games"
+CACHE_DIR="$HOME_DIR/.cache"
+VAR_DIR="$HOME_DIR/.var"
 
 dnfConfig() {
     dnfConfFile="$(cat $DNF_CONFIG_SOURCE)"
@@ -56,6 +59,13 @@ makeLocalDir() {
     sudo -u "$SUDO_USER" mkdir -p "$GAMES_DIR"
 }
 
+makeBtrfsSubvols() {
+    rm -rf "$CACHE_DIR"
+    sudo -u "$SUDO_USER" btrfs subvolume create "$CACHE_DIR"
+    rm -rf "$VAR_DIR"
+    sudo -u "$SUDO_USER" btrfs subvolume create "$VAR_DIR"
+}
+
 setShell() {
     dnf install -y zsh
     usermod -s /usr/bin/zsh "$SUDO_USER"
@@ -80,5 +90,6 @@ baseConfigure
 hideGrub
 installAdditionalPkgs
 makeLocalDir
+makeBtrfsSubvols
 setShell
 installZshPlugins
