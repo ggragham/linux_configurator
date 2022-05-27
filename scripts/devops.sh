@@ -13,11 +13,21 @@ isSudo() {
     else
         USERNAME="$USER"
     fi
-    BIN_PATH="/home/$USERNAME/.local/bin"
+    LOCAL_PATH="/home/$USERNAME/.local"
+    BIN_PATH="$LOCAL_PATH/bin"
+    GNOME_BOXES_PATH="$LOCAL_PATH/share/gnome-boxes/"
+    GNOME_BOXES_IMAGES_PATH="$GNOME_BOXES_PATH/images"
 }
 
 installPkgsFromRepo() {
     dnf install -y $(cat "$PKG_DIR/devops.pkgs")
+}
+
+configureGnomeBoxes() {
+    sudo -u "$USERNAME" mkdir -p "$GNOME_BOXES_PATH"
+    rm -rf "$GNOME_BOXES_IMAGES_PATH"
+    sudo -u "$USERNAME" btrfs subvolume create "$GNOME_BOXES_IMAGES_PATH"
+    sudo -u "$USERNAME" chattr +C "$GNOME_BOXES_IMAGES_PATH"
 }
 
 installDocker() {
@@ -78,6 +88,7 @@ cleanTmp() {
 
 isSudo
 installPkgsFromRepo
+configureGnomeBoxes
 installDocker
 installTerraform
 installMinikube
