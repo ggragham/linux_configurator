@@ -8,7 +8,8 @@ isSudo() {
     if [ "$(id -u)" -eq 0 ]; then
         USERNAME="$SUDO_USER"
     else
-        USERNAME="$USER"
+        echo -e "Run as sudo"
+        exit
     fi
 }
 
