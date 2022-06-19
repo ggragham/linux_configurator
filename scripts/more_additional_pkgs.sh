@@ -17,7 +17,7 @@ while :; do
     echo
     case $select in
     1)
-        dnf install -y $(cat "$PKG_DIR/more_additional.pkgs")
+            bash "$SCRIPT_PATH/install_additional_packages.sh"
         select="*"
         ;;
     2)
