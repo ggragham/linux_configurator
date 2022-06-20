@@ -9,9 +9,10 @@ while :; do
     clear
     echo
     echo "1. Install more packages"
-    echo "2. Install DevOps packages"
-    echo "3. Install nvim"
-    echo "4. I want play the games"
+        echo "2. Install Oh My Zsh"
+        echo "3. Install DevOps packages"
+        echo "4. Install nvim"
+        echo "5. I want play the games"
     echo
     echo "0. Back"
     echo
@@ -21,14 +22,18 @@ while :; do
         select="*"
         ;;
     2)
+            bash "$SCRIPT_PATH/install_omz.sh"
+            select="*"
+            ;;
+        3)
         bash "$SCRIPT_PATH/devops.sh"
         select="*"
         ;;
-    3)
+        4)
         bash "$SCRIPT_PATH/nvim.sh"
         select="*"
         ;;
-    4)
+        5)
         bash "$SCRIPT_PATH/games.sh"
         select="*"
         ;;
