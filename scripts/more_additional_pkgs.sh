@@ -1,48 +1,72 @@
 #!/usr/bin/env bash
-cd "$(dirname "$0")" || exit
 
-PKG_DIR="../pkgs"
+# Interactive menu to execute other
+# package installation scripts.
+
+trap 'errMsg' ERR
+cd "$(dirname "$0")" || exit "$?"
+
 SCRIPT_PATH="../scripts"
 
-select="*"
-while :; do
-    clear
-    echo
-    echo "1. Install more packages"
+errMsg() {
+    echo "Failed"
+    pressAnyKeyToContinue
+    exit 1
+}
+
+isSudo() {
+    if [[ $EUID != 0 ]]; then
+        echo "Run script with sudo"
+        exit 1
+    fi
+}
+
+main() {
+    isSudo
+
+    local select="*"
+    while :; do
+        clear
+        echo
+        echo "1. Install more packages"
         echo "2. Install Oh My Zsh"
         echo "3. Install DevOps packages"
         echo "4. Install nvim"
         echo "5. I want play the games"
-    echo
-    echo "0. Back"
-    echo
-    case $select in
-    1)
+        echo
+        echo "0. Back"
+        echo
+
+        case $select in
+        1)
             bash "$SCRIPT_PATH/install_additional_packages.sh"
-        select="*"
-        ;;
-    2)
+            select="*"
+            ;;
+        2)
             bash "$SCRIPT_PATH/install_omz.sh"
             select="*"
             ;;
         3)
-        bash "$SCRIPT_PATH/devops.sh"
-        select="*"
-        ;;
+            bash "$SCRIPT_PATH/devops.sh"
+            select="*"
+            ;;
         4)
-        bash "$SCRIPT_PATH/nvim.sh"
-        select="*"
-        ;;
+            bash "$SCRIPT_PATH/nvim.sh"
+            select="*"
+            ;;
         5)
-        bash "$SCRIPT_PATH/games.sh"
-        select="*"
-        ;;
-    0)
-        exit
-        ;;
-    *)
-        read -rp "Select: " select
-        continue
-        ;;
-    esac
-done
+            bash "$SCRIPT_PATH/games.sh"
+            select="*"
+            ;;
+        0)
+            exit 0
+            ;;
+        *)
+            read -rp "Select: " select
+            continue
+            ;;
+        esac
+    done
+}
+
+main

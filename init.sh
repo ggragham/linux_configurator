@@ -1,37 +1,76 @@
 #!/usr/bin/env bash
-cd "$(dirname "$0")" || exit
 
-OWNER_USERNAME="$SUDO_USER"
-DEST_PATH="/home/$OWNER_USERNAME/.local/opt"
+# Initial script.
+# Install git (if not installed).
+# Clone repo and execute Linux Configurator.
+
+trap 'errMsg' ERR
+cd "$(dirname "$0")" || exit "$?"
+
+USERNAME="$SUDO_USER"
+DEST_PATH="/home/$USERNAME/.local/opt"
 REPO_NAME="LinuxConfigurator"
 SCRIPT_NAME="run.sh"
+EXECUTE="$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
+
+errMsg() {
+	echo "Failed"
+	exit 1
+}
 
 isSudo() {
-    if [ "$EUID" -ne 0 ]; then
-        echo -e "Run as sudo"
-        exit
-    fi
+	if [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
+		echo "Run script with sudo"
+		exit 1
+	fi
+}
+
+runAsUser() {
+	sudo -u "$USERNAME" "$@"
+}
+
+installGit() {
+	# Check if git is installed by return code
+	if git --version 2>/dev/null 1>&2; then
+		return "$?"
+	else
+		if dnf --setopt=install_weak_deps=False --setopt=countme=False install -y git; then
+			return "$?"
+		else
+			local errcode="$?"
+			echo "Failed to install git"
+			exit "$errcode"
+		fi
+	fi
 }
 
 cloneRepo() {
-    sudo -u "$OWNER_USERNAME" mkdir -p "$DEST_PATH"
-    sudo -u "$OWNER_USERNAME" git clone https://github.com/ggragham/linux_configurator.git "$DEST_PATH/$REPO_NAME"
+	runAsUser mkdir -p "$DEST_PATH"
+
+	if runAsUser git clone https://github.com/ggragham/linux_configurator.git "$DEST_PATH/$REPO_NAME"; then
+		return "$?"
+	else
+		local errcode="$?"
+		echo "Failed to clone repo"
+		exit "$errcode"
+	fi
 }
 
-runConfig() {
-    cd "$DEST_PATH/$REPO_NAME" || exit
-    bash "$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
+runConfigurator() {
+	if bash "$EXECUTE"; then
+		return "$?"
+	else
+		local errcode="$?"
+		echo "Failed to start Linux Configurator"
+		exit "$errcode"
+	fi
 }
 
-isSudo
-if git --version 2>/dev/null 1>&2; then
-    cloneRepo
-    runConfig
-else
-    if dnf --setopt=install_weak_deps=False --setopt=countme=False install git -y; then
-        cloneRepo
-        runConfig
-    else
-        echo -e "Unable to install git"
-    fi
-fi
+main() {
+	isSudo
+	installGit
+	cloneRepo
+	runConfigurator
+}
+
+main

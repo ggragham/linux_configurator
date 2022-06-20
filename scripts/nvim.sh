@@ -1,18 +1,61 @@
 #!/usr/bin/env bash
-cd "$(dirname "$0")" || exit
 
-dnf remove -y vim\* vi nano
-dnf install -y neovim
+# Remove vi, vim and nano.
+# Install neovim as editor.
 
-cd /usr/bin/ || exit
+trap 'errMsg' ERR
+cd "$(dirname "$0")" || exit "$?"
 
-echo -e '#!/bin/sh\nexec nvim -e "$@"' >ex
-echo -e '#!/bin/sh\nexec nvim -RZ "$@"' >rview
-echo -e '#!/bin/sh\nexec nvim -Z "$@"' >rvim
-echo -e '#!/bin/sh\nexec nvim -R "$@"' >view
-echo -e '#!/bin/sh\nexec nvim -d "$@"' >vimdiff
-chmod 755 ex rview rvim view vimdiff
+BIN_PATH="/usr/bin"
 
-for link in edit vedit vi vim; do
-    ln -s nvim $link
-done
+errMsg() {
+    echo "Failed"
+    exit 1
+}
+
+isSudo() {
+    if [[ $EUID != 0 ]]; then
+        echo "Run script with sudo"
+        exit 1
+    fi
+}
+
+pressAnyKeyToContinue() {
+    read -n 1 -s -r -p "Press any key to continue"
+    echo
+}
+
+main() {
+    isSudo
+
+    dnf remove -y vim\* vi nano
+
+    if dnf install -y neovim; then
+        cd "$BIN_PATH" || exit "$?"
+
+        if [[ -f nvim ]]; then
+            for link in edit vedit vi vim; do
+                ln -s nvim "$link"
+            done
+        else
+            echo "neovim is not installed"
+            pressAnyKeyToContinue
+            exit 1
+        fi
+
+        echo -e '#!/bin/sh\nexec nvim -e "$@"' >ex
+        echo -e '#!/bin/sh\nexec nvim -R "$@"' >view
+        echo -e '#!/bin/sh\nexec nvim -d "$@"' >vimdiff
+        chmod 755 ex view vimdiff
+    else
+        local errcode="$?"
+        echo "Failed to install neovim"
+        pressAnyKeyToContinue
+        exit "$errcode"
+    fi
+
+    echo "Neovim has been installed"
+    pressAnyKeyToContinue
+}
+
+main
