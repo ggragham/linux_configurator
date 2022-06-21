@@ -224,9 +224,14 @@ mnemonics-enabled=true
 bold-is-bright=true
 default-size-columns=84
 default-size-rows=23
+scrollback-unlimited=true
 scrollbar-policy='never'
 title=' '
 title-mode='ignore'
+use-system-font=false
+use-theme-colors=false
+use-transparent-background=false
+
 
 [org/gtk/settings/file-chooser]
 sort-directories-first=true
