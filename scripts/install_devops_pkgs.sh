@@ -79,9 +79,7 @@ installDocker() {
     if dnf install -y $(cat "$PKG_LIST_PATH/docker.pkgs"); then
         systemctl enable docker
 
-        if (grep -q "docker" /etc/group); then
-            return "$?"
-        else
+        if (! grep -q "docker" /etc/group); then
             groupadd docker
         fi
 
