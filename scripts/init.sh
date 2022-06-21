@@ -10,7 +10,7 @@ cd "$(dirname "$0")" || exit "$?"
 USERNAME="$SUDO_USER"
 DEST_PATH="/home/$USERNAME/.local/opt"
 REPO_NAME="LinuxConfigurator"
-SCRIPT_NAME="run.sh"
+SCRIPT_NAME="install.sh"
 EXECUTE="$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
 
 errMsg() {

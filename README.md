@@ -4,7 +4,7 @@ This script configuring system for my personal purposes. But you feel free to us
 ## How to use
 1. Download init.sh file
 ```bash
-curl https://raw.githubusercontent.com/ggragham/linux_configurator/master/init.sh -o init.sh
+curl https://raw.githubusercontent.com/ggragham/linux_configurator/master/scripts/init.sh -o init.sh
 ```
 2. Execute script
 ```bash
