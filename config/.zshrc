@@ -1,6 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
-export MINIKUBE_IN_STYLE=false
+export MINIKUBE_IN_STYLE=true
 export GROFF_NO_SGR=1         # For Konsole and Gnome-terminal
 
 # Path to your oh-my-zsh installation.
