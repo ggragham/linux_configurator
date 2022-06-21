@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-cd "$(dirname "$0")" || exit
+
+# Set configs for NetworkManager and systemd-networkd.
+
+trap 'errMsg' ERR SIGTERM
+cd "$(dirname "$0")" || exit "$?"
 
 INTERFACE_NAME=""
 WIFI_MAC=""
@@ -10,6 +14,29 @@ SYSTEMD_NETWORKD_CONFIG_SOURCE="../system_conf/systemd_networkd"
 SYSTEMD_NETWORKD_CONFIG_DEST="/etc/systemd/network"
 SYSTEMD_WIFI_CONFIG="00-wifi.network"
 SYSTEMD_NET_CONFIG="10-net.network"
+
+errMsg() {
+    cleanup
+    echo "Failed"
+    pressAnyKeyToContinue
+    exit 1
+}
+
+cleanup() {
+    rm --recursive --force "$TMP_PATH"
+}
+
+isSudo() {
+    if [[ $EUID != 0 ]]; then
+        echo "Run script with sudo"
+        exit 1
+    fi
+}
+
+pressAnyKeyToContinue() {
+    read -n 1 -s -r -p "Press any key to continue"
+    echo
+}
 
 makeTmp() {
     TMP_PATH="$(mktemp -d)"
@@ -42,12 +69,16 @@ configSystemdNetworkd() {
 
     cp "$SYSTEMD_NETWORKD_CONFIG_SOURCE/$SYSTEMD_NET_CONFIG" "$SYSTEMD_NETWORKD_CONFIG_DEST/"
     chmod 0644 $SYSTEMD_NETWORKD_CONFIG_DEST/*
+    
+    echo "Systemd Networkd has been configured"
 }
 
 configNetworkManager() {
     cp $NETWORKMANAGER_CONFIG_SOURCE $NETWORKMANAGER_CONFIG_DEST
     chmod 0644 $NETWORKMANAGER_CONFIG_DEST/*
     systemctl restart NetworkManager
+
+    echo "Network Manager has been configured"
 }
 
 main() {
