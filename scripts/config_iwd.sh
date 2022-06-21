@@ -42,7 +42,7 @@ main() {
         echo "iwd has been installed"
     else
         local errcode="$?"
-        echo "Failed to isntall iwd"
+        echo "Failed to install iwd"
         pressAnyKeyToContinue
         exit "$errcode"
     fi

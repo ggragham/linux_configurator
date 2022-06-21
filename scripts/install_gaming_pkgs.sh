@@ -28,7 +28,7 @@ main() {
     isSudo
 
     if dnf install -y $(cat "$PKG_LIST_PATH/games.pkgs"); then
-        echo "Gaming packages have been isntalled"
+        echo "Gaming packages have been installed"
     else
         local errcode="$?"
         echo "Failed to install gaming packages"

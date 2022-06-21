@@ -23,6 +23,10 @@ isSudo() {
 }
 
 runAsUser() {
+    sudo -u "$USERNAME" "$@"
+}
+
+runAsUser() {
 	sudo -u "$USERNAME" "$@"
 }
 
@@ -34,13 +38,10 @@ main() {
 		clear
 		echo "Linux Configurator"
 		echo
-		echo "1. Base system configuration"
-		echo "2. More configs"
-		echo "3. Install additional packages"
-		echo "4. Install flatpak apps"
-		echo "5. Load dotfiles"
-		echo "6. Load dconf"
-		echo "7. Fix gnome extensions compability"
+		echo "1. Initial configuration"
+		echo "2. System configuration"
+		echo "3. Install packages"
+		echo "4. Local configuration"
 		echo
 		echo "0. Exit"
 		echo
@@ -51,29 +52,18 @@ main() {
 			select="*"
 			;;
 		2)
-			bash "$SCRIPT_PATH/more_configuration.sh"
+			bash "$SCRIPT_PATH/select_system_config.sh"
 			select="*"
 			;;
 		3)
-			bash "$SCRIPT_PATH/more_additional_pkgs.sh"
+			bash "$SCRIPT_PATH/select_additional_pkgs.sh"
 			select="*"
 			;;
 		4)
-			bash "$SCRIPT_PATH/flatpak.sh"
+			runAsUser bash "$SCRIPT_PATH/select_local_config.sh"
 			select="*"
 			;;
-		5)
-			runAsUser bash "$SCRIPT_PATH/dotfiles.sh"
-			select="*"
-			;;
-		6)
-			runAsUser bash "$SCRIPT_PATH/dconf.sh"
-			select="*"
-			;;
-		7)
-			runAsUser bash "$SCRIPT_PATH/fix_gnome_extensions.sh"
-			select="*"
-			;;
+
 		0)
 			exit 0
 			;;

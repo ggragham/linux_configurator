@@ -32,14 +32,15 @@ main() {
         echo "2. Install Oh My Zsh"
         echo "3. Install DevOps packages"
         echo "4. Install nvim"
-        echo "5. I want play the games"
+        echo "5. Install Flatpak apps"
+        echo "6. I want play the games"
         echo
         echo "0. Back"
         echo
 
         case $select in
         1)
-            bash "$SCRIPT_PATH/install_additional_packages.sh"
+            bash "$SCRIPT_PATH/install_additional_pkgs.sh"
             select="*"
             ;;
         2)
@@ -47,15 +48,19 @@ main() {
             select="*"
             ;;
         3)
-            bash "$SCRIPT_PATH/devops.sh"
+            bash "$SCRIPT_PATH/install_devops_pkgs.sh"
             select="*"
             ;;
         4)
-            bash "$SCRIPT_PATH/nvim.sh"
+            bash "$SCRIPT_PATH/install_nvim.sh"
             select="*"
             ;;
         5)
-            bash "$SCRIPT_PATH/games.sh"
+            bash "$SCRIPT_PATH/install_flatpak_apps.sh"
+            select="*"
+            ;;
+        6)
+            bash "$SCRIPT_PATH/install_gaming_pkgs.sh"
             select="*"
             ;;
         0)

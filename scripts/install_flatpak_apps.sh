@@ -64,7 +64,7 @@ installPkgsFromFlathub() {
 }
 
 setFlatpakPkgsPermissions() {
-    if runAsUser bash "$SCRIPT_PATH/flatpak_perm.sh"; then
+    if runAsUser bash "$SCRIPT_PATH/set_flatpak_permissions.sh"; then
         return "$?"
     else
         local errcode="$?"

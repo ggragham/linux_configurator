@@ -35,7 +35,7 @@ installZSH() {
         echo "zsh has been installed"
     else
         local errcode="$?"
-        echo "Failed to isntall zsh"
+        echo "Failed to install zsh"
         pressAnyKeyToContinue
         exit "$errcode"
     fi
