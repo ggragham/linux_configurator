@@ -12,4 +12,7 @@
     },
     "workbench.colorTheme": "Monokai++",
     "git.autofetch": true,
+    "workbench.iconTheme": "material-icon-theme",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "window.titleBarStyle": "custom",
 }
