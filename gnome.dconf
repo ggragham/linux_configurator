@@ -1,34 +1,24 @@
 [org/gnome/desktop/app-folders]
-folder-children=['d26ce578-47b1-4df1-942e-c65f1f4e2cea', 'e41a3e03-69da-4bc4-96c1-d11cd44386e8', 'f1be9c2f-bb85-41c9-8aff-9c698633801e', '07455dc8-f438-43a3-88a1-084c8f59ab62', '6c0bfcec-f4a8-4a98-88c8-f69d9c10f269', '82395747-b2b1-4036-b943-8579c5f7d229', '1aa2a011-7211-4f53-b598-9f5db7fce795', '6b0c392e-f91e-433a-a126-4826c61b3303']
+folder-children=['e41a3e03-69da-4bc4-96c1-d11cd44386e8', 'f1be9c2f-bb85-41c9-8aff-9c698633801e', '07455dc8-f438-43a3-88a1-084c8f59ab62', '6c0bfcec-f4a8-4a98-88c8-f69d9c10f269', '82395747-b2b1-4036-b943-8579c5f7d229', '1aa2a011-7211-4f53-b598-9f5db7fce795']
 
 [org/gnome/desktop/app-folders/folders/07455dc8-f438-43a3-88a1-084c8f59ab62]
-apps=['org.gnome.Weather.desktop', 'org.gnome.clocks.desktop', 'io.bassi.Amberol.desktop']
+apps=['org.gnome.Weather.desktop', 'org.gnome.clocks.desktop', 'io.bassi.Amberol.desktop', 'io.github.celluloid_player.Celluloid.desktop', 'de.haeckerfelix.Fragments.desktop', 'org.gnome.Cheese.desktop']
 name='Accessories'
 translate=false
 
 [org/gnome/desktop/app-folders/folders/1aa2a011-7211-4f53-b598-9f5db7fce795]
-apps=['virt-manager.desktop', 'remote-viewer.desktop']
+apps=['virt-manager.desktop', 'remote-viewer.desktop', 'virtualbox.desktop']
 name='Dev'
 translate=false
 
-[org/gnome/desktop/app-folders/folders/6b0c392e-f91e-433a-a126-4826c61b3303]
-apps=['htop.desktop', 'nvim.desktop']
-name='Term'
-translate=false
-
 [org/gnome/desktop/app-folders/folders/6c0bfcec-f4a8-4a98-88c8-f69d9c10f269]
-apps=['org.gnome.eog.desktop', 'org.gnome.Evince.desktop', 'org.gnome.FileRoller.desktop', 'gnome-search-tool.desktop']
+apps=['htop.desktop', 'nvim.desktop', 'org.gnome.eog.desktop', 'org.gnome.Evince.desktop', 'org.gnome.FileRoller.desktop', 'gnome-search-tool.desktop']
 name='Utilities'
 translate=false
 
 [org/gnome/desktop/app-folders/folders/82395747-b2b1-4036-b943-8579c5f7d229]
 apps=['gnome-system-monitor.desktop', 'org.gnome.Usage.desktop', 'org.gnome.DiskUtility.desktop', 'org.gnome.baobab.desktop', 'org.bleachbit.BleachBit.desktop']
 name='System'
-translate=false
-
-[org/gnome/desktop/app-folders/folders/d26ce578-47b1-4df1-942e-c65f1f4e2cea]
-apps=['wine-wineboot.desktop', 'wine-winecfg.desktop', 'wine-winhelp.desktop', 'wine-uninstaller.desktop', 'wine-oleview.desktop', 'wine-winefile.desktop', 'wine-wordpad.desktop', 'wine-winemine.desktop', 'wine-regedit.desktop', 'wine-notepad.desktop']
-name='Wine'
 translate=false
 
 [org/gnome/desktop/app-folders/folders/e41a3e03-69da-4bc4-96c1-d11cd44386e8]
@@ -56,8 +46,8 @@ clock-show-seconds=true
 clock-show-weekday=true
 color-scheme='prefer-dark'
 enable-hot-corners=true
-font-antialiasing='grayscale'                                                   
-font-hinting='slight'                                                       
+font-antialiasing='grayscale' 
+font-hinting='slight' 
 gtk-theme='Adwaita-dark'
 show-battery-percentage=true
 
@@ -107,12 +97,12 @@ action-middle-click-titlebar='minimize'
 button-layout='appmenu:close'
 focus-mode='sloppy'
 
-[org/gnome/eog/ui]                                                              
-image-gallery=false                                                             
-sidebar=true                                                                    
+[org/gnome/eog/ui]
+image-gallery=false 
+sidebar=true
 statusbar=true
 
-[org/gnome/mutter]                                                              
+[org/gnome/mutter]
 edge-tiling=false
 
 [org/gnome/mutter/keybindings]
@@ -122,10 +112,10 @@ toggle-tiled-right=['<Super>l']
 [org/gnome/mutter/wayland/keybindings]
 restore-shortcuts=['<Primary><Shift><Super>Escape']
 
-[org/gnome/nautilus/compression]                                                
+[org/gnome/nautilus/compression]
 default-compression-format='tar.xz'
 
-[org/gnome/nautilus/icon-view]                                                  
+[org/gnome/nautilus/icon-view]
 default-zoom-level='standard'
 
 [org/gnome/nautilus/preferences]
@@ -150,41 +140,45 @@ control-center=['Tools']
 custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6/']
 home=['<Super>t']
 screensaver=['<Shift><Super>w']
-www=['<Super>b']
 
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0]
-binding='<Super>Return'
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0] 
+binding='<Super>Return' 
 command='gnome-terminal'
-name='Gnome Terminal'
+name='Gnome Terminal' 
 
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1]
-binding='<Super>e'                                                              
-command='flatpak run org.telegram.desktop'                                      
-name='Telegram'
-
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2]
-binding='<Primary><Shift>Escape'
-command='gnome-system-monitor'
-name='Gnome System Monitor'
-
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3]
-binding='<Alt>F9'
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1] 
+binding='<Alt>F9' 
 command="gsettings set org.gnome.desktop.input-sources sources \"[('ibus','kkc')]\""
-name='Jap Layout'
+name='Jap Layout' 
 
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4]
-binding='<Alt>F12'
-command="gsettings set org.gnome.desktop.input-sources sources \"[('xkb', 'us'),('xkb','ru')]\""
-name='RU&EN Layout'
-
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5]
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2] 
 binding='<Alt>F11'
 command="gsettings set org.gnome.desktop.input-sources sources \"[('xkb','us'),('xkb','ua')]\""
-name='UA&EN Layout'
+name='UA layout'
 
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6]
-binding='<Alt><Super>b'
-command='flatpak run com.brave.Browser'
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3] 
+binding='<Alt>F12'
+command="gsettings set org.gnome.desktop.input-sources sources \"[('xkb', 'us'),('xkb','ru')]\""
+name='RU layout'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4] 
+binding='<Primary><Shift>Escape'
+command='gnome-system-monitor'
+name='Gnome System Monitor' 
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5] 
+binding='<Super>e'
+command='flatpak run org.telegram.desktop'
+name='Telegram' 
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6] 
+binding='<Super>b'
+command='flatpak run io.gitlab.librewolf-community' 
+name='Start LibreWolf Browser'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom7] 
+binding='<Alt><Super>b' 
+command='flatpak run com.brave.Browser' 
 name='Start Brave Browser'
 
 [org/gnome/settings-daemon/plugins/power]
@@ -194,25 +188,25 @@ sleep-inactive-ac-type='nothing'
 sleep-inactive-battery-timeout=3600
 
 [org/gnome/shell]
-app-picker-layout=[{'e41a3e03-69da-4bc4-96c1-d11cd44386e8': <{'position': <0>}>, '82395747-b2b1-4036-b943-8579c5f7d229': <{'position': <1>}>, '6c0bfcec-f4a8-4a98-88c8-f69d9c10f269': <{'position': <2>}>, 'd26ce578-47b1-4df1-942e-c65f1f4e2cea': <{'position': <3>}>, '6b0c392e-f91e-433a-a126-4826c61b3303': <{'position': <4>}>, '07455dc8-f438-43a3-88a1-084c8f59ab62': <{'position': <5>}>, 'f1be9c2f-bb85-41c9-8aff-9c698633801e': <{'position': <6>}>, '1aa2a011-7211-4f53-b598-9f5db7fce795': <{'position': <7>}>}]
-favorite-apps=['org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Calendar.desktop', 'org.gnome.Calculator.desktop', 'org.gnome.gitlab.somas.Apostrophe.desktop', 'org.gnome.Boxes.desktop', 'codium.desktop', 'net.lutris.Lutris.desktop', 'io.freetubeapp.FreeTube.desktop', 'com.spotify.Client.desktop', 'com.bitwarden.desktop.desktop', 'org.telegram.desktop.desktop', 'io.gitlab.librewolf-community.desktop']
+app-picker-layout=[{'e41a3e03-69da-4bc4-96c1-d11cd44386e8': <{'position': <0>}>, '82395747-b2b1-4036-b943-8579c5f7d229': <{'position': <1>}>, '6c0bfcec-f4a8-4a98-88c8-f69d9c10f269': <{'position': <2>}>, '07455dc8-f438-43a3-88a1-084c8f59ab62': <{'position': <3>}>, 'f1be9c2f-bb85-41c9-8aff-9c698633801e': <{'position': <4>}>, '1aa2a011-7211-4f53-b598-9f5db7fce795': <{'position': <5>}>}]
+favorite-apps=['org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Calendar.desktop', 'org.gnome.Calculator.desktop', 'org.gnome.gitlab.somas.Apostrophe.desktop', 'com.github.alainm23.planner.desktop', 'io.posidon.Paper.desktop', 'org.gnome.Boxes.desktop', 'codium.desktop', 'com.usebottles.bottles.desktop', 'io.freetubeapp.FreeTube.desktop', 'com.spotify.Client.desktop', 'com.bitwarden.desktop.desktop', 'us.zoom.Zoom.desktop', 'com.slack.Slack.desktop', 'org.telegram.desktop.desktop', 'com.brave.Browser.desktop', 'io.gitlab.librewolf-community.desktop']
 
-[org/gnome/shell/extensions/appindicator]                                       
-icon-size=0                                                                     
+[org/gnome/shell/extensions/appindicator] 
+icon-size=0 
 tray-pos='right'
 
-[org/gnome/shell/extensions/sound-output-device-chooser]                        
-expand-volume-menu=false                                                        
-hide-on-single-device=true                                                      
-icon-theme='monochrome'                                                         
-integrate-with-slider=true                                                      
+[org/gnome/shell/extensions/sound-output-device-chooser]
+expand-volume-menu=false
+hide-on-single-device=true
+icon-theme='monochrome' 
+integrate-with-slider=true
 show-profiles=false
 
 [org/gnome/shell/keybindings]
 open-application-menu=['<Shift><Super>F9']
 toggle-application-view=['<Super>d']
 
-[org/gnome/shell/overrides]                                                     
+[org/gnome/shell/overrides] 
 edge-tiling=false
 
 [org/gnome/terminal/legacy]
