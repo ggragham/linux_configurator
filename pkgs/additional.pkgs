@@ -1,7 +1,10 @@
 android-tools
 bleachbit
+cheese
+cups
 google-noto-emoji-color-fonts
 google-noto-emoji-fonts
+hplip
 ibus-kkc
 neofetch
 net-tools
@@ -9,3 +12,6 @@ nmap
 p7zip
 perl-Image-ExifTool
 s-tui
+sane-backends-drivers-scanners
+simple-scan
+yt-dlp

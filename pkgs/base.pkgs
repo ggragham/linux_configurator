@@ -3,6 +3,8 @@ NetworkManager-wifi
 baobab
 eog
 evince
+evince-djvu
+ffmpegthumbnailer
 file-roller
 gnome-calculator
 gnome-calendar
