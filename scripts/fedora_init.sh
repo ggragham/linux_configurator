@@ -151,7 +151,7 @@ makeNestedBtrfsSubvols() {
         echo "Nested BTRFS subvolume for $* has been created"
     }
 
-    makeBtrfsSubvol "$CACHE_PATH"
+    # makeBtrfsSubvol "$CACHE_PATH"
     makeBtrfsSubvol "$VAR_PATH"
 }
 
