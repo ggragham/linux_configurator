@@ -1,11 +1,14 @@
 com.bitwarden.desktop
 com.brave.Browser
+com.github.alainm23.planner
 com.github.tchx84.Flatseal
+com.slack.Slack
 com.spotify.Client
 io.bassi.Amberol
 io.freetubeapp.FreeTube
 io.gitlab.librewolf-community
-org.gnome.gitlab.somas.Apostrophe
+io.posidon.Paper
 org.gtk.Gtk3theme.Adwaita-dark
 org.libreoffice.LibreOffice
 org.telegram.desktop
+re.sonny.Junction
