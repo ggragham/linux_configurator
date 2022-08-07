@@ -118,6 +118,7 @@ installTerraform() {
     else
         echo "Failed to install Terraform"
         pressAnyKeyToContinue
+        cleanup
         exit 1
     fi
 }
@@ -136,6 +137,7 @@ installMinikube() {
     else
         echo "Failed to install Minikube"
         pressAnyKeyToContinue
+        cleanup
         exit 1
     fi
 }
@@ -155,6 +157,7 @@ installKubectl() {
     else
         echo "Failed to install Kubectl"
         pressAnyKeyToContinue
+        cleanup
         exit 1
     fi
 }
