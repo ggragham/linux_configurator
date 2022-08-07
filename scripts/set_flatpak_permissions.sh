@@ -67,15 +67,15 @@ main() {
         --nosocket=pcsc \
         io.gitlab.librewolf-community
 
-    # Apostrophe markdown editor
-    flatpak override --user \
-        --unshare=network \
-        --unshare=ipc \
-        --nosocket=x11 \
-        --nosocket=fallback-x11 \
-        --nofilesystem=host \
-        --filesystem=home \
-        org.gnome.gitlab.somas.Apostrophe
+    # # Apostrophe markdown editor
+    # flatpak override --user \
+    #     --unshare=network \
+    #     --unshare=ipc \
+    #     --nosocket=x11 \
+    #     --nosocket=fallback-x11 \
+    #     --nofilesystem=host \
+    #     --filesystem=home \
+    #     org.gnome.gitlab.somas.Apostrophe
 
     # LibreOffice
     flatpak override --user \
