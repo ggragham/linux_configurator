@@ -8,12 +8,15 @@ cd "$(dirname "$0")" || exit "$?"
 USERNAME="$SUDO_USER"
 TMP_PATH=""
 PKG_LIST_PATH="../pkgs"
-LOCAL_PATH="/home/$USERNAME/.local"
+HOME_PATH="/home/$USERNAME"
+LOCAL_PATH="$HOME_PATH/.local"
 BIN_PATH="$LOCAL_PATH/bin"
 BACKUP_PATH="../backup"
 GNOME_BOXES_DIR_NAME="gnome-boxes"
 GNOME_BOXES_LOCAL_PATH="$LOCAL_PATH/share/$GNOME_BOXES_DIR_NAME/"
 GNOME_BOXES_LOCAL_IMAGES_PATH="$GNOME_BOXES_LOCAL_PATH/images"
+VIRTUAL_BOX_DIR_NAME="VirtualBox VMs"
+VIRTUAL_BOX_PATH="$HOME_PATH/$VIRTUAL_BOX_DIR_NAME"
 
 errMsg() {
     cleanup
@@ -80,9 +83,15 @@ configureVirtDirs() {
         configDirs "$GNOME_BOXES_LOCAL_IMAGES_PATH"
     }
 
+    configVirtualBox() {
+        backupDirs "$VIRTUAL_BOX_PATH" "$VIRTUAL_BOX_DIR_NAME"
+        configDirs "$VIRTUAL_BOX_PATH"
+    }
+
     makeConfig() { (
         set -e
         configGnomeBoxes
+        configVirtualBox
     ); }
 
     if makeConfig; then
