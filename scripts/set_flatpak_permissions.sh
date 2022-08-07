@@ -29,8 +29,6 @@ main() {
     flatpak override --user \
         --unshare=ipc \
         --nosocket=cups \
-        --device=dri \
-        --nodevice=all \
         --nofilesystem=host-etc \
         --nofilesystem=xdg-desktop \
         --nofilesystem=xdg-documents \
@@ -39,6 +37,24 @@ main() {
         --system-no-talk-name=org.freedesktop.UPower \
         --system-no-talk-name=org.freedesktop.Avahi \
         com.brave.Browser
+
+    # Planner
+    flatpak override --user \
+        --unshare=network \
+        --unshare=ipc \
+        --nosocket=x11 \
+        --nosocket=fallback-x11 \
+        --nofilesystem=home \
+        com.github.alainm23.planner
+
+    # Slack messenger
+    flatpak override --user \
+        --nofilesystem=xdg-download \
+        --nofilesystem=xdg-videos \
+        --nofilesystem=xdg-music \
+        --nofilesystem=xdg-pictures \
+        --nofilesystem=xdg-documents \
+        --filesystem=xdg-download/Slack com.slack.Slack
 
     # Spotify music client
     flatpak override --user \
@@ -66,6 +82,14 @@ main() {
         --nosocket=fallback-x11 \
         --nosocket=pcsc \
         io.gitlab.librewolf-community
+
+    # Paper
+    flatpak override --user \
+        --unshare=ipc \
+        --nosocket=x11 \
+        --nosocket=fallback-x11 \
+        --nofilesystem=host \
+        io.posidon.Paper
 
     # # Apostrophe markdown editor
     # flatpak override --user \
@@ -96,6 +120,13 @@ main() {
         --nofilesystem=host \
         --filesystem=home:ro \
         org.telegram.desktop
+
+    # Junction
+    flatpak override --user \
+        --unshare=ipc \
+        --nosocket=x11 \
+        --nosocket=fallback-x11 \
+        re.sonny.Junction
 
     echo "Flatpak permissions have been set"
 }
