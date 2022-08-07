@@ -19,8 +19,10 @@ LOCAL_PATH="$HOME_PATH/.local"
 OPT_PATH="$LOCAL_PATH/opt"
 BIN_PATH="$LOCAL_PATH/bin"
 GAMES_PATH="$LOCAL_PATH/games"
-CACHE_PATH="$HOME_PATH/.cache"
-VAR_PATH="$HOME_PATH/.var"
+# CACHE_PATH="$HOME_PATH/.cache"
+VAR_DIR_NAME="var"
+VAR_PATH="$HOME_PATH/.$VAR_DIR_NAME"
+BACKUP_PATH="../backup"
 
 errMsg() {
     echo "Failed"
@@ -139,20 +141,26 @@ makeLocalDirs() {
 
 makeNestedBtrfsSubvols() {
     makeBtrfsSubvol() {
-        if rm --recursive --force "$@"; then
-            runAsUser btrfs subvolume create "$@"
+        local currentDir="$1"
+        local dirName="$2"
+        if [[ -d $currentDir ]]; then
+            local currentTimestamp=""
+            currentTimestamp="$(date +'%d_%m_%Y_%H_%M_%S')"
+            mv "$currentDir" "$BACKUP_PATH/${dirName}_$currentTimestamp"
+        fi
+
+        if runAsUser btrfs subvolume create "$1"; then
+            echo "Nested BTRFS subvolume for $1 has been created"
         else
             local errcode="$?"
-            echo "Failed to create subvol for $*"
+            echo "Failed to create subvol for $1"
             pressAnyKeyToContinue
             exit "$errcode"
         fi
-
-        echo "Nested BTRFS subvolume for $* has been created"
     }
 
     # makeBtrfsSubvol "$CACHE_PATH"
-    makeBtrfsSubvol "$VAR_PATH"
+    makeBtrfsSubvol "$VAR_PATH" "$VAR_DIR_NAME"
 }
 
 main() {
