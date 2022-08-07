@@ -10,7 +10,9 @@ TMP_PATH=""
 PKG_LIST_PATH="../pkgs"
 LOCAL_PATH="/home/$USERNAME/.local"
 BIN_PATH="$LOCAL_PATH/bin"
-GNOME_BOXES_LOCAL_PATH="$LOCAL_PATH/share/gnome-boxes/"
+BACKUP_PATH="../backup"
+GNOME_BOXES_DIR_NAME="gnome-boxes"
+GNOME_BOXES_LOCAL_PATH="$LOCAL_PATH/share/$GNOME_BOXES_DIR_NAME/"
 GNOME_BOXES_LOCAL_IMAGES_PATH="$GNOME_BOXES_LOCAL_PATH/images"
 
 errMsg() {
@@ -55,22 +57,42 @@ installPkgsFromRepo() {
     fi
 }
 
-configureGnomeBoxes() {
-    if runAsUser mkdir -p "$GNOME_BOXES_LOCAL_PATH"; then
-        if [[ -d $GNOME_BOXES_LOCAL_PATH ]]; then
-            rm --recursive --force "$GNOME_BOXES_LOCAL_IMAGES_PATH"
+configureVirtDirs() {
+    backupDirs() {
+        local currentDir="$1"
+        local dirName="$2"
+        if [[ -d $currentDir ]]; then
+            local currentTimestamp=""
+            currentTimestamp="$(date +'%d_%m_%Y_%H_%M_%S')"
+            mv "$currentDir" "$BACKUP_PATH/${dirName}_$currentTimestamp"
         fi
+    }
 
-        runAsUser btrfs subvolume create "$GNOME_BOXES_LOCAL_IMAGES_PATH"
-        runAsUser chattr +C "$GNOME_BOXES_LOCAL_IMAGES_PATH"
-        echo "Gnome Boxes has been configured"
+    configDirs() {
+        local currentDir="$1"
+        runAsUser btrfs subvolume create "$currentDir"
+        runAsUser chattr +C "$currentDir"
+    }
+
+    configGnomeBoxes() {
+        backupDirs "$GNOME_BOXES_LOCAL_PATH" "$GNOME_BOXES_DIR_NAME"
+        runAsUser mkdir -p "$GNOME_BOXES_LOCAL_PATH"
+        configDirs "$GNOME_BOXES_LOCAL_IMAGES_PATH"
+    }
+
+    makeConfig() { (
+        set -e
+        configGnomeBoxes
+    ); }
+
+    if makeConfig; then
+        echo "Virt dirs has been configured"
     else
         local errcode="$?"
-        echo "Failed to configure Gnome Boxes"
+        echo "Failed to configure virt dirs"
         pressAnyKeyToContinue
         exit "$errcode"
     fi
-
 }
 
 installDocker() {
@@ -189,7 +211,7 @@ main() {
     isSudo
 
     installPkgsFromRepo
-    configureGnomeBoxes
+    configureVirtDirs
     installDocker
     installTerraform
     installMinikube
