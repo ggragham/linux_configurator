@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# Install lutris, wine and dependencies.
+# Install and configure Bottles
 
 trap 'errMsg' ERR
 cd "$(dirname "$0")" || exit "$?"
 
-PKG_LIST_PATH="../pkgs"
+USERNAME="$SUDO_USER"
 
 errMsg() {
     echo "Failed"
@@ -13,10 +13,14 @@ errMsg() {
 }
 
 isSudo() {
-    if [[ $EUID != 0 ]]; then
+    if [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
         echo "Run script with sudo"
         exit 1
     fi
+}
+
+runAsUser() {
+    sudo -u "$USERNAME" "$@"
 }
 
 pressAnyKeyToContinue() {
@@ -27,11 +31,14 @@ pressAnyKeyToContinue() {
 main() {
     isSudo
 
-    if dnf install -y $(cat "$PKG_LIST_PATH/games.pkgs"); then
-        echo "Gaming packages have been installed"
+    if runAsUser flatpak install -y com.usebottles.bottles; then
+        runAsUser flatpak override --user \
+            --filesystem=xdg-data/applications \
+            com.usebottles.bottles
+        echo "Bottles package have been installed and configured"
     else
         local errcode="$?"
-        echo "Failed to install gaming packages"
+        echo "Failed to install Bottles package"
         pressAnyKeyToContinue
         exit "$errcode"
     fi
@@ -40,3 +47,5 @@ main() {
 }
 
 main
+
+# Yep. So many lines of code just to install only the one package  ╮(. ❛ ᴗ ❛.)╭
