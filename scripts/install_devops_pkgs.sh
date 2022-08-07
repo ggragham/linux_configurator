@@ -199,21 +199,18 @@ installVSCodium() {
         tee -a /etc/yum.repos.d/vscodium.repo
 
     if dnf install -y codium; then
-        return "$?"
+        file=$(cat $PKG_LIST_PATH/vscode_extensions.pkgs)
+        IFS=$'\n'
+        for extension in $file; do
+            runAsUser codium --install-extension "$extension"
+        done
+        echo "VSCodium has been installed"
     else
         local errcode="$?"
         echo "Failed to insall VSCodium"
         pressAnyKeyToContinue
         exit "$errcode"
     fi
-
-    file=$(cat $PKG_LIST_PATH/vscode_extensions.pkgs)
-    IFS=$'\n'
-    for extension in $file; do
-        runAsUser codium --install-extension "$extension"
-    done
-
-    echo "VSCodium has been installed"
 }
 
 main() {
