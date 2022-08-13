@@ -6,6 +6,7 @@ com.slack.Slack
 com.spotify.Client
 io.bassi.Amberol
 io.freetubeapp.FreeTube
+io.github.celluloid_player.Celluloid
 io.gitlab.librewolf-community
 io.posidon.Paper
 org.gtk.Gtk3theme.Adwaita-dark

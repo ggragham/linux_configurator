@@ -75,6 +75,17 @@ main() {
         --unshare=ipc \
         io.freetubeapp.FreeTube
 
+    # Celluloid Videoplayer
+    flatpak override --user \
+        --unshare=network \
+        --unshare=ipc \
+        --nosocket=x11 \
+        --nosocket=fallback-x11 \
+        --nodevice=all \
+        --device=dri \
+        --nofilesystem=xdg-pictures \
+        io.github.celluloid_player.Celluloid
+
     # LibreWolf browser
     flatpak override --user \
         --unshare=ipc \
