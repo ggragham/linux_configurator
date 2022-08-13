@@ -97,3 +97,13 @@ autoload -U +X bashcompinit && bashcompinit
 if [ -f ~/.alias_zsh ]; then
   . ~/.alias_zsh
 fi
+
+export NVM_DIR="$HOME/.local/opt/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+export PYENV_ROOT="$HOME/.local/opt/pyenv"
+if [ -s $PYENV_ROOT/bin/pyenv ]; then
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init -)"
+fi

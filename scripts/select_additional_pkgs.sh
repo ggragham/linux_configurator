@@ -31,9 +31,10 @@ main() {
         echo "1. Install more packages"
         echo "2. Install Oh My Zsh"
         echo "3. Install DevOps packages"
-        echo "4. Install nvim"
-        echo "5. Install Flatpak apps"
-        echo "6. I want play the games"
+        echo "4. Install optional pkgs"
+        echo "5. Install nvim"
+        echo "6. Install Flatpak apps"
+        echo "7. I want play the games"
         echo
         echo "0. Back"
         echo
@@ -52,14 +53,18 @@ main() {
             select="*"
             ;;
         4)
-            bash "$SCRIPT_PATH/install_nvim.sh"
+            bash "$SCRIPT_PATH/install_opts.sh"
             select="*"
             ;;
         5)
-            bash "$SCRIPT_PATH/install_flatpak_apps.sh"
+            bash "$SCRIPT_PATH/install_nvim.sh"
             select="*"
             ;;
         6)
+            bash "$SCRIPT_PATH/install_flatpak_apps.sh"
+            select="*"
+            ;;
+        7)
             bash "$SCRIPT_PATH/install_gaming_pkgs.sh"
             select="*"
             ;;
