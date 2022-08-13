@@ -11,12 +11,14 @@ PKG_LIST_PATH="../pkgs"
 HOME_PATH="/home/$USERNAME"
 LOCAL_PATH="$HOME_PATH/.local"
 BIN_PATH="$LOCAL_PATH/bin"
+SHARE_PATH="$LOCAL_PATH/share"
 BACKUP_PATH="../backup"
 GNOME_BOXES_DIR_NAME="gnome-boxes"
-GNOME_BOXES_LOCAL_PATH="$LOCAL_PATH/share/$GNOME_BOXES_DIR_NAME/"
+GNOME_BOXES_LOCAL_PATH="$SHARE_PATH/$GNOME_BOXES_DIR_NAME/"
 GNOME_BOXES_LOCAL_IMAGES_PATH="$GNOME_BOXES_LOCAL_PATH/images"
-VIRTUAL_BOX_DIR_NAME="VirtualBox VMs"
-VIRTUAL_BOX_PATH="$HOME_PATH/$VIRTUAL_BOX_DIR_NAME"
+LIBVIRT_DIR_NAME="libvirt"
+LIBVIRT_LOCAL_PATH="$SHARE_PATH/$LIBVIRT_DIR_NAME"
+LIBVIRT_LOCAL_IMAGES_PATH="$LIBVIRT_LOCAL_PATH/images"
 
 errMsg() {
     cleanup
@@ -67,7 +69,7 @@ configureVirtDirs() {
         if [[ -d $currentDir ]]; then
             local currentTimestamp=""
             currentTimestamp="$(date +'%d_%m_%Y_%H_%M_%S')"
-            mv "$currentDir" "$BACKUP_PATH/${dirName}_$currentTimestamp"
+            runAsUser mv "$currentDir" "$BACKUP_PATH/${dirName}_$currentTimestamp"
         fi
     }
 
@@ -77,21 +79,22 @@ configureVirtDirs() {
         runAsUser chattr +C "$currentDir"
     }
 
-    configGnomeBoxes() {
+    configGnomeBoxesDir() {
         backupDirs "$GNOME_BOXES_LOCAL_PATH" "$GNOME_BOXES_DIR_NAME"
         runAsUser mkdir -p "$GNOME_BOXES_LOCAL_PATH"
         configDirs "$GNOME_BOXES_LOCAL_IMAGES_PATH"
     }
 
-    configVirtualBox() {
-        backupDirs "$VIRTUAL_BOX_PATH" "$VIRTUAL_BOX_DIR_NAME"
-        configDirs "$VIRTUAL_BOX_PATH"
+    configLibvirtDir() {
+        backupDirs "$LIBVIRT_LOCAL_PATH" "$LIBVIRT_DIR_NAME"
+        runAsUser mkdir -p "$LIBVIRT_LOCAL_PATH"
+        configDirs "$LIBVIRT_LOCAL_IMAGES_PATH"
     }
 
     makeConfig() { (
         set -e
-        configGnomeBoxes
-        configVirtualBox
+        configGnomeBoxesDir
+        configLibvirtDir
     ); }
 
     if makeConfig; then
@@ -102,6 +105,18 @@ configureVirtDirs() {
         pressAnyKeyToContinue
         exit "$errcode"
     fi
+}
+
+configLibvirt() {
+    firewall-cmd --permanent --zone=libvirt --add-service=nfs3
+    firewall-cmd --permanent --zone=libvirt --add-service=mountd
+    firewall-cmd --permanent --zone=libvirt --add-service=rpc-bind
+    firewall-cmd --reload
+    sed -i "s/#\ udp=.*/udp=y/g" /etc/nfs.conf
+    systemctl restart nfs-server.service
+    systemctl enable --now virtnetworkd
+
+    echo "Libvirt has been configured"
 }
 
 installDocker() {
@@ -218,6 +233,7 @@ main() {
 
     installPkgsFromRepo
     configureVirtDirs
+    configLibvirt
     installDocker
     installTerraform
     installMinikube
