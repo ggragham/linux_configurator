@@ -1,0 +1,19 @@
+# additional.pkgs
+android-tools
+cheese
+
+# devops.pkgs
+awscli
+pipenv
+python3-pip
+
+# flatpak.pkgs
+com.github.alainm23.planner
+com.slack.Slack
+io.posidon.Paper
+
+# vscode_extensions.pkgs
+hashicorp.terraform
+ipedrazas.kubernetes-snippets
+ms-azuretools.vscode-docker
+ms-kubernetes-tools.vscode-kubernetes-tools

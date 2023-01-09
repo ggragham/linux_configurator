@@ -38,23 +38,23 @@ main() {
         --system-no-talk-name=org.freedesktop.Avahi \
         com.brave.Browser
 
-    # Planner
-    flatpak override --user \
-        --unshare=network \
-        --unshare=ipc \
-        --nosocket=x11 \
-        --nosocket=fallback-x11 \
-        --nofilesystem=home \
-        com.github.alainm23.planner
+    # # Planner
+    # flatpak override --user \
+    #     --unshare=network \
+    #     --unshare=ipc \
+    #     --nosocket=x11 \
+    #     --nosocket=fallback-x11 \
+    #     --nofilesystem=home \
+    #     com.github.alainm23.planner
 
-    # Slack messenger
-    flatpak override --user \
-        --nofilesystem=xdg-download \
-        --nofilesystem=xdg-videos \
-        --nofilesystem=xdg-music \
-        --nofilesystem=xdg-pictures \
-        --nofilesystem=xdg-documents \
-        --filesystem=xdg-download/Slack com.slack.Slack
+    # # Slack messenger
+    # flatpak override --user \
+    #     --nofilesystem=xdg-download \
+    #     --nofilesystem=xdg-videos \
+    #     --nofilesystem=xdg-music \
+    #     --nofilesystem=xdg-pictures \
+    #     --nofilesystem=xdg-documents \
+    #     --filesystem=xdg-download/Slack com.slack.Slack
 
     # Spotify music client
     flatpak override --user \
@@ -94,13 +94,13 @@ main() {
         --nosocket=pcsc \
         io.gitlab.librewolf-community
 
-    # Paper
-    flatpak override --user \
-        --unshare=ipc \
-        --nosocket=x11 \
-        --nosocket=fallback-x11 \
-        --nofilesystem=host \
-        io.posidon.Paper
+    # # Paper
+    # flatpak override --user \
+    #     --unshare=ipc \
+    #     --nosocket=x11 \
+    #     --nosocket=fallback-x11 \
+    #     --nofilesystem=host \
+    #     io.posidon.Paper
 
     # # Apostrophe markdown editor
     # flatpak override --user \

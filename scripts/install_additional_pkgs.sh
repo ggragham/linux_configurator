@@ -46,7 +46,7 @@ main() {
     fi
 
     coprInstall "nickavem" "adw-gtk3"
-    coprInstall "rubemlrm" "act-cli"
+    # coprInstall "rubemlrm" "act-cli"
 
     pressAnyKeyToContinue
 }

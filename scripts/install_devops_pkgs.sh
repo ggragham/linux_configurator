@@ -234,10 +234,10 @@ main() {
     installPkgsFromRepo
     configureVirtDirs
     configLibvirt
-    installDocker
-    installTerraform
-    installMinikube
-    installKubectl
+    #installDocker
+    #installTerraform
+    #installMinikube
+    #installKubectl
     installVSCodium
 
     cleanup

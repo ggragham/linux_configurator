@@ -83,8 +83,8 @@ main() {
     isSudo
 
     downloadScritps
-    installNVM
-    installPyenv
+    # installNVM
+    # installPyenv
 
     pressAnyKeyToContinue
 }

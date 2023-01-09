@@ -1,9 +1,7 @@
 @virtualization
-awscli
 gnome-boxes
 jetbrains-mono-fonts
-pipenv
-python3-pip
+toolbox
 vagrant
 vagrant-libvirt
 vagrant-sshfs
