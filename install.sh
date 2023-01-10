@@ -23,10 +23,6 @@ isSudo() {
 }
 
 runAsUser() {
-    sudo -u "$USERNAME" "$@"
-}
-
-runAsUser() {
 	sudo -u "$USERNAME" "$@"
 }
 
