@@ -24,15 +24,6 @@ pressAnyKeyToContinue() {
     echo
 }
 
-coprInstall() {
-    coprRepo="$1/$2"
-    coprPkgName="$2"
-    dnf copr enable -y "$coprRepo"
-    dnf install -y "$coprPkgName"
-
-    echo "$coprPkgName has been installed"
-}
-
 main() {
     isSudo
 
@@ -44,9 +35,6 @@ main() {
         pressAnyKeyToContinue
         exit "$errcode"
     fi
-
-    coprInstall "nickavem" "adw-gtk3"
-    # coprInstall "rubemlrm" "act-cli"
 
     pressAnyKeyToContinue
 }

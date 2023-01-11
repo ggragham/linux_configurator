@@ -62,30 +62,9 @@ installOpt() {
     fi
 }
 
-installNVM() {
-    local optName="Node Version Manager"
-    local optFileName=install_nvm.sh
-    local downloadURL="https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh"
-    export NVM_DIR=$OPT_PATH/nvm
-    runAsUser mkdir -p "$NVM_DIR"
-    installOpt "$optName" "$optFileName" "$downloadURL"
-}
-
-installPyenv() {
-    local optName="Simple Python Version Management"
-    local optFileName=install_pyenv.sh
-    local downloadURL="https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer"
-    export PYENV_ROOT=$OPT_PATH/pyenv
-    installOpt "$optName" "$optFileName" "$downloadURL"
-}
-
 main() {
     isSudo
-
     downloadScritps
-    # installNVM
-    # installPyenv
-
     pressAnyKeyToContinue
 }
 

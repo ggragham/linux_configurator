@@ -2,11 +2,6 @@
 android-tools
 cheese
 
-# devops.pkgs
-awscli
-pipenv
-python3-pip
-
 # flatpak.pkgs
 com.github.alainm23.planner
 com.slack.Slack
