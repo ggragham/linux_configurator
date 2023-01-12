@@ -1,0 +1,23 @@
+---
+- name: Install additional packages
+  hosts: localhost
+
+  vars:
+    local_path: '{{ ansible_user_dir }}/.local'
+    bin_path: '{{ local_path }}/bin'
+    games_path: '{{ local_path }}/games'
+    lib_path: '{{ local_path }}/lib'
+    opt_path: '{{ local_path }}/opt'
+
+  tasks:
+    - name: Crete local dirs
+      file:
+        path: '{{ item }}'
+        state: directory
+        mode: 0700
+        owner: '{{ ansible_user_id }}'
+      with_items:
+        - '{{ bin_path }}'
+        - '{{ games_path }}'
+        - '{{ lib_path }}'
+        - '{{ opt_path }}'
