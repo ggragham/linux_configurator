@@ -1,5 +1,5 @@
 ---
-- name: Install additional packages
+- name: Init Fedora configuration
   hosts: localhost
   become: true
 
