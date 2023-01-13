@@ -1,0 +1,43 @@
+---
+- name: Install and config iwd
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Install iwd
+      block:
+        - name: Install iwd to Fedora
+          dnf:
+            name: iwd
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+          when: ansible_distribution=="Fedora"
+
+    - name: Config iwd
+      block:
+        - name: Make iwd config dir
+          file:
+            path: /etc/iwd
+            state: directory
+            mode: 0755
+
+        - name: Apply iwd config (1/2)
+          copy:
+            src: ./../system_conf/iwd/main.conf
+            dest: /etc/iwd/main.conf
+            mode: 0644
+
+        - name: Apply iwd config (2/2)
+          copy:
+            src: ./../system_conf/iwd/wifi_backend.conf
+            dest: /etc/NetworkManager/conf.d/wifi_backend.conf
+            mode: 0644
+
+      notify: Restart NetworkManager
+
+  handlers:
+    - name: Restart NetworkManager
+      service:
+        name: NetworkManager
+        state: restarted
