@@ -1,0 +1,46 @@
+---
+- name: Install Oh My ZSH
+  hosts: localhost
+  become: true
+
+  vars:
+    user: '{{ ansible_env.SUDO_USER }}'
+# Local path
+    local_path: /home/{{ user }}/.local
+    opt_path: '{{ local_path }}/opt'
+
+  tasks:
+    - name: Install zsh
+      block:
+        - name: Install zsh to Fedora
+          dnf:
+            name: zsh
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+          when: ansible_distribution=='Fedora'
+
+    - name: Install and config Oh My ZSH
+      block:
+        - name: Run omz install script
+          shell:
+            cmd: >
+              curl -o- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+              | bash
+            creates: '{{ opt_path }}/oh-my-zsh/oh-my-zsh.sh'
+          environment:
+            ZSH: '{{ opt_path }}/oh-my-zsh'
+            CHSH: 'no'
+            RUNZSH: 'no'
+
+        - name: Install OMZ plugins
+          git:
+            repo: https://github.com/zsh-users/{{ item }}.git
+            dest: '{{ opt_path }}/oh-my-zsh/custom/plugins/{{ item }}'
+            version: master
+            update: true
+          with_items:
+            - zsh-syntax-highlighting
+            - zsh-autosuggestions
+
+      become_user: '{{ user }}'
