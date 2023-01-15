@@ -1,0 +1,113 @@
+---
+- name: Install devops pkgs
+  hosts: localhost
+  become: true
+
+  vars:
+    user: '{{ ansible_env.SUDO_USER }}'
+# Local path
+    local_path: /home/{{ user }}/.local
+    bin_path: '{{ local_path }}/bin'
+    opt_path: '{{ local_path }}/opt'
+
+  tasks:
+    - name: Install pkgs from distro repo
+      block:
+        - name: Install pkgs to Fedora
+          dnf:
+            name:
+              - awscli
+              - azure-cli
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+          when: ansible_distribution=="Fedora"
+
+    - name: Install Docker
+      block:
+        - name: Get distro name
+          set_fact:
+            distro_name: '{{ (ansible_distribution | lower) }}'
+        - name: Install docker to Fedora
+          block:
+            - name: Add repo to Fedora
+              yum_repository:
+                name: docker
+                description: docker repository
+                baseurl: https://download.docker.com/linux/{{ distro_name }}/$releasever/$basearch/stable
+                enabled: true
+                gpgcheck: true
+                gpgkey: https://download.docker.com/linux/{{ distro_name }}/gpg
+
+        - name: Install docker
+          dnf:
+            name:
+              - docker-ce
+              - docker-ce-cli
+              - containerd.io
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+
+          when: ansible_distribution=="Fedora"
+
+
+    - name: Install external pkgs
+      block:
+        - name: Install minikube
+          get_url:
+            url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+            dest: '{{ bin_path }}/minikube'
+            mode: 0700
+
+        - name: Install kubectl
+          set_fact:
+            KUBECTL_VERSION: "{{ lookup('url', 'https://dl.k8s.io/release/stable.txt') }}"
+        - get_url:
+            url: https://dl.k8s.io/release/{{ KUBECTL_VERSION }}/bin/linux/amd64/kubectl
+            dest: '{{ bin_path }}/kubectl'
+            mode: 0700
+
+      become_user: '{{ user }}'
+
+    - name: Install act-cli
+      community.general.copr:
+        name: rubemlrm/act-cli
+        state: enabled
+    - dnf:
+        name: act-cli
+        state: latest
+        update_cache: true
+        install_weak_deps: false
+
+    - name: Install nvm
+      block:
+        - name: Create nvm dir
+          file:
+            path: '{{ opt_path }}/nvm'
+            state: directory
+            mode: 0700
+
+        - name: Run nvm install script
+          shell:
+            cmd: >
+              curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh
+              | bash
+            creates: '{{ opt_path }}/nvm/nvm.sh'
+          environment:
+            NVM_DIR: '{{ opt_path }}/nvm'
+
+      become_user: '{{ user }}'
+
+    - name: Install pyenv
+      block:
+        - name: Run pyenv install script
+          shell:
+            cmd: >
+              curl -o- https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
+              | bash
+            creates: '{{ opt_path }}/bin/pyenv'
+          environment:
+            PYENV_ROOT: '{{ opt_path }}/pyenv'
+
+      become_user: '{{ user }}'
