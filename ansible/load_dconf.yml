@@ -1,0 +1,30 @@
+---
+- name: Load dconf
+  hosts: localhost
+
+  vars:
+    user: '{{ ansible_env.SUDO_USER }}'
+    uid: '{{ ansible_env.SUDO_UID }}'
+    de_name: '{{ ansible_env.XDG_CURRENT_DESKTOP }}'
+    backup_path: ../backup
+    dconf_path: ../{{ (de_name | lower) }}.dconf
+
+  tasks:
+    - block:
+        - name: Backup dconf
+          shell:
+            cmd: |
+              currentTimestamp="$(date +'%d_%m_%Y_%H_%M_%S')"
+              dconf dump / >"$BACKUP_PATH/${DE_NAME}_${currentTimestamp}.dconf"
+          environment:
+            DE_NAME: '{{ de_name }}'
+            BACKUP_PATH: '{{ backup_path }}'
+
+        - name: Load dconf
+          shell:
+            cmd: dconf load / < "$DCONF_PATH"
+          environment:
+            DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
+            DCONF_PATH: '{{ dconf_path }}'
+
+      when: de_name=="GNOME"
