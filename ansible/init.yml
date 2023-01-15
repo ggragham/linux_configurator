@@ -6,25 +6,36 @@
   vars:
     user: '{{ ansible_env.SUDO_USER }}'
 # Local path
-    local_path: '{{ ansible_user_dir }}/.local'
+    local_path: /home/{{ user }}/.local
     bin_path: '{{ local_path }}/bin'
     games_path: '{{ local_path }}/games'
     lib_path: '{{ local_path }}/lib'
     opt_path: '{{ local_path }}/opt'
 
   tasks:
-    - name: Crete local dirs
-      file:
-        path: '{{ item }}'
-        state: directory
-        mode: 0700
-        owner: '{{ ansible_user_id }}'
+    - block:
+        - name: Crete local dirs
+          file:
+            path: '{{ item }}'
+            state: directory
+            mode: 0700
+          with_items:
+            - '{{ bin_path }}'
+            - '{{ games_path }}'
+            - '{{ lib_path }}'
+            - '{{ opt_path }}'
+
+        - name: Download some scripts
+          get_url:
+            url: https://raw.githubusercontent.com/ggragham/just_bunch_of_scripts/master/bin/{{ item }}
+            dest: '{{ bin_path }}/'
+            mode: 0700
+          with_items:
+            - weather
+            - getip
+
       become_user: '{{ user }}'
-      with_items:
-        - '{{ bin_path }}'
-        - '{{ games_path }}'
-        - '{{ lib_path }}'
-        - '{{ opt_path }}'
+
 
     - name: Config network
       block:
