@@ -1,0 +1,107 @@
+---
+- name: Install dev pkgs
+  hosts: localhost
+  become: true
+
+  vars:
+    user: '{{ ansible_env.SUDO_USER }}'
+    local_path: /home/{{ user }}/.local
+    backup_path: ./../../backup
+
+  tasks:
+    - name: Install pkgs from distro repo
+      block:
+        - name: Install pkgs to Fedora
+          dnf:
+            name:
+              - gnome-boxes
+              - jetbrains-mono-fonts
+              - distrobox
+              - vagrant
+              - vagrant-libvirt
+              - vagrant-sshfs
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+          when: ansible_distribution=="Fedora"
+
+    - name: Config VM images dirs
+      shell:
+        cmd: |
+          # BACKUP_PATH=''
+          # SHARE_PATH=''
+          GNOME_BOXES_DIR_NAME="gnome-boxes"
+          GNOME_BOXES_LOCAL_PATH="$SHARE_PATH/$GNOME_BOXES_DIR_NAME"
+          GNOME_BOXES_LOCAL_IMAGES_PATH="$GNOME_BOXES_LOCAL_PATH/images"
+          LIBVIRT_DIR_NAME="libvirt"
+          LIBVIRT_LOCAL_PATH="$SHARE_PATH/$LIBVIRT_DIR_NAME"
+          LIBVIRT_LOCAL_IMAGES_PATH="$LIBVIRT_LOCAL_PATH/images"
+
+          backupDirs() {
+              local dirName="$1"
+              local dirToBackup="$2"
+              if [[ -d $dirToBackup ]]; then
+                  local currentTimestamp=""
+                  currentTimestamp="$(date +'%d_%m_%Y_%H_%M_%S')"
+                  mv "$dirToBackup" "$BACKUP_PATH/${dirName}_$currentTimestamp"
+              fi
+          }
+
+          configDir() {
+            local dirName="$1"
+            local vmPath="$2"
+            local vmImagesPath="$3"
+            backupDirs "$dirName" "$vmPath" 
+            mkdir -p "$vmPath"
+            btrfs subvolume create "$vmImagesPath"
+            chattr +C "$vmImagesPath"
+          }
+
+          configDir "$GNOME_BOXES_DIR_NAME" "$GNOME_BOXES_LOCAL_PATH" "$GNOME_BOXES_LOCAL_IMAGES_PATH"
+          # configDir "$LIBVIRT_DIR_NAME" "$LIBVIRT_LOCAL_PATH" "$LIBVIRT_LOCAL_IMAGES_PATH"
+
+          echo "Done"
+      environment:
+        BACKUP_PATH: '{{ backup_path }}'
+        SHARE_PATH: '{{ local_path }}/share'
+      become_user: '{{ user }}'
+
+    - name: Install VSCodium
+      block:
+        - name: Install VSCode to fedora
+          block:
+            - name: Add VSCodium repo to Fedora
+              yum_repository:
+                name: vscodium
+                description: vscodium repository
+                baseurl: https://download.vscodium.com/rpms/
+                enabled: true
+                gpgkey: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg
+                gpgcheck: true
+                metadata_expire: 3600
+
+            - name: Install VSCodium to Fedora
+              dnf:
+                name: codium
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+
+          when: ansible_distribution=="Fedora"
+
+    - name: Install VSCodium extensoins
+      command:
+        cmd: codium --install-extension {{ item }}
+      with_items:
+        - dcasella.monokai-plusplus
+        - foxundermoon.shell-format
+        - Gruntfuggly.todo-tree
+        - lonefy.vscode-JS-CSS-HTML-formatter
+        - mads-hartmann.bash-ide-vscode
+        - MattiasBaake.vscode-snippets-for-ansible
+        - PKief.material-icon-theme
+        - redhat.ansible
+        - timonwong.shellcheck
+        - vscodevim.vim
+        - wholroyd.jinja
+      become_user: '{{ user }}'
