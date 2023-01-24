@@ -2,22 +2,19 @@
 - name: Install gaming packages
   hosts: localhost
   become: true
-
-  vars:
-    user: '{{ ansible_env.SUDO_USER }}'
-
+  vars_files: [../vars.yml]
   tasks:
+    - name: Install flatpak
+      include_tasks: ../_install_flatpak.yml
     - block:
         - name: Install Bottles
           flatpak:
             name: com.usebottles.bottles
-            state: latest
-
+            state: present
         - name: Configure permissions for Bottles
           shell:
             cmd: >
               flatpak override --user \
-              --filesystem=xdg-data/applications \
-              com.usebottles.bottles
-
+                --filesystem=xdg-data/applications \
+                com.usebottles.bottles
       become_user: '{{ user }}'

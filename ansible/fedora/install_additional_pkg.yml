@@ -2,7 +2,7 @@
 - name: Install additional packages
   hosts: localhost
   become: true
-
+  vars_files: [../vars.yml]
   tasks:
     - block:
         - name: Install pkgs
@@ -27,9 +27,11 @@
             state: latest
             update_cache: true
             install_weak_deps: false
-
         - name: Autoremove pkgs
           dnf:
             autoremove: true
-
       when: ansible_distribution=="Fedora"
+    - name: Install Oh My ZSH
+      include_tasks: ../_install_omz.yml
+    - name: Install NeoVim
+      include_tasks: ../_install_nvim.yml

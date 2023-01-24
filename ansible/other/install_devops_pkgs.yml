@@ -1,0 +1,62 @@
+---
+- name: Install devops packages to Fedora
+  hosts: localhost
+  become: true
+  vars_files: [../vars.yml]
+  tasks:
+    - name: Install pkgs to distro
+      dnf:
+        name: [awscli, azure-cli]
+        state: latest
+        update_cache: true
+        install_weak_deps: false
+      when: ansible_distribution=="Fedora"
+    - name: Install additional pkgs
+      block:
+        - name: Install act-cli
+          include_tasks: ../_install_act_cli.yml
+        - name: Install Docker
+          include_tasks: ../_install_docker.yml
+    - name: Install non-repo packages
+      block:
+        - name: Install minikube
+          get_url:
+            url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+            dest: '{{ local_bin_path }}/minikube'
+            mode: 0700
+        - name: Install kubectl
+          block:
+            - name: Get kubectl version
+              set_fact:
+                KUBECTL_VERSION: "{{ lookup('url', 'https://dl.k8s.io/release/stable.txt') }}"
+            - name: Download kubectl
+              get_url:
+                url: https://dl.k8s.io/release/{{ KUBECTL_VERSION }}/bin/linux/amd64/kubectl
+                dest: '{{ local_bin_path }}/kubectl'
+                mode: 0700
+            - name: Install nvm
+              block:
+                - name: Create nvm dir
+                  file:
+                    path: '{{ local_opt_path }}/nvm'
+                    state: directory
+                    mode: 0700
+                - name: Run nvm install script
+                  shell:
+                    cmd: >
+                      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh
+                      | bash
+                    creates: '{{ local_opt_path }}/nvm/nvm.sh'
+                  environment:
+                    NVM_DIR: '{{ local_opt_path }}/nvm'
+            - name: Install pyenv
+              block:
+                - name: Run pyenv install script
+                  shell:
+                    cmd: >
+                      curl -o- https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
+                      | bash
+                    creates: '{{ local_opt_path }}/pyenv/bin/pyenv'
+                  environment:
+                    PYENV_ROOT: '{{ local_opt_path }}/pyenv'
+      become_user: '{{ user }}'

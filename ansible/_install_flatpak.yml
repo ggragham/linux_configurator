@@ -1,0 +1,16 @@
+---
+- name: Install flatpak
+  block:
+    - name: Install flatpak to Fedora
+      dnf:
+        name: flatpak
+        state: latest
+        update_cache: true
+        install_weak_deps: false
+      when: ansible_distribution=="Fedora"
+- name: Configure flatpak
+  shell:
+    cmd: |-
+      flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+      flatpak remote-modify --enable flathub
+      flatpak config --set languages "en;ru;ua;po;jp"

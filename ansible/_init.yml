@@ -1,0 +1,32 @@
+---
+- name: Config network
+  block:
+    - name: Get wifi mac addres
+      shell:
+        cmd: |
+          INTERFACE_NAME=$(ip link show | grep "wl" | awk '{print $2}' | tr -d ':')
+          ip link show "$INTERFACE_NAME" 2>/dev/null | awk '/permaddr/ {print $6}'
+      register: getMacAddr
+    - set_fact:
+        MAC_ADDR: '{{ getMacAddr.stdout }}'
+    - name: Apply systemd-network config
+      template:
+        src: '{{ system_conf_path }}/systemd_networkd/{{ item }}.j2'
+        dest: /etc/systemd/network/{{ item }}.network
+        mode: 0644
+      with_items: [00-wifi, 10-net]
+    - name: Make NetworkManager config dir
+      file:
+        path: /etc/NetworkManager/conf.d
+        state: directory
+        recurse: true
+        mode: 0755
+    - name: Apply NetworkManager config
+      copy:
+        src: '{{ system_conf_path }}/nm.conf'
+        dest: /etc/NetworkManager/conf.d
+        mode: 0644
+    - name: Restart NetworkManager
+      systemd:
+        name: NetworkManager
+        state: restarted

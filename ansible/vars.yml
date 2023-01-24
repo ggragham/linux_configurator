@@ -1,0 +1,19 @@
+---
+user: '{{ ansible_env.SUDO_USER }}'
+uid: '{{ ansible_env.SUDO_UID }}'
+de_name: '{{ ansible_env.XDG_CURRENT_DESKTOP }}'
+# Repo path
+repo_root_path: "{{ lookup('pipe', 'git rev-parse --show-toplevel') }}"
+backup_path: '{{ repo_root_path }}/backup'
+system_conf_path: '{{ repo_root_path }}/system_conf'
+script_path: '{{ repo_root_path }}/scripts'
+dconf_path: '{{ repo_root_path }}/{{ (de_name | lower) }}.dconf'
+# Local path
+local_path: /home/{{ user }}/.local
+local_bin_path: '{{ local_path }}/bin'
+local_games_path: '{{ local_path }}/games'
+local_lib_path: '{{ local_path }}/lib'
+local_opt_path: '{{ local_path }}/opt'
+local_share_path: '{{ local_path }}/share'
+# System path
+system_bin_path: /usr/bin

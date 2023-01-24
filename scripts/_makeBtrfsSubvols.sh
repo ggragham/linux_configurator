@@ -2,7 +2,7 @@
 
 # Make nested BTRFS subvolumes.
 
-BACKUP_PATH="../backup"
+#BACKUP_PATH="../backup"
 CURRENT_DIR="$1"
 DIR_NAME="$2"
 
