@@ -8,6 +8,10 @@
         update_cache: true
         install_weak_deps: false
       when: ansible_distribution=='Fedora'
+- name: Set zsh
+  user:
+    name: '{{ user }}'
+    shell: /bin/zsh
 - name: Install and config Oh My ZSH
   block:
     - name: Run omz install script
