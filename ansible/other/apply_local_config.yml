@@ -24,7 +24,7 @@
           environment:
             DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
             DCONF_PATH: '{{ dconf_path }}'
-      when: de_name=="GNOME"
+      when: de_name=="gnome"
     - name: Crete local dirs
       file:
         path: '{{ item }}'
