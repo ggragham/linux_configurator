@@ -1,0 +1,16 @@
+---
+- name: Install act-cli
+  block:
+    - name: Install act-cli to Fedora
+      block:
+        - name: Add act-cli copr repo
+          community.general.copr:
+            name: rubemlrm/act-cli
+            state: enabled
+        - name: Install act-cli
+          dnf:
+            name: act-cli
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+      when: ansible_distribution=="Fedora"

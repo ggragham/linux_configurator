@@ -1,0 +1,162 @@
+---
+- name: Install Fatpak packages
+  hosts: localhost
+  become: true
+  vars_files: [../vars.yml]
+  tasks:
+    - name: Install flatpak
+      include_tasks: ../_install_flatpak.yml
+    - name: Install flatpak pkgs
+      block:
+        - name: adw-gtk3 theme
+          block:
+            - name: Install adw-gtk3 theme
+              flatpak:
+                name: org.gtk.Gtk3theme.adw-gtk3-dark
+                state: present
+        - name: Flatseal
+          block:
+            - name: Install Flatseal
+              flatpak:
+                name: com.github.tchx84.Flatseal
+                state: present
+        - name: Bitwarden
+          block:
+            - name: Install Bitwarden
+              flatpak:
+                name: com.bitwarden.desktop
+                state: present
+            - name: Configure Bitwarden permissions
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    com.bitwarden.desktop
+        - name: Brave
+          block:
+            - name: Install Brave
+              flatpak:
+                name: com.brave.Browser
+                state: present
+            - name: Configure Brave permissions
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=cups \
+                    --nofilesystem=host-etc \
+                    --nofilesystem=xdg-desktop \
+                    --nofilesystem=xdg-documents \
+                    --nofilesystem=xdg-videos \
+                    --nofilesystem=xdg-music \
+                    --system-no-talk-name=org.freedesktop.UPower \
+                    --system-no-talk-name=org.freedesktop.Avahi \
+                    com.brave.Browser
+        - name: Spotify
+          block:
+            - name: Install Spotify
+              flatpak:
+                name: com.spotify.Client
+                state: present
+            - name: Configure Spotify permissions
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nofilesystem=xdg-pictures \
+                    com.spotify.Client
+        - name: Amberol
+          block:
+            - name: Install Amberol
+              flatpak:
+                name: io.bassi.Amberol
+                state: present
+            - name: Configure Amberol permissions
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    io.bassi.Amberol
+        - name: FreeTube
+          block:
+            - name: Install FreeTube
+              flatpak:
+                name: io.freetubeapp.FreeTube
+                state: present
+            - name: Configure FreeTube permissions
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    io.freetubeapp.FreeTube
+        - name: Celluloid
+          block:
+            - name: Install Celluloid
+              flatpak:
+                name: io.github.celluloid_player.Celluloid
+                state: present
+            - name: Configure Celluloid permissions
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    --nodevice=all \
+                    --device=dri \
+                    --nofilesystem=xdg-pictures \
+                    io.github.celluloid_player.Celluloid
+        - name: Librewolf
+          block:
+            - name: Install Librewolf
+              flatpak:
+                name: io.gitlab.librewolf-community
+                state: present
+            - name: Configure Librewolf permissions
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    --nosocket=pcsc \
+                    io.gitlab.librewolf-community
+        - name: LibreOffice
+          block:
+            - name: Install LibreOffice
+              flatpak:
+                name: org.libreoffice.LibreOffice
+                state: present
+            - name: Configure LibreOffice permissions
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    --nosocket=pulseaudio \
+                    --socket=cups \
+                    --nofilesystem=host \
+                    --filesystem=home \
+                    org.libreoffice.LibreOffice
+        - name: Telegram
+          block:
+            - name: Install Telegram
+              flatpak:
+                name: org.telegram.desktop
+                state: present
+            - name: Configure Telegram permissions
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nofilesystem=host \
+                    --filesystem=home:ro \
+                    org.telegram.desktop
+      become_user: '{{ user }}'

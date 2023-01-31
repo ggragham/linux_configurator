@@ -1,0 +1,43 @@
+---
+- name: Apply local config
+  hosts: localhost
+  vars_files: [../vars.yml]
+  tasks:
+    - name: Backup and apply dotfiles
+      command:
+        cmd: bash {{ script_path }}/_load_dotfiles.sh
+        creates: /home/{{ user }}/.zshrc
+# TODO: make this script as module
+    - name: Backup and apply dconf
+      block:
+        - name: Backup dconf
+          shell:
+            cmd: |
+              currentTimestamp="$(date +'%d_%m_%Y_%H_%M_%S')"
+              dconf dump / >"$BACKUP_PATH/${DE_NAME}_${currentTimestamp}.dconf"
+          environment:
+            DE_NAME: '{{ de_name }}'
+            BACKUP_PATH: '{{ backup_path }}'
+        - name: Load dconf
+          shell:
+            cmd: dconf load / < "$DCONF_PATH"
+          environment:
+            DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
+            DCONF_PATH: '{{ dconf_path }}'
+      when: de_name=="gnome"
+    - name: Crete local dirs
+      file:
+        path: '{{ item }}'
+        state: directory
+        mode: 0700
+      with_items:
+        - '{{ local_bin_path }}'
+        - '{{ local_games_path }}'
+        - '{{ local_lib_path }}'
+        - '{{ local_opt_path }}'
+    - name: Download some scripts
+      get_url:
+        url: https://raw.githubusercontent.com/ggragham/just_bunch_of_scripts/master/bin/{{ item }}
+        dest: '{{ local_bin_path }}/'
+        mode: 0700
+      with_items: [weather, getip]

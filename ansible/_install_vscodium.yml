@@ -1,0 +1,37 @@
+---
+- name: Install VSCodium
+  block:
+    - name: Install VSCode to Fedora
+      block:
+        - name: Add VSCodium repo to Fedora
+          yum_repository:
+            name: vscodium
+            description: vscodium repository
+            baseurl: https://download.vscodium.com/rpms/
+            enabled: true
+            gpgkey: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg
+            gpgcheck: true
+            metadata_expire: 3600
+        - name: Install VSCodium to Fedora
+          dnf:
+            name: codium
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+      when: ansible_distribution=="Fedora"
+- name: Install VSCodium extensoins
+  command:
+    cmd: codium --install-extension {{ item }}
+  with_items:
+    - dcasella.monokai-plusplus
+    - foxundermoon.shell-format
+    - Gruntfuggly.todo-tree
+    - lonefy.vscode-JS-CSS-HTML-formatter
+    - mads-hartmann.bash-ide-vscode
+    - MattiasBaake.vscode-snippets-for-ansible
+    - PKief.material-icon-theme
+    - redhat.ansible
+    - timonwong.shellcheck
+    - vscodevim.vim
+    - wholroyd.jinja
+  become_user: '{{ user }}'
