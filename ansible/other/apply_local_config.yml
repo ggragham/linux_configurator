@@ -25,16 +25,8 @@
             DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
             DCONF_PATH: '{{ dconf_path }}'
       when: de_name=="gnome"
-    - name: Crete local dirs
-      file:
-        path: '{{ item }}'
-        state: directory
-        mode: 0700
-      with_items:
-        - '{{ local_bin_path }}'
-        - '{{ local_games_path }}'
-        - '{{ local_lib_path }}'
-        - '{{ local_opt_path }}'
+    - name: Create local dirs
+      include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
     - name: Download some scripts
       get_url:
         url: https://raw.githubusercontent.com/ggragham/just_bunch_of_scripts/master/bin/{{ item }}

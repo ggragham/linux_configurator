@@ -4,6 +4,7 @@ uid: '{{ ansible_env.SUDO_UID }}'
 de_name: '{{ ansible_env.DESKTOP_SESSION }}'
 # Repo path
 repo_root_path: "{{ lookup('pipe', 'git rev-parse --show-toplevel') }}"
+ansible_path: '{{ repo_root_path }}/ansible'
 backup_path: '{{ repo_root_path }}/backup'
 system_conf_path: '{{ repo_root_path }}/system_conf'
 script_path: '{{ repo_root_path }}/scripts'
