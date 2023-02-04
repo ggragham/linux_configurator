@@ -20,11 +20,8 @@ errMsg() {
 }
 
 isSudo() {
-	if [[ -z "$DESKTOP_SESSION" ]]; then
-		echo "Run script without sudo"
-		exit 1
-	elif [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
-		exec sudo --preserve-env="DESKTOP_SESSION" bash "$0"
+	if [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
+		exec sudo --preserve-env="DESKTOP_SESSION" bash "$(basename "$0")"
 		exit 1
 	fi
 }
@@ -104,6 +101,13 @@ installAddPkgs() {
 
 main() {
 	isSudo
+
+	if [[ -z $DESKTOP_SESSION ]]; then
+		clear
+		echo "Desktop Environment is not defined"
+		echo
+		pressAnyKeyToContinue
+	fi
 
 	local select="*"
 	while :; do
