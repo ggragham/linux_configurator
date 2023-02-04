@@ -24,7 +24,7 @@
           environment:
             DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
             DCONF_PATH: '{{ dconf_path }}'
-      when: de_name=="gnome"
+      when: (de_name is defined) and (de_name=="gnome")
     - name: Create local dirs
       include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
     - name: Download some scripts
