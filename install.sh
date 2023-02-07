@@ -9,9 +9,10 @@ export ANSIBLE_LOCALHOST_WARNING=False
 
 USERNAME="$SUDO_USER"
 PRESERVE_ENV="ANSIBLE_LOCALHOST_WARNING,DESKTOP_SESSION,SUDO_USER,SUDO_UID"
+DISTRO_LIST=("fedora" "debian")
+CURRENT_DISTRO=""
 REPO_ROOT_PATH="$(git rev-parse --show-toplevel)"
 ANSIBLE_PLAYBOOK_PATH="$REPO_ROOT_PATH/ansible"
-ANSIBLE_FEDORA_PATH="$ANSIBLE_PLAYBOOK_PATH/fedora"
 ANSIBLE_OTHER_PATH="$ANSIBLE_PLAYBOOK_PATH/other"
 
 errMsg() {
@@ -35,6 +36,21 @@ pressAnyKeyToContinue() {
 	echo
 }
 
+getDistroName() {
+	for i in "${DISTRO_LIST[@]}"; do
+		local checkDistro=""
+		checkDistro="$(awk '/^ID=/' /etc/*-release | awk -F '=' '{print $2}')"
+		if [[ "$i" == "$checkDistro" ]]; then
+			CURRENT_DISTRO="$i"
+			echo "Your disto is $CURRENT_DISTRO"
+			return 0
+		fi
+	done
+
+	echo "Distro $checkDistro is not supported"
+	exit 1
+}
+
 installAddPkgs() {
 	local select="*"
 	while :; do
@@ -54,17 +70,17 @@ installAddPkgs() {
 
 		case $select in
 		1)
-			ansible-playbook "$ANSIBLE_FEDORA_PATH/install_additional_pkgs.yml"
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/install_additional_pkgs.yml"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			ansible-playbook "$ANSIBLE_FEDORA_PATH/install_themes.yml"
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/install_themes.yml"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
-			ansible-playbook "$ANSIBLE_FEDORA_PATH/install_dev_pkgs.yml"
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/install_dev_pkgs.yml"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -101,6 +117,7 @@ installAddPkgs() {
 
 main() {
 	isSudo
+	getDistroName
 
 	if [[ -z $DESKTOP_SESSION ]]; then
 		clear
@@ -114,6 +131,8 @@ main() {
 		clear
 		echo "Linux Configurator"
 		echo
+		echo "Current distro is $CURRENT_DISTRO"
+		echo
 		echo "1. Initial configuration"
 		echo "2. Install additional packages"
 		echo "3. Apply local config"
@@ -123,7 +142,7 @@ main() {
 
 		case $select in
 		1)
-			ansible-playbook "$ANSIBLE_FEDORA_PATH/fedora_init.yml"
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/${CURRENT_DISTRO}_init.yml"
 			pressAnyKeyToContinue
 			select="*"
 			;;
