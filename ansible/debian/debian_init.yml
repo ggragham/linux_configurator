@@ -14,6 +14,12 @@
               with_items: [en_US.UTF-8, ru_RU.UTF-8, ru_RU.CP1251]
             - name: Configure APT
               block:
+                - name: Add backports repository
+                  apt_repository:
+                    repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports
+                      main
+                    state: present
+                    filename: backports
                 - name: Install software-properties-common
                   apt:
                     name: [software-properties-common]
