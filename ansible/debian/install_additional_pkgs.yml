@@ -1,0 +1,35 @@
+---
+- name: Install additional packages
+  hosts: localhost
+  become: true
+  vars_files: [../vars.yml]
+  tasks:
+    - name: Install Oh My ZSH
+      include_tasks: '{{ ansible_path }}/_install_omz.yml'
+    - name: Install NeoVim
+      include_tasks: '{{ ansible_path }}/_install_nvim.yml'
+    - block:
+        - name: Install additional Debian pkgs [1/2]
+          apt:
+            name:
+              - bat
+              - bleachbit
+              - ibus-kkc
+              - p7zip
+              - redshift-gtk
+              - unrar
+              - vainfo
+            state: latest
+            update_cache: true
+        - name: Install additional Debian pkgs [2/2]
+          apt:
+            name: [libimage-exiftool-perl, neofetch]
+            state: latest
+            update_cache: true
+            install_recommends: false
+        - name: Clean APT
+          apt:
+            autoremove: true
+            purge: true
+            autoclean: true
+      when: ansible_distribution=="Fedora"
