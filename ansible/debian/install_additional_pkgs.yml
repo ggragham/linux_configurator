@@ -28,8 +28,12 @@
             update_cache: true
             install_recommends: false
         - name: Clean APT
-          apt:
-            autoremove: true
-            purge: true
-            autoclean: true
-      when: ansible_distribution=="Fedora"
+          block:
+            - name: Autoremove
+              apt:
+                autoremove: true
+                purge: true
+            - name: Autoclean
+              apt:
+                autoclean: true
+      when: ansible_distribution=="Debian"
