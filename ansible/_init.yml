@@ -30,3 +30,4 @@
       systemd:
         name: NetworkManager
         state: restarted
+        enabled: true
