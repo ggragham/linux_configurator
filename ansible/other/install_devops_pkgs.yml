@@ -1,20 +1,24 @@
 ---
-- name: Install devops packages to Fedora
+- name: Install devops packages
   hosts: localhost
   become: true
   vars_files: [../vars.yml]
   tasks:
-    - name: Install pkgs to distro
+    - name: Install pkgs to Fedora
       dnf:
         name: [awscli, azure-cli]
         state: latest
         update_cache: true
         install_weak_deps: false
       when: ansible_distribution=="Fedora"
+    - name: Install pkgs to Debian
+      apt:
+        name: [awscli, azure-cli]
+        state: latest
+        update_cache: true
+      when: ansible_distribution=="Debian"
     - name: Install additional pkgs
       block:
-        - name: Install act-cli
-          include_tasks: '{{ ansible_path }}/_install_act_cli.yml'
         - name: Install Docker
           include_tasks: '{{ ansible_path }}/_install_docker.yml'
         - name: Create local dirs
@@ -49,6 +53,7 @@
                       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh
                       | bash
                     creates: '{{ local_opt_path }}/nvm/nvm.sh'
+                    warn: false
                   environment:
                     NVM_DIR: '{{ local_opt_path }}/nvm'
             - name: Install pyenv
@@ -59,6 +64,7 @@
                       curl -o- https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
                       | bash
                     creates: '{{ local_opt_path }}/pyenv/bin/pyenv'
+                    warn: false
                   environment:
                     PYENV_ROOT: '{{ local_opt_path }}/pyenv'
       become_user: '{{ user }}'
