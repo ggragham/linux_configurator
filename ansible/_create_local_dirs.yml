@@ -3,6 +3,7 @@
   file:
     path: '{{ item }}'
     state: directory
+    owner: '{{ user }}'
     mode: 0700
   with_items:
     - '{{ local_bin_path }}'
