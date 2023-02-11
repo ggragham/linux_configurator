@@ -8,12 +8,6 @@
       include_tasks: ../_install_flatpak.yml
     - name: Install flatpak pkgs
       block:
-        - name: adw-gtk3 theme
-          block:
-            - name: Install adw-gtk3 theme
-              flatpak:
-                name: org.gtk.Gtk3theme.adw-gtk3-dark
-                state: present
         - name: Flatseal
           block:
             - name: Install Flatseal
@@ -65,21 +59,6 @@
                     --unshare=ipc \
                     --nofilesystem=xdg-pictures \
                     com.spotify.Client
-        - name: Amberol
-          block:
-            - name: Install Amberol
-              flatpak:
-                name: io.bassi.Amberol
-                state: present
-            - name: Configure Amberol permissions
-              shell:
-                cmd: >
-                  flatpak override --user \
-                    --unshare=network \
-                    --unshare=ipc \
-                    --nosocket=x11 \
-                    --nosocket=fallback-x11 \
-                    io.bassi.Amberol
         - name: FreeTube
           block:
             - name: Install FreeTube
@@ -159,4 +138,35 @@
                     --nofilesystem=host \
                     --filesystem=home:ro \
                     org.telegram.desktop
+    - name: Install Fedora specific packages
+      block:
+        - name: adw-gtk3 theme
+          block:
+            - name: Install adw-gtk3 theme
+              flatpak:
+                name: org.gtk.Gtk3theme.adw-gtk3-dark
+                state: present
+        - name: Amberol
+          block:
+            - name: Install Amberol
+              flatpak:
+                name: io.bassi.Amberol
+                state: present
+            - name: Configure Amberol permissions
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    io.bassi.Amberol
+      when: ansible_distribution=="Fedora"
+    - name: Install Debian specific packages
+      block:
+        - name: Rhythmbox
+          flatpak:
+            name: org.gnome.Rhythmbox3
+            state: present
+      when: ansible_distribution=="Debian"
       become_user: '{{ user }}'
