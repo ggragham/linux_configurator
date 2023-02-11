@@ -17,6 +17,7 @@
               - ibus-kkc
               - p7zip
               - redshift-gtk
+              - rofi
               - unrar
               - vainfo
             state: latest
