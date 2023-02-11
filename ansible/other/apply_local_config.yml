@@ -6,25 +6,33 @@
     - name: Backup and apply dotfiles
       command:
         cmd: bash {{ script_path }}/_load_dotfiles.sh
-        creates: /home/{{ user }}/.zshrc
+        creates: /home/{{ user }}/.alias_zsh
 # TODO: make this script as module
     - name: Backup and apply dconf
       block:
-        - name: Backup dconf
-          shell:
-            cmd: |
-              currentTimestamp="$(date +'%d_%m_%Y_%H_%M_%S')"
-              dconf dump / >"$BACKUP_PATH/${DE_NAME}_${currentTimestamp}.dconf"
-          environment:
-            DE_NAME: '{{ de_name }}'
-            BACKUP_PATH: '{{ backup_path }}'
-        - name: Load dconf
-          shell:
-            cmd: dconf load / < "$DCONF_PATH"
-          environment:
-            DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
-            DCONF_PATH: '{{ dconf_path }}'
-      when: (de_name is defined) and (de_name=="gnome")
+        - name: DE name
+          set_fact:
+            de_name: '{{ ansible_env.XDG_CURRENT_DESKTOP | lower }}'
+        - name: Get dconf path
+          set_fact:
+            dconf_path: '{{ repo_root_path }}/{{ de_name }}.dconf'
+        - name: Dconf
+          block:
+            - name: Backup dconf
+              shell:
+                cmd: |
+                  currentTimestamp="$(date +'%d_%m_%Y_%H_%M_%S')"
+                  dconf dump / >"${BACKUP_PATH}/${DE_NAME}_${currentTimestamp}.dconf"
+              environment:
+                DE_NAME: '{{ de_name }}'
+                BACKUP_PATH: '{{ backup_path }}'
+            - name: Load dconf
+              shell:
+                cmd: dconf load / <"{{ dconf_path }}"
+              environment:
+                DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
+          when: (de_name=='gnome') or (de_name=='mate')
+      when: ( ansible_env.XDG_CURRENT_DESKTOP is defined )
     - name: Create local dirs
       include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
     - name: Download some scripts

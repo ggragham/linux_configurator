@@ -9,7 +9,7 @@ export ANSIBLE_LOCALHOST_WARNING=False
 export ANSIBLE_INVENTORY_UNPARSED_WARNING=False
 
 USERNAME="$SUDO_USER"
-PRESERVE_ENV="ANSIBLE_LOCALHOST_WARNING,ANSIBLE_INVENTORY_UNPARSED_WARNING,DESKTOP_SESSION,SUDO_USER,SUDO_UID"
+PRESERVE_ENV="ANSIBLE_LOCALHOST_WARNING,ANSIBLE_INVENTORY_UNPARSED_WARNING,XDG_CURRENT_DESKTOP,SUDO_USER,SUDO_UID"
 DISTRO_LIST=("fedora" "debian")
 CURRENT_DISTRO=""
 REPO_ROOT_PATH="$(git rev-parse --show-toplevel)"
@@ -23,7 +23,7 @@ errMsg() {
 
 isSudo() {
 	if [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
-		exec sudo --preserve-env="DESKTOP_SESSION" bash "$(basename "$0")"
+		exec sudo --preserve-env="XDG_CURRENT_DESKTOP" bash "$(basename "$0")"
 		exit 1
 	fi
 }
@@ -120,7 +120,7 @@ main() {
 	isSudo
 	getDistroName
 
-	if [[ -z $DESKTOP_SESSION ]]; then
+	if [[ -z $XDG_CURRENT_DESKTOP ]]; then
 		clear
 		echo "Desktop Environment is not defined"
 		echo

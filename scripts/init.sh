@@ -25,7 +25,7 @@ errMsg() {
 
 isSudo() {
 	if [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
-		exec sudo --preserve-env="DESKTOP_SESSION" bash "$(basename "$0")"
+		exec sudo --preserve-env="XDG_CURRENT_DESKTOP" bash "$(basename "$0")"
 		exit 1
 	fi
 }
