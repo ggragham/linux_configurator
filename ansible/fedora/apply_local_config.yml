@@ -1,0 +1,9 @@
+---
+- name: Apply local config
+  hosts: localhost
+  vars_files: [../vars.yml]
+  tasks:
+    - name: Apply local config
+      include_tasks: '{{ ansible_path }}/_apply_local_config.yml'
+    - name: Create local dirs
+      include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
