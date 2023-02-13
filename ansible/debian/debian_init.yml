@@ -104,7 +104,6 @@
               - lightdm-gtk-greeter-settings
               - mate-applet-brisk-menu
               - mate-applets
-              - mate-backgrounds
               - mate-desktop-environment-core
               - mate-media
               - mate-notification-daemon
