@@ -14,7 +14,6 @@
             name:
               - bat
               - bleachbit
-              - ibus-kkc
               - p7zip
               - redshift-gtk
               - rofi
@@ -24,7 +23,13 @@
             update_cache: true
         - name: Install additional Debian pkgs [2/2]
           apt:
-            name: [libimage-exiftool-perl, neofetch]
+            name: 
+              - ibus
+              - ibus-gtk
+              - ibus-gtk3
+              - ibus-kkc
+              - libimage-exiftool-perl, 
+              - neofetch
             state: latest
             update_cache: true
             install_recommends: false

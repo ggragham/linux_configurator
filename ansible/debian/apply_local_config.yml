@@ -1,0 +1,29 @@
+---
+- name: Apply local config
+  hosts: localhost
+  vars_files: [../vars.yml]
+  tasks:
+    - name: Apply local config
+      include_tasks: '{{ ansible_path }}/_apply_local_config.yml'
+    - name: Create local dirs
+      include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
+    - name: Config ibus
+      block:
+        - name: gsettings
+          shell:
+            cmd: |
+              gsettings set org.freedesktop.ibus.general preload-engines "['xkb:us::eng', 'kkc']"
+              gsettings set org.freedesktop.ibus.general.hotkey triggers "['<Alt>F9']"
+              gsettings set org.freedesktop.ibus.panel show-icon-on-systray false
+        - name: Make autostart dir
+          file:
+            path: '{{ local_path }}/.config/autostart'
+            state: directory
+            owner: '{{ user }}'
+            mode: 0755
+        - name: Autostart ibus
+          copy:
+            src: '{{ system_conf_path }}/ibus-daemon.desktop'
+            dest: '{{ local_path }}/.config/autostart/ibus-daemon.desktop'
+            mode: 0644
+      when: ansible_distribution=="Debian"
