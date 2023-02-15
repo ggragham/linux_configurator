@@ -23,12 +23,12 @@
             update_cache: true
         - name: Install additional Debian pkgs [2/2]
           apt:
-            name: 
+            name:
               - ibus
               - ibus-gtk
               - ibus-gtk3
               - ibus-kkc
-              - libimage-exiftool-perl, 
+              - libimage-exiftool-perl
               - neofetch
             state: latest
             update_cache: true
