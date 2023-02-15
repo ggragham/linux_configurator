@@ -6,8 +6,18 @@
   tasks:
     - name: Install flatpak
       include_tasks: ../_install_flatpak.yml
+    - name: Get window system protocol
+      set_fact:
+        wsp_name: '{{ ansible_env.XDG_SESSION_TYPE }}'
     - name: Install flatpak pkgs
       block:
+        - name: adw-gtk3 theme
+          block:
+            - name: Install adw-gtk3 theme
+              flatpak:
+                name: org.gtk.Gtk3theme.adw-gtk3-dark
+                state: present
+          when: ansible_distribution=="Fedora"
         - name: Flatseal
           block:
             - name: Install Flatseal
@@ -20,19 +30,28 @@
               flatpak:
                 name: com.bitwarden.desktop
                 state: present
-            - name: Configure Bitwarden permissions
+            - name: Configure Bitwarden permissions [Wayland]
               shell:
                 cmd: >
                   flatpak override --user \
                     --unshare=ipc \
                     com.bitwarden.desktop
+              when: wsp_name=="wayland"
+            - name: Configure Bitwarden permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=wayland \
+                    com.bitwarden.desktop
+              when: wsp_name=="x11"
         - name: Brave
           block:
             - name: Install Brave
               flatpak:
                 name: com.brave.Browser
                 state: present
-            - name: Configure Brave permissions
+            - name: Configure Brave permissions [Wayland]
               shell:
                 cmd: >
                   flatpak override --user \
@@ -46,38 +65,115 @@
                     --system-no-talk-name=org.freedesktop.UPower \
                     --system-no-talk-name=org.freedesktop.Avahi \
                     com.brave.Browser
+              when: wsp_name=="wayland"
+            - name: Configure Brave permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --nosocket=wayland \
+                    --nosocket=cups \
+                    --nofilesystem=host-etc \
+                    --nofilesystem=xdg-desktop \
+                    --nofilesystem=xdg-documents \
+                    --nofilesystem=xdg-videos \
+                    --nofilesystem=xdg-music \
+                    --system-no-talk-name=org.freedesktop.UPower \
+                    --system-no-talk-name=org.freedesktop.Avahi \
+                    com.brave.Browser
+              when: wsp_name=="x11"
         - name: Spotify
           block:
             - name: Install Spotify
               flatpak:
                 name: com.spotify.Client
                 state: present
-            - name: Configure Spotify permissions
+            - name: Configure Spotify permissions [Wayland]
               shell:
                 cmd: >
                   flatpak override --user \
                     --unshare=ipc \
                     --nofilesystem=xdg-pictures \
                     com.spotify.Client
+              when: wsp_name=="wayland"
+            - name: Configure Spotify permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=wayland \
+                    --nofilesystem=xdg-pictures \
+                    com.spotify.Client
+              when: wsp_name=="x11"
+        - name: Amberol
+          block:
+            - name: Install Amberol
+              flatpak:
+                name: io.bassi.Amberol
+                state: present
+            - name: Configure Amberol permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    io.bassi.Amberol
+              when: wsp_name=="wayland"
+            - name: Configure Amberol permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --nosocket=wayland \
+                    io.bassi.Amberol
+              when: wsp_name=="x11"
+          when: ansible_distribution=="Fedora"
+        - name: Rhythmbox
+          block:
+            - name: Install Rhythmbox
+              flatpak:
+                name: org.gnome.Rhythmbox3
+                state: present
+            - name: Configure Rhythmbox permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    org.gnome.Rhythmbox
+              when: wsp_name=="wayland"
+            - name: Configure Rhythmbox permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --nosocket=wayland \
+                    org.gnome.Rhythmbox
+              when: wsp_name=="x11"
+          when: ansible_distribution=="Debian"
         - name: FreeTube
           block:
             - name: Install FreeTube
               flatpak:
                 name: io.freetubeapp.FreeTube
                 state: present
-            - name: Configure FreeTube permissions
+            - name: Configure FreeTube permissions [Wayland]
               shell:
                 cmd: >
                   flatpak override --user \
                     --unshare=ipc \
                     io.freetubeapp.FreeTube
+              when: wsp_name=="wayland"
         - name: Celluloid
           block:
             - name: Install Celluloid
               flatpak:
                 name: io.github.celluloid_player.Celluloid
                 state: present
-            - name: Configure Celluloid permissions
+            - name: Configure Celluloid permissions [Wayland]
               shell:
                 cmd: >
                   flatpak override --user \
@@ -89,13 +185,25 @@
                     --device=dri \
                     --nofilesystem=xdg-pictures \
                     io.github.celluloid_player.Celluloid
+              when: wsp_name=="wayland"
+            - name: Configure Celluloid permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --nosocket=wayland \
+                    --nodevice=all \
+                    --device=dri \
+                    --nofilesystem=xdg-pictures \
+                    io.github.celluloid_player.Celluloid
+              when: wsp_name=="x11"
         - name: Librewolf
           block:
             - name: Install Librewolf
               flatpak:
                 name: io.gitlab.librewolf-community
                 state: present
-            - name: Configure Librewolf permissions
+            - name: Configure Librewolf permissions [Wayland]
               shell:
                 cmd: >
                   flatpak override --user \
@@ -104,13 +212,22 @@
                     --nosocket=fallback-x11 \
                     --nosocket=pcsc \
                     io.gitlab.librewolf-community
+              when: wsp_name=="wayland"
+            - name: Configure Librewolf permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --nosocket=wayland \
+                    --nosocket=pcsc \
+                    io.gitlab.librewolf-community
+              when: wsp_name=="x11"
         - name: LibreOffice
           block:
             - name: Install LibreOffice
               flatpak:
                 name: org.libreoffice.LibreOffice
                 state: present
-            - name: Configure LibreOffice permissions
+            - name: Configure LibreOffice permissions [Wayland]
               shell:
                 cmd: >
                   flatpak override --user \
@@ -123,13 +240,26 @@
                     --nofilesystem=host \
                     --filesystem=home \
                     org.libreoffice.LibreOffice
+              when: wsp_name=="wayland"
+            - name: Configure LibreOffice permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --nosocket=wayland \
+                    --nosocket=pulseaudio \
+                    --socket=cups \
+                    --nofilesystem=host \
+                    --filesystem=home \
+                    org.libreoffice.LibreOffice
+              when: wsp_name=="x11"
         - name: Telegram
           block:
             - name: Install Telegram
               flatpak:
                 name: org.telegram.desktop
                 state: present
-            - name: Configure Telegram permissions
+            - name: Configure Telegram permissions [Wayland]
               shell:
                 cmd: >
                   flatpak override --user \
@@ -138,35 +268,15 @@
                     --nofilesystem=host \
                     --filesystem=home:ro \
                     org.telegram.desktop
-    - name: Install Fedora specific packages
-      block:
-        - name: adw-gtk3 theme
-          block:
-            - name: Install adw-gtk3 theme
-              flatpak:
-                name: org.gtk.Gtk3theme.adw-gtk3-dark
-                state: present
-        - name: Amberol
-          block:
-            - name: Install Amberol
-              flatpak:
-                name: io.bassi.Amberol
-                state: present
-            - name: Configure Amberol permissions
+              when: wsp_name=="wayland"
+            - name: Configure Telegram permissions [X11]
               shell:
                 cmd: >
                   flatpak override --user \
-                    --unshare=network \
-                    --unshare=ipc \
-                    --nosocket=x11 \
-                    --nosocket=fallback-x11 \
-                    io.bassi.Amberol
-      when: ansible_distribution=="Fedora"
-    - name: Install Debian specific packages
-      block:
-        - name: Rhythmbox
-          flatpak:
-            name: org.gnome.Rhythmbox3
-            state: present
-      when: ansible_distribution=="Debian"
+                    --nosocket=wayland \
+                    --nofilesystem=host \
+                    --filesystem=home:ro \
+                    --env=IBUS_USE_PORTAL=1 \
+                    org.telegram.desktop
+              when: wsp_name=="x11"
       become_user: '{{ user }}'

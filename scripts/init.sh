@@ -8,6 +8,7 @@ trap 'errMsg' ERR
 cd "$(dirname "$0")" || exit "$?"
 
 USERNAME="$SUDO_USER"
+PRESERVE_USER_ENV="XDG_SESSION_TYPE,XDG_CURRENT_DESKTOP"
 DISTRO_LIST=("fedora" "debian")
 CURRENT_DISTRO=""
 PKGS_LIST=("git" "ansible")
@@ -25,7 +26,7 @@ errMsg() {
 
 isSudo() {
 	if [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
-		exec sudo --preserve-env="XDG_CURRENT_DESKTOP" bash "$(basename "$0")"
+		exec sudo --preserve-env="$PRESERVE_USER_ENV" bash "$(basename "$0")"
 		exit 1
 	fi
 }
