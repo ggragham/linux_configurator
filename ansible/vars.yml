@@ -8,7 +8,8 @@ backup_path: '{{ repo_root_path }}/backup'
 system_conf_path: '{{ repo_root_path }}/system_conf'
 script_path: '{{ repo_root_path }}/scripts'
 # Local path
-local_path: /home/{{ user }}/.local
+home_path: /home/{{ user }}
+local_path: '{{ home_path }}/.local'
 local_bin_path: '{{ local_path }}/bin'
 local_games_path: '{{ local_path }}/games'
 local_lib_path: '{{ local_path }}/lib'
