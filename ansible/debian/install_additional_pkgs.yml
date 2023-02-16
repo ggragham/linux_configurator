@@ -15,8 +15,8 @@
               - bat
               - bleachbit
               - p7zip
-              - redshift-gtk
               - rofi
+              - systemd-timesyncd
               - unrar
               - vainfo
             state: latest
@@ -30,6 +30,7 @@
               - ibus-kkc
               - libimage-exiftool-perl
               - neofetch
+              - redshift-gtk
             state: latest
             update_cache: true
             install_recommends: false
