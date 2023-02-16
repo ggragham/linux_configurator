@@ -69,8 +69,13 @@
                     mode: 0755
                 - name: Apply LightDM config
                   copy:
-                    src: '{{ system_conf_path }}/lightdm.conf'
+                    src: '{{ system_conf_path }}/lightdm/lightdm.conf'
                     dest: /etc/lightdm/lightdm.conf.d/01-default.conf
+                    mode: 0644
+                - name: Apply LightDM config
+                  copy:
+                    src: '{{ system_conf_path }}/lightdm/lightdm-gtk-greeter.conf'
+                    dest: /etc/lightdm/lightdm-gtk-greeter.conf
                     mode: 0644
             - name: Config xorg
               block:
