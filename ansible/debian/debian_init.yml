@@ -130,5 +130,3 @@
             state: started
             enabled: true
       when: ansible_distribution=="Debian"
-    - name: Init config
-      include_tasks: ../_init.yml

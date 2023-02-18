@@ -136,8 +136,9 @@ main() {
 		echo "Current distro is $CURRENT_DISTRO"
 		echo
 		echo "1. Initial configuration"
-		echo "2. Install additional packages"
-		echo "3. Apply local config"
+		echo "2. Apply system config"
+		echo "3. Install additional packages"
+		echo "4. Apply local config"
 		echo
 		echo "0. Exit"
 		echo
@@ -149,10 +150,15 @@ main() {
 			select="*"
 			;;
 		2)
-			installAddPkgs
+			runAsUser ansible-playbook "$ANSIBLE_OTHER_PATH/apply_system_config.yml"
+			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
+			installAddPkgs
+			select="*"
+			;;
+		4)
 			runAsUser ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/apply_local_config.yml"
 			pressAnyKeyToContinue
 			select="*"
