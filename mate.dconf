@@ -12,25 +12,68 @@ thumbnail-limit=uint64 104857600
 
 [org/mate/pluma]
 active-plugins=['docinfo', 'time', 'modelines', 'filebrowser']
+create-backup-copy=true
+enable-space-drawer-newline=false
+enable-space-drawer-space='show-all'
+enable-space-drawer-tab='show-all'
+highlight-current-line=false
+insert-spaces=false
 statusbar-visible=true
 
+[org/mate/terminal/profiles/default]
+allow-bold=true
+default-show-menubar=false
+default-size-rows=22
+scrollback-unlimited=true
+scrollbar-position='hidden'
+use-custom-default-size=true
+
 [org/mate/desktop/session/required-components]
-windowmanager='marco-compton'
+windowmanager='marco'
+
+[org/mate/desktop/interface]
+buttons-have-icons=true
+gtk-theme='Adwaita-dark'
+icon-theme='mate'
+menus-have-icons=true
+
+[org/mate/desktop/peripherals/mouse]
+cursor-theme='mate'
 
 [org/mate/marco/general]
+action-double-click-titlebar='toggle_maximize'
 button-layout=':minimize,maximize,close'
 focus-mode='sloppy'
 mouse-button-modifier='<Super>'
+theme='ClearlooksRe'
+num-workspaces=4
 
 [org/mate/notification-daemon]
 popup-location='top_right'
 theme='slider'
+
+[org/mate/power-manager]
+action-critical-battery='suspend'
+backlight-battery-reduce=false
+brightness-ac=100.0
+button-lid-ac='suspend'
+button-lid-battery='suspend'
+button-power='interactive'
+button-suspend='suspend'
+icon-policy='present'
+idle-dim-ac=false
+sleep-computer-ac=7200
+sleep-computer-battery=1800
 
 [org/gnome/desktop/privacy]
 disable-microphone=true
 
 [org/mate/desktop/media-handling]
 autorun-never=true
+
+[org/mate/desktop/peripherals/touchpad]
+horizontal-two-finger-scrolling=true
+natural-scroll=true
 
 [org/mate/desktop/peripherals/keyboard]
 numlock-state='off'
@@ -50,35 +93,40 @@ binding='<Mod4>s'
 name='Rofi Windows'
 
 [org/mate/desktop/keybindings/custom2]
-action='flatpak run org.flameshot.Flameshot gui'
-binding='Print'
-name='Flameshot'
-
-[org/mate/desktop/keybindings/custom3]
 action='mate-terminal'
 binding='<Mod4>Return'
 name='Terminal'
 
-[org/mate/desktop/keybindings/custom4]
+[org/mate/desktop/keybindings/custom3]
 action='flatpak run com.brave.Browser'
 binding='<Alt><Mod4>b'
 name='Brave Browser'
 
-[org/mate/desktop/keybindings/custom5]
-action='vscodium'
+[org/mate/desktop/keybindings/custom4]
+action='codium'
 binding='<Mod4>a'
 name='VSCodium'
 
+[org/mate/desktop/keybindings/custom6]
+action="gsettings set org.mate.peripherals-keyboard-xkb.kbd layouts \"['us', 'ru']\""
+binding='<Alt>F12'
+name='RU_US'
+
+[org/mate/desktop/keybindings/custom7]
+action="gsettings set org.mate.peripherals-keyboard-xkb.kbd layouts \"['us', 'ua']\""
+binding='<Alt>F11'
+name='UA_US'
+
 [org/mate/marco/global-keybindings]
 panel-main-menu='<Shift><Mod4>d'
-panel-run-dialog='disabled'
+panel-run-dialog='<Alt>F10'
 run-command-1=''
 run-command-2=''
 run-command-3=''
 run-command-4=''
 run-command-5=''
 run-command-6=''
-run-command-screenshot='<Mod4>Print'
+run-command-screenshot='Print'
 run-command-terminal='<Mod4>KP_Enter'
 switch-to-workspace-1='<Mod4>1'
 switch-to-workspace-2='<Mod4>2'
@@ -125,3 +173,105 @@ size=24
 
 [org/mate/panel/general]
 default-layout='fedora'
+object-id-list=['brisk-menu', 'file-browser', 'terminal', 'notification-area', 'clock', 'shutdown-applet', 'logout-applet', 'lock-applet', 'show-desktop', 'window-list', 'workspace-switcher', 'trash-applet']
+
+[org/mate/panel/objects/brisk-menu]
+applet-iid='BriskMenuFactory::BriskMenu'
+locked=true
+object-type='applet'
+panel-right-stick=false
+position=0
+toplevel-id='top'
+
+[org/mate/panel/objects/file-browser]
+launcher-location='/usr/share/applications/caja-browser.desktop'
+locked=true
+object-type='launcher'
+position=1
+toplevel-id='top'
+
+[org/mate/panel/objects/terminal]
+launcher-location='/usr/share/applications/mate-terminal.desktop'
+locked=true
+object-type='launcher'
+position=2
+toplevel-id='top'
+
+[org/mate/panel/objects/notification-area]
+applet-iid='NotificationAreaAppletFactory::NotificationArea'
+locked=true
+object-type='applet'
+panel-right-stick=false
+position=4
+toplevel-id='top'
+
+[org/mate/panel/objects/notification-area/prefs]
+min-icon-size=24
+
+[org/mate/panel/objects/clock]
+applet-iid='ClockAppletFactory::ClockApplet'
+locked=true
+object-type='applet'
+panel-right-stick=true
+position=3
+toplevel-id='top'
+
+[org/mate/panel/objects/clock/prefs]
+format='12-hour'
+show-temperature=false
+show-weather=false
+show-week-numbers=false
+
+[org/mate/panel/objects/shutdown-applet]
+action-type='shutdown'
+locked=true
+object-type='action'
+panel-right-stick=true
+position=2
+toplevel-id='top'
+
+[org/mate/panel/objects/logout-applet]
+action-type='logout'
+locked=true
+object-type='action'
+panel-right-stick=true
+position=1
+toplevel-id='top'
+
+[org/mate/panel/objects/lock-applet]
+action-type='lock'
+locked=true
+object-type='action'
+panel-right-stick=true
+position=0
+toplevel-id='top'
+
+[org/mate/panel/objects/show-desktop]
+applet-iid='WnckletFactory::ShowDesktopApplet'
+locked=true
+object-type='applet'
+position=0
+toplevel-id='bottom'
+
+[org/mate/panel/objects/window-list]
+applet-iid='WnckletFactory::WindowListApplet'
+locked=true
+object-type='applet'
+position=1
+toplevel-id='bottom'
+
+[org/mate/panel/objects/workspace-switcher]
+applet-iid='WnckletFactory::WorkspaceSwitcherApplet'
+locked=true
+object-type='applet'
+panel-right-stick=true
+position=1
+toplevel-id='bottom'
+
+[org/mate/panel/objects/trash-applet]
+applet-iid='TrashAppletFactory::TrashApplet'
+locked=true
+object-type='applet'
+panel-right-stick=true
+position=0
+toplevel-id='bottom'
