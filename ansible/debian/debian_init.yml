@@ -99,7 +99,7 @@
           apt:
             name:
               - atril
-              - baobab
+              - blueman
               - caja-open-terminal
               - engrampa
               - eom
@@ -115,6 +115,7 @@
               - mate-screensaver
               - mate-sensors-applet
               - mate-tweak
+              - mate-utils
               - network-manager-gnome
               - network-manager-openvpn-gnome
               - pluma
