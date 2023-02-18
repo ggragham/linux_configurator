@@ -34,6 +34,11 @@
             state: latest
             update_cache: true
             install_recommends: false
+        - name: Create bat symlink 
+          file:
+            src: "/usr/bin/batcat"
+            dest: "/usr/bin/bat"
+            state: link
         - name: Clean APT
           block:
             - name: Autoremove
