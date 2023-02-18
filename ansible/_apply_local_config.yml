@@ -11,7 +11,7 @@
         de_name: '{{ ansible_env.XDG_CURRENT_DESKTOP | lower }}'
     - name: Get dconf path
       set_fact:
-        dconf_path: '{{ repo_root_path }}/{{ de_name }}.dconf'
+        dconf_path: '{{ config_path }}/dconf/{{ de_name }}.dconf'
     - name: Dconf
       block:
         - name: Backup dconf

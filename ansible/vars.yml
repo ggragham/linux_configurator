@@ -5,7 +5,8 @@ uid: '{{ ansible_env.SUDO_UID }}'
 repo_root_path: "{{ lookup('pipe', 'git rev-parse --show-toplevel') }}"
 ansible_path: '{{ repo_root_path }}/ansible'
 backup_path: '{{ repo_root_path }}/backup'
-system_conf_path: '{{ repo_root_path }}/system_conf'
+config_path: '{{ repo_root_path }}/config'
+system_conf_path: '{{ config_path }}/system_conf'
 script_path: '{{ repo_root_path }}/scripts'
 # Local path
 home_path: /home/{{ user }}
