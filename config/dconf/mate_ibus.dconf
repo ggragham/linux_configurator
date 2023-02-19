@@ -1,0 +1,9 @@
+[desktop/ibus/general]
+engines-order=['xkb:us::eng', 'kkc']
+preload-engines=['xkb:us::eng', 'kkc']
+
+[desktop/ibus/general/hotkey]
+triggers=['<Alt>F9']
+
+[desktop/ibus/panel]
+show-icon-on-systray=false

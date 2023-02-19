@@ -27,9 +27,16 @@
                 src: '{{ config_path }}/autostart/redshift-gtk.desktop'
                 dest: '{{ home_path }}/.config/autostart/redshift-gtk.desktop'
                 mode: 0644
-        - name: Autostart ibus
-          copy:
-            src: '{{ config_path }}/autostart/ibus-daemon.desktop'
-            dest: '{{ home_path }}/.config/autostart/ibus-daemon.desktop'
-            mode: 0644
+        - name: Config ibus
+          block:
+            - name: Load ibus dconf
+              shell:
+                cmd: dconf load / <"{{ dconf_path }}/mate_ibus.dconf"
+              environment:
+                DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
+            - name: Autostart ibus
+              copy:
+                src: '{{ config_path }}/autostart/ibus-daemon.desktop'
+                dest: '{{ home_path }}/.config/autostart/ibus-daemon.desktop'
+                mode: 0644
       when: ansible_distribution=="Debian"
