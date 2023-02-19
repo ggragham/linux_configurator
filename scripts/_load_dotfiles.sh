@@ -8,7 +8,7 @@ cd "$(dirname "$0")" || exit "$?"
 
 REPO_PATH="$(pwd)/.."
 BACKUP_PATH="$REPO_PATH/backup"
-DOTFILES_PATH="$REPO_PATH/config"
+DOTFILES_PATH="$REPO_PATH/config/local_config"
 
 errMsg() {
     echo "Failed"

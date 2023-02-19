@@ -4,14 +4,12 @@
   become: true
   vars_files: [../vars.yml]
   tasks:
-    - name: Init config
-      include_tasks: ../_init.yml
     - block:
         - name: Configure dnf
           block:
-            - name: Apply config
+            - name: Apply dnf config
               blockinfile:
-                block: "{{ lookup('file', '../../system_conf/dnf.conf') }}"
+                block: "{{ lookup('file', '{{ system_conf_path }}/dnf.conf') }}"
                 path: /etc/dnf/dnf.conf
             - name: Disable OpenH264 repo
               shell:

@@ -14,17 +14,33 @@
             update_cache: true
             install_weak_deps: false
       when: ansible_distribution=="Fedora"
-- name: Config symlinks
-  shell:
-    cmd: |
-      cd "$local_bin_path" || exit "$?"
-      for link in edit vedit vi vim; do
-          ln -s nvim "$link"
-      done
-      echo -e '#!/bin/sh\nexec nvim -e "$@"' >ex
-      echo -e '#!/bin/sh\nexec nvim -R "$@"' >view
-      echo -e '#!/bin/sh\nexec nvim -d "$@"' >vimdiff
-      chmod 755 ex view vimdiff
-    creates: '{{ system_bin_path }}/vimdiff'
-  environment:
-    local_bin_path: '{{ system_bin_path }}'
+    - name: Debian
+      block:
+        - name: Remove nano and vi(m) from Debian
+          apt:
+            name: [nano, vim*]
+            state: absent
+            autoremove: true
+            purge: true
+        - name: Install neovim to Debian
+          apt:
+            name: neovim
+            state: latest
+            update_cache: true
+            install_recommends: false
+      when: ansible_distribution=='Debian'
+    - name: Config symlinks
+      shell:
+        cmd: |
+          cd "$local_bin_path" || exit "$?"
+          for link in edit vedit vi vim; do
+              ln -s nvim "$link"
+          done
+          echo -e '#!/bin/sh\nexec nvim -e "$@"' >ex
+          echo -e '#!/bin/sh\nexec nvim -R "$@"' >view
+          echo -e '#!/bin/sh\nexec nvim -d "$@"' >vimdiff
+          chmod 755 ex view vimdiff
+        creates: '{{ system_bin_path }}/vimdiff'
+      environment:
+        local_bin_path: '{{ system_bin_path }}'
+      when: ansible_distribution=='Fedora'

@@ -1,0 +1,9 @@
+[org/mate/desktop/interface]
+gtk-theme='Matcha-dark-aliz'
+icon-theme='Qogir-ubuntu-dark'
+
+[org/mate/desktop/peripherals/mouse]
+cursor-theme='Qogir'
+
+[org/mate/marco/general]
+theme='Matcha-dark-aliz'

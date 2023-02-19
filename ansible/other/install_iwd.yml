@@ -13,6 +13,12 @@
             update_cache: true
             install_weak_deps: false
           when: ansible_distribution=="Fedora"
+        - name: Install iwd to Debian
+          apt:
+            name: iwd
+            state: latest
+            update_cache: true
+          when: ansible_distribution=="Debian"
     - name: Config iwd
       block:
         - name: Make iwd config dir
@@ -30,9 +36,8 @@
             src: '{{ system_conf_path }}/iwd/wifi_backend.conf'
             dest: /etc/NetworkManager/conf.d/wifi_backend.conf
             mode: 0644
-      notify: Restart NetworkManager
-  handlers:
     - name: Restart NetworkManager
       service:
         name: NetworkManager
         state: restarted
+        enabled: true

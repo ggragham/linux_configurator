@@ -8,6 +8,12 @@
         update_cache: true
         install_weak_deps: false
       when: ansible_distribution=='Fedora'
+    - name: Install zsh to Debian
+      apt:
+        name: zsh
+        state: latest
+        update_cache: true
+      when: ansible_distribution=='Debian'
 - name: Set zsh
   user:
     name: '{{ user }}'
@@ -20,6 +26,7 @@
           curl -o- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
           | bash
         creates: '{{ local_opt_path }}/oh-my-zsh/oh-my-zsh.sh'
+        warn: false
       environment:
         ZSH: '{{ local_opt_path }}/oh-my-zsh'
         CHSH: 'no'

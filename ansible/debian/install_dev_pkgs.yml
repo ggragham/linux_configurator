@@ -1,0 +1,16 @@
+---
+- name: Install dev pkgs
+  hosts: localhost
+  become: true
+  vars_files: [../vars.yml]
+  tasks:
+    - name: Install pkgs from distro repo
+      block:
+        - name: Install pkgs to Debian
+          apt:
+            name: [gnome-boxes, vagrant, vagrant-libvirt, vagrant-sshfs]
+            state: latest
+            update_cache: true
+        - name: Install VSCodium
+          include_tasks: '{{ ansible_path }}/_install_vscodium.yml'
+      when: ansible_distribution=="Debian"

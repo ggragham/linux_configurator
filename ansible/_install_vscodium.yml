@@ -19,6 +19,25 @@
             update_cache: true
             install_weak_deps: false
       when: ansible_distribution=="Fedora"
+    - name: Install VSCode to Debian
+      block:
+        - name: Add VSCodium repo to Debian
+          block:
+            - name: Add GPG key
+              get_url:
+                url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+                dest: /etc/apt/trusted.gpg.d/vscodium-archive-keyring.asc
+            - name: Add repository
+              apt_repository:
+                repo: deb [ signed-by=/etc/apt/trusted.gpg.d/vscodium-archive-keyring.asc
+                  ] https://download.vscodium.com/debs vscodium main
+                state: present
+        - name: Install VSCodium to Debian
+          apt:
+            name: codium
+            state: latest
+            update_cache: true
+      when: ansible_distribution=="Debian"
 - name: Install VSCodium extensoins
   command:
     cmd: codium --install-extension {{ item }}

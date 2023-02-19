@@ -8,6 +8,9 @@ trap 'errMsg' ERR
 cd "$(dirname "$0")" || exit "$?"
 
 USERNAME="$SUDO_USER"
+PRESERVE_USER_ENV="XDG_SESSION_TYPE,XDG_CURRENT_DESKTOP"
+DISTRO_LIST=("fedora" "debian")
+CURRENT_DISTRO=""
 PKGS_LIST=("git" "ansible")
 PKGS_TO_INSTALL=""
 DEST_PATH="/home/$USERNAME/.local/opt"
@@ -23,13 +26,28 @@ errMsg() {
 
 isSudo() {
 	if [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
-		exec sudo --preserve-env="DESKTOP_SESSION" bash "$(basename "$0")"
+		exec sudo --preserve-env="$PRESERVE_USER_ENV" bash "$(basename "$0")"
 		exit 1
 	fi
 }
 
 runAsUser() {
 	sudo --user="$USERNAME" "$@"
+}
+
+getDistroName() {
+	for i in "${DISTRO_LIST[@]}"; do
+		local checkDistro=""
+		checkDistro="$(awk '/^ID=/' /etc/*-release | awk -F '=' '{print $2}')"
+		if [[ "$i" == "$checkDistro" ]]; then
+			CURRENT_DISTRO="$i"
+			echo "Your disto is $CURRENT_DISTRO"
+			return 0
+		fi
+	done
+
+	echo "Distro $checkDistro is not supported"
+	exit 1
 }
 
 installInitDeps() {
@@ -45,12 +63,20 @@ installInitDeps() {
 	if [[ -z "$PKGS_TO_INSTALL" ]]; then
 		return 0
 	else
-		if dnf --setopt=install_weak_deps=False --setopt=countme=False install -y $PKGS_TO_INSTALL; then
-			return "$?"
+		if [[ "$CURRENT_DISTRO" == "fedora" ]]; then
+			dnf install -y \
+				--setopt=install_weak_deps=False \
+				--setopt=countme=False \
+				$PKGS_TO_INSTALL
+		elif [[ "$CURRENT_DISTRO" == "debian" ]]; then
+			apt update
+			apt install -y \
+				--no-install-suggests \
+				--no-install-recommends \
+				$PKGS_TO_INSTALL
 		else
-			local errcode="$?"
-			echo "Failed to install init pkgs"
-			exit "$errcode"
+			echo "Distro $CURRENT_DISTRO is not supported"
+			exit 1
 		fi
 	fi
 }
@@ -87,6 +113,7 @@ runConfigurator() {
 
 main() {
 	isSudo
+	getDistroName
 	installInitDeps
 	cloneRepo
 	runConfigurator
