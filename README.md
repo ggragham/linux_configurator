@@ -1,5 +1,5 @@
 # Linux Configurator
-This script configuring system for my personal purposes. But you feel free to use it as source for your configuration. Currently this script configuring only Fedora Linux after minimal installation
+Just bunch of ansible-playbooks and scripts to configure linux system for my personal purposes. Use with Fedora or Debian. You feel free to use it as source for your configuration.
 
 ## How to use
 1. Download init.sh file
@@ -17,5 +17,19 @@ sudo bash init.sh
 
 ## TO DO
 * [ ] I need more configs (ﾉ◕ヮ◕)ﾉ*.✧
+    * [x] Basic Fedora config
+    * [x] Basic Debian config
+    * [x] Dotfiles symlinks
+    * [x] NetworkNamager config
+    * [x] IWD config
+    * [x] GnomeDE dconf
+    * [x] MateDE dconf
+    * [ ] XFCE config
+    * [ ] Sway config
+    * [ ] i3wm config
+    * [x] Flatpak config
 * [ ] Make more convenient and beautiful menu
-* [ ] Add Debian configuration
+* [ ] Make configs for different types of hardware
+    * [ ] Intel/AMD
+    * [ ] Radeon/Nvidia
+    * [ ] ARM devices
