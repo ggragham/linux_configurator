@@ -33,19 +33,13 @@ windowmanager='marco'
 
 [org/mate/desktop/interface]
 buttons-have-icons=true
-gtk-theme='Adwaita-dark'
-icon-theme='mate'
 menus-have-icons=true
-
-[org/mate/desktop/peripherals/mouse]
-cursor-theme='mate'
 
 [org/mate/marco/general]
 action-double-click-titlebar='toggle_maximize'
 button-layout=':minimize,maximize,close'
 focus-mode='sloppy'
 mouse-button-modifier='<Super>'
-theme='ClearlooksRe'
 num-workspaces=4
 
 [org/mate/notification-daemon]
