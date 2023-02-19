@@ -159,7 +159,7 @@ main() {
 			select="*"
 			;;
 		4)
-			runAsUser ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/apply_local_config.yml"
+			runAsUser ansible-playbook "$ANSIBLE_OTHER_PATH/apply_local_config.yml"
 			pressAnyKeyToContinue
 			select="*"
 			;;
