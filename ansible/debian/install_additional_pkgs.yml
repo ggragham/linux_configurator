@@ -34,11 +34,44 @@
             state: latest
             update_cache: true
             install_recommends: false
-        - name: Create bat symlink
-          file:
-            src: /usr/bin/batcat
-            dest: /usr/bin/bat
-            state: link
+        - name: User Config
+          block:
+            - name: Create bat symlink
+              file:
+                src: /usr/bin/batcat
+                dest: /usr/bin/bat
+                state: link
+            - name: Make autostart dir
+              file:
+                path: '{{ home_path }}/.config/autostart'
+                state: directory
+                owner: '{{ user }}'
+                mode: 0755
+            - name: Config RedShift
+              block:
+                - name: Apply RedShift config
+                  copy:
+                    src: '{{ config_path }}/redshift.conf'
+                    dest: '{{ home_path }}/.config/redshift.conf'
+                    mode: 0644
+                - name: Autostart RedShift
+                  copy:
+                    src: '{{ config_path }}/autostart/redshift-gtk.desktop'
+                    dest: '{{ home_path }}/.config/autostart/redshift-gtk.desktop'
+                    mode: 0644
+            - name: Config ibus
+              block:
+                - name: Load ibus dconf
+                  shell:
+                    cmd: dconf load / <"{{ dconf_path }}/mate_ibus.dconf"
+                  environment:
+                    DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
+                - name: Autostart ibus
+                  copy:
+                    src: '{{ config_path }}/autostart/ibus-daemon.desktop'
+                    dest: '{{ home_path }}/.config/autostart/ibus-daemon.desktop'
+                    mode: 0644
+          become_user: '{{ user }}'
         - name: Clean APT
           block:
             - name: Autoremove
