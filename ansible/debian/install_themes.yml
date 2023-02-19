@@ -21,7 +21,7 @@
               become_user: '{{ user }}'
             - name: Install Matcha theme
               shell:
-                cmd: 'bash {{ matcha_gtk_theme_path }}/install.sh'
+                cmd: bash {{ matcha_gtk_theme_path }}/install.sh
         - name: Install Qogir Icon Theme
           block:
             - name: Clone Qogir theme repo
@@ -34,7 +34,7 @@
               become_user: '{{ user }}'
             - name: Install Qogir theme
               shell:
-                cmd: 'bash {{ qogir_icon_theme_path }}/install.sh'
+                cmd: bash {{ qogir_icon_theme_path }}/install.sh
         - name: Enable themes
           shell:
             cmd: dconf load / <"{{ dconf_path }}/mate_theme.dconf"
