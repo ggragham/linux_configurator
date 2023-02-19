@@ -32,7 +32,7 @@
     - name: Config symlinks
       shell:
         cmd: |
-          cd "$local_bin_path" || exit "$?"
+          cd "{{ local_bin_path }}" || exit "$?"
           for link in edit vedit vi vim; do
               ln -s nvim "$link"
           done
@@ -41,6 +41,4 @@
           echo -e '#!/bin/sh\nexec nvim -d "$@"' >vimdiff
           chmod 755 ex view vimdiff
         creates: '{{ system_bin_path }}/vimdiff'
-      environment:
-        local_bin_path: '{{ system_bin_path }}'
       when: ansible_distribution=='Fedora'
