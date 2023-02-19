@@ -11,7 +11,7 @@
         de_name: '{{ ansible_env.XDG_CURRENT_DESKTOP | lower }}'
     - name: Get dconf path
       set_fact:
-        dconf_path: '{{ config_path }}/dconf/{{ de_name }}.dconf'
+        de_dconf_path: '{{ dconf_path }}/{{ de_name }}.dconf'
     - name: Dconf
       block:
         - name: Backup dconf
@@ -24,7 +24,7 @@
             BACKUP_PATH: '{{ backup_path }}'
         - name: Load dconf
           shell:
-            cmd: dconf load / <"{{ dconf_path }}"
+            cmd: dconf load / <"{{ de_dconf_path }}"
           environment:
             DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
       when: (de_name=='gnome') or (de_name=='mate')
