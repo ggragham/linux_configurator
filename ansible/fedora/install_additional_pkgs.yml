@@ -32,6 +32,6 @@
             autoremove: true
       when: ansible_distribution=="Fedora"
     - name: Install Oh My ZSH
-      include_tasks: ../_install_omz.yml
+      include_tasks: '{{ ansible_path }}/_install_omz.yml'
     - name: Install NeoVim
-      include_tasks: ../_install_nvim.yml
+      include_tasks: '{{ ansible_path }}/_install_nvim.yml'
