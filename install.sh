@@ -3,24 +3,28 @@
 # Main script.
 # Interactive menu to execute playbooks.
 
-trap 'errMsg' ERR
 cd "$(dirname "$0")" || exit "$?"
 export ANSIBLE_LOCALHOST_WARNING=False
 export ANSIBLE_INVENTORY_UNPARSED_WARNING=False
 
+# Global vars
 USERNAME="$SUDO_USER"
 PRESERVE_USER_ENV="XDG_SESSION_TYPE,XDG_CURRENT_DESKTOP"
 PRESERVE_ENV="${PRESERVE_USER_ENV},ANSIBLE_LOCALHOST_WARNING,ANSIBLE_INVENTORY_UNPARSED_WARNING,SUDO_USER,SUDO_UID"
 DISTRO_LIST=("fedora" "debian")
 CURRENT_DISTRO=""
-REPO_ROOT_PATH="$(git rev-parse --show-toplevel)"
+DISTRO_NAME_COLOR=""
+REPO_ROOT_PATH="$(git rev-parse --show-toplevel 2>/dev/null)"
 ANSIBLE_PLAYBOOK_PATH="$REPO_ROOT_PATH/ansible"
 ANSIBLE_OTHER_PATH="$ANSIBLE_PLAYBOOK_PATH/other"
 
-errMsg() {
-	echo "Failed"
-	exit 1
-}
+# Text formating
+BOLD='\033[1m'
+BLINK='\033[5m'
+RED='\033[0;31m'
+LIGHTBLUE='\033[1;34m'
+GREEN='\033[0;32m'
+NORMAL='\033[0m'
 
 isSudo() {
 	if [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
@@ -39,35 +43,76 @@ pressAnyKeyToContinue() {
 }
 
 getDistroName() {
+	getDistroColor() {
+		if [[ "$CURRENT_DISTRO" == "fedora" ]]; then
+			DISTRO_NAME_COLOR="${LIGHTBLUE}"
+		elif [[ "$CURRENT_DISTRO" == "debian" ]]; then
+			DISTRO_NAME_COLOR="${RED}"
+		fi
+	}
+
 	for i in "${DISTRO_LIST[@]}"; do
 		local checkDistro=""
 		checkDistro="$(awk '/^ID=/' /etc/*-release | awk -F '=' '{print $2}')"
 		if [[ "$i" == "$checkDistro" ]]; then
 			CURRENT_DISTRO="$i"
-			echo "Your disto is $CURRENT_DISTRO"
+			getDistroColor
 			return 0
 		fi
 	done
 
-	echo "Distro $checkDistro is not supported"
+	echo -e "Distro ${BOLD}${checkDistro^}${NORMAL} is not supported"
 	exit 1
+}
+
+asciiLogo() {
+	cat <<'EOF'
+
+   __      __  __   __  __  __  __  __                                                          
+  /\ \    /\ \/\ "-.\ \/\ \/\ \/\_\_\_\                                                         
+  \ \ \___\ \ \ \ \-.  \ \ \_\ \/_/\_\/_              	                             
+   \ \_____\ \_\ \_\\"\_\ \_____\/\_\/\_\                                                       
+    \/_____/\/_/\/_/ \/_/\/_____/\/_/\/_/                                                       
+   ______  ______  __   __  ______ __  ______  __  __  ______  ______  ______ ______  ______    
+  /\  ___\/\  __ \/\ "-.\ \/\  ___/\ \/\  ___\/\ \/\ \/\  == \/\  __ \/\__  _/\  __ \/\  == \   
+  \ \ \___\ \ \/\ \ \ \-.  \ \  __\ \ \ \ \__ \ \ \_\ \ \  __<\ \  __ \/_/\ \\ \ \/\ \ \  __<   
+   \ \_____\ \_____\ \_\\"\_\ \_\  \ \_\ \_____\ \_____\ \_\ \_\ \_\ \_\ \ \_\\ \_____\ \_\ \_\ 
+    \/_____/\/_____/\/_/ \/_/\/_/   \/_/\/_____/\/_____/\/_/ /_/\/_/\/_/  \/_/ \/_____/\/_/ /_/ 
+EOF
+}
+
+printLogo() {
+	echo -e "${GREEN}${BOLD}"
+	asciiLogo
+	echo -e "${NORMAL}"
+	echo
+	echo -e "\033[64G By ${BOLD}ggragham${NORMAL}"
+	echo -e "\tCurrent distro is ${DISTRO_NAME_COLOR}${BOLD}${CURRENT_DISTRO^}${NORMAL}"
+	echo
+	echo -e "${GREEN}Choose an option:${NORMAL}"
+	echo
+}
+
+menuItem() {
+	local number="$1"
+	local text="$2"
+	echo -e "${GREEN}$number.${NORMAL} $text"
 }
 
 installAddPkgs() {
 	local select="*"
 	while :; do
 		clear
-		echo "Other actions menu"
+		printLogo
+		menuItem "1" "Install Additional pkgs"
+		menuItem "2" "Install Dev pkgs"
+		menuItem "3" "Install DevOps pkgs"
+		menuItem "4" "Install IWD"
+		menuItem "5" "Install Flatpak pkgs"
+		menuItem "6" "Install Themes"
+		menuItem "7" "I wanna play games"
 		echo
-		echo "1. Install Additional pkgs"
-		echo "2. Install Themes"
-		echo "3. Install Dev pkgs"
-		echo "4. Install DevOps pkgs"
-		echo "5. Install IWD"
-		echo "6. Install Flatpak pkgs"
-		echo "7. I wanna play games"
-		echo
-		echo "0. Back"
+		menuItem "0" "Back"
 		echo
 
 		case $select in
@@ -77,27 +122,27 @@ installAddPkgs() {
 			select="*"
 			;;
 		2)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/install_themes.yml"
-			pressAnyKeyToContinue
-			select="*"
-			;;
-		3)
 			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/install_dev_pkgs.yml"
 			pressAnyKeyToContinue
 			select="*"
 			;;
-		4)
+		3)
 			ansible-playbook "$ANSIBLE_OTHER_PATH/install_devops_pkgs.yml"
 			pressAnyKeyToContinue
 			select="*"
 			;;
-		5)
+		4)
 			ansible-playbook "$ANSIBLE_OTHER_PATH/install_iwd.yml"
 			pressAnyKeyToContinue
 			select="*"
 			;;
-		6)
+		5)
 			ansible-playbook "$ANSIBLE_OTHER_PATH/install_flatpak_pkgs.yml"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		6)
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/install_themes.yml"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -110,7 +155,7 @@ installAddPkgs() {
 			return 0
 			;;
 		*)
-			read -rp "Select: " select
+			read -rp "> " select
 			continue
 			;;
 		esac
@@ -123,7 +168,8 @@ main() {
 
 	if [[ -z $XDG_CURRENT_DESKTOP ]]; then
 		clear
-		echo "Desktop Environment is not defined"
+		echo
+		echo -e "${RED}${BOLD}Desktop Environment is not defined${NORMAL}"
 		echo
 		pressAnyKeyToContinue
 	fi
@@ -131,21 +177,19 @@ main() {
 	local select="*"
 	while :; do
 		clear
-		echo "Linux Configurator"
+		printLogo
+		menuItem "1" "Initial configuration"
+		menuItem "2" "Apply system config"
+		menuItem "3" "Install additional packages"
+		menuItem "4" "Apply local config"
 		echo
-		echo "Current distro is $CURRENT_DISTRO"
-		echo
-		echo "1. Initial configuration"
-		echo "2. Apply system config"
-		echo "3. Install additional packages"
-		echo "4. Apply local config"
-		echo
-		echo "0. Exit"
+		menuItem "0" "Exit"
 		echo
 
 		case $select in
 		1)
 			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/${CURRENT_DISTRO}_init.yml"
+			echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -167,7 +211,7 @@ main() {
 			exit 0
 			;;
 		*)
-			read -rp "Select: " select
+			read -rp "> " select
 			continue
 			;;
 		esac

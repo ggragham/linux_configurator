@@ -28,7 +28,7 @@ sudo bash init.sh
     * [ ] Sway config
     * [ ] i3wm config
     * [x] Flatpak config
-* [ ] Make more convenient and beautiful menu
+* [x] Make more convenient and beautiful menu
 * [ ] Make configs for different types of hardware
     * [ ] Intel/AMD
     * [ ] Radeon/Nvidia
