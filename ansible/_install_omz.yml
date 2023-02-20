@@ -26,7 +26,6 @@
           curl -o- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
           | bash
         creates: '{{ local_opt_path }}/oh-my-zsh/oh-my-zsh.sh'
-        warn: false
       environment:
         ZSH: '{{ local_opt_path }}/oh-my-zsh'
         CHSH: 'no'
