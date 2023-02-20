@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Main script.
+# Check and download depen
 # Interactive menu to execute playbooks.
 
 cd "$(dirname "$0")" || exit "$?"
@@ -14,6 +15,13 @@ PRESERVE_ENV="${PRESERVE_USER_ENV},ANSIBLE_LOCALHOST_WARNING,ANSIBLE_INVENTORY_U
 DISTRO_LIST=("fedora" "debian")
 CURRENT_DISTRO=""
 DISTRO_NAME_COLOR=""
+PKGS_LIST=("git" "ansible")
+PKGS_TO_INSTALL=""
+DEST_PATH="/home/$USERNAME/.local/opt"
+REPO_NAME="linux_configurator"
+REPO_LINK="https://github.com/ggragham/${REPO_NAME}.git"
+SCRIPT_NAME="install.sh"
+EXECUTE="$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
 REPO_ROOT_PATH="$(git rev-parse --show-toplevel 2>/dev/null)"
 ANSIBLE_PLAYBOOK_PATH="$REPO_ROOT_PATH/ansible"
 ANSIBLE_OTHER_PATH="$ANSIBLE_PLAYBOOK_PATH/other"
@@ -63,6 +71,67 @@ getDistroName() {
 
 	echo -e "Distro ${BOLD}${checkDistro^}${NORMAL} is not supported"
 	exit 1
+}
+
+installInitDeps() {
+	# Check if git and ansibe is installed by return code
+	for i in "${PKGS_LIST[@]}"; do
+		if "$i" --version 2>/dev/null 1>&2; then
+			echo "$i already installed"
+		else
+			PKGS_TO_INSTALL="$i $PKGS_TO_INSTALL"
+		fi
+	done
+
+	if [[ -z "$PKGS_TO_INSTALL" ]]; then
+		return 0
+	else
+		if [[ "$CURRENT_DISTRO" == "fedora" ]]; then
+			dnf install -y \
+				--setopt=install_weak_deps=False \
+				--setopt=countme=False \
+				$PKGS_TO_INSTALL
+		elif [[ "$CURRENT_DISTRO" == "debian" ]]; then
+			apt update
+			apt install -y \
+				--no-install-suggests \
+				--no-install-recommends \
+				$PKGS_TO_INSTALL
+		else
+			echo "Distro $CURRENT_DISTRO is not supported"
+			exit 1
+		fi
+	fi
+}
+
+cloneRepo() {
+	cloneLinuxConfigRepo() { (
+		set -eu
+		runAsUser mkdir -p "$DEST_PATH"
+		runAsUser git clone "$REPO_LINK" "$DEST_PATH/$REPO_NAME"
+	); }
+
+	if [[ -d "$DEST_PATH/$REPO_NAME" ]]; then
+		echo "Repo already cloned"
+	else
+		if cloneLinuxConfigRepo; then
+			runConfigurator
+		else
+			local errcode="$?"
+			echo "Failed to clone repo"
+			exit "$errcode"
+		fi
+	fi
+}
+
+runConfigurator() {
+	if bash "$EXECUTE"; then
+		return "$?"
+	else
+		local errcode="$?"
+		echo "Failed to start Linux Configurator"
+		exit "$errcode"
+	fi
 }
 
 asciiLogo() {
@@ -165,6 +234,8 @@ installAddPkgs() {
 main() {
 	isSudo
 	getDistroName
+	installInitDeps
+	cloneRepo
 
 	if [[ -z $XDG_CURRENT_DESKTOP ]]; then
 		clear
