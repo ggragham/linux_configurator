@@ -5,7 +5,7 @@
   vars_files: [../vars.yml]
   tasks:
     - name: Install flatpak
-      include_tasks: ../_install_flatpak.yml
+      include_tasks: '{{ ansible_path }}/_install_flatpak.yml'
     - name: Get window system protocol
       set_fact:
         wsp_name: '{{ ansible_env.XDG_SESSION_TYPE }}'

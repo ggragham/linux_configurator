@@ -53,7 +53,6 @@
                       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh
                       | bash
                     creates: '{{ local_opt_path }}/nvm/nvm.sh'
-                    warn: false
                   environment:
                     NVM_DIR: '{{ local_opt_path }}/nvm'
             - name: Install pyenv
@@ -64,7 +63,6 @@
                       curl -o- https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
                       | bash
                     creates: '{{ local_opt_path }}/pyenv/bin/pyenv'
-                    warn: false
                   environment:
                     PYENV_ROOT: '{{ local_opt_path }}/pyenv'
       become_user: '{{ user }}'
