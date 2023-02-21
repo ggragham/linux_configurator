@@ -111,6 +111,16 @@ cloneRepo() {
 		runAsUser git clone "$REPO_LINK" "$DEST_PATH/$REPO_NAME"
 	); }
 
+	runConfigurator() {
+		if bash "$EXECUTE"; then
+			exit "$?"
+		else
+			local errcode="$?"
+			echo "Failed to start Linux Configurator"
+			exit "$errcode"
+		fi
+	}
+
 	if [[ -d "$DEST_PATH/$REPO_NAME" ]]; then
 		echo "Repo already cloned"
 	else
@@ -126,7 +136,7 @@ cloneRepo() {
 
 runConfigurator() {
 	if bash "$EXECUTE"; then
-		return "$?"
+		exit "$?"
 	else
 		local errcode="$?"
 		echo "Failed to start Linux Configurator"
