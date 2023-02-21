@@ -34,13 +34,13 @@
             state: latest
             update_cache: true
             install_recommends: false
+        - name: Create bat symlink
+          file:
+            src: /usr/bin/batcat
+            dest: /usr/bin/bat
+            state: link
         - name: User Config
           block:
-            - name: Create bat symlink
-              file:
-                src: /usr/bin/batcat
-                dest: /usr/bin/bat
-                state: link
             - name: Make autostart dir
               file:
                 path: '{{ home_path }}/.config/autostart'
