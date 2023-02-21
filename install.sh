@@ -36,7 +36,7 @@ NORMAL='\033[0m'
 
 isSudo() {
 	if [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
-		exec sudo --preserve-env="$PRESERVE_USER_ENV" bash "$(basename "$0")"
+		sudo --preserve-env="$PRESERVE_USER_ENV" bash "$SCRIPT_NAME"
 		exit 1
 	fi
 }
@@ -131,16 +131,6 @@ cloneRepo() {
 			echo "Failed to clone repo"
 			exit "$errcode"
 		fi
-	fi
-}
-
-runConfigurator() {
-	if bash "$EXECUTE"; then
-		exit "$?"
-	else
-		local errcode="$?"
-		echo "Failed to start Linux Configurator"
-		exit "$errcode"
 	fi
 }
 
