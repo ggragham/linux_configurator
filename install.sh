@@ -22,7 +22,7 @@ REPO_NAME="linux_configurator"
 REPO_LINK="https://github.com/ggragham/${REPO_NAME}.git"
 SCRIPT_NAME="install.sh"
 CURRENT_SCRIPT_PATH="$(readlink -f "$0")"
-EXECUTE="$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
+DEFAULT_SCRIPT_PATH="$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
 REPO_ROOT_PATH="$(git rev-parse --show-toplevel 2>/dev/null)"
 ANSIBLE_PLAYBOOK_PATH="$REPO_ROOT_PATH/ansible"
 ANSIBLE_OTHER_PATH="$ANSIBLE_PLAYBOOK_PATH/other"
@@ -113,7 +113,7 @@ cloneRepo() {
 	); }
 
 	runConfigurator() {
-		if bash "$EXECUTE"; then
+		if bash "$DEFAULT_SCRIPT_PATH"; then
 			exit "$?"
 		else
 			local errcode="$?"
@@ -122,8 +122,10 @@ cloneRepo() {
 		fi
 	}
 
-	if [[ "$EXECUTE" != "$CURRENT_SCRIPT_PATH" ]]; then
-		if [[ ! -d "$DEST_PATH/$REPO_NAME/.git" ]]; then
+	if [[ -d "./.git" ]]; then
+		return "$?"
+	elif [[ "$DEFAULT_SCRIPT_PATH" != "$CURRENT_SCRIPT_PATH" ]]; then
+		if [[ ! -d "$DEST_PATH/$REPO_NAME" ]]; then
 			cloneLinuxConfigRepo
 		fi
 		runConfigurator
