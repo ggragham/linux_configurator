@@ -21,6 +21,7 @@ DEST_PATH="/home/$USERNAME/.local/opt"
 REPO_NAME="linux_configurator"
 REPO_LINK="https://github.com/ggragham/${REPO_NAME}.git"
 SCRIPT_NAME="install.sh"
+CURRENT_SCRIPT_PATH="$(readlink -f "$0")"
 EXECUTE="$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
 REPO_ROOT_PATH="$(git rev-parse --show-toplevel 2>/dev/null)"
 ANSIBLE_PLAYBOOK_PATH="$REPO_ROOT_PATH/ansible"
@@ -77,7 +78,7 @@ installInitDeps() {
 	# Check if git and ansibe is installed by return code
 	for i in "${PKGS_LIST[@]}"; do
 		if "$i" --version 2>/dev/null 1>&2; then
-			echo "$i already installed"
+			return "$?"
 		else
 			PKGS_TO_INSTALL="$i $PKGS_TO_INSTALL"
 		fi
@@ -121,16 +122,11 @@ cloneRepo() {
 		fi
 	}
 
-	if [[ -d "$DEST_PATH/$REPO_NAME" ]]; then
-		echo "Repo already cloned"
-	else
-		if cloneLinuxConfigRepo; then
-			runConfigurator
-		else
-			local errcode="$?"
-			echo "Failed to clone repo"
-			exit "$errcode"
+	if [[ "$EXECUTE" != "$CURRENT_SCRIPT_PATH" ]]; then
+		if [[ ! -d "$DEST_PATH/$REPO_NAME/.git" ]]; then
+			cloneLinuxConfigRepo
 		fi
+		runConfigurator
 	fi
 }
 
