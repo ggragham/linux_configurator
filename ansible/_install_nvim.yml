@@ -40,7 +40,5 @@
           echo -e '#!/bin/sh\nexec nvim -R "$@"' >view
           echo -e '#!/bin/sh\nexec nvim -d "$@"' >vimdiff
           chmod 755 ex view vimdiff
-        environment:
-
         creates: '{{ system_bin_path }}/vimdiff'
       when: ansible_distribution=='Fedora'
