@@ -11,13 +11,6 @@
         wsp_name: '{{ ansible_env.XDG_SESSION_TYPE }}'
     - name: Install flatpak pkgs
       block:
-        - name: adw-gtk3 theme
-          block:
-            - name: Install adw-gtk3 theme
-              flatpak:
-                name: org.gtk.Gtk3theme.adw-gtk3-dark
-                state: present
-          when: ansible_distribution=="Fedora"
         - name: Flatseal
           block:
             - name: Install Flatseal

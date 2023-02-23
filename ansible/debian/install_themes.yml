@@ -35,6 +35,21 @@
             - name: Install Qogir theme
               shell:
                 cmd: bash {{ qogir_icon_theme_path }}/install.sh
+        - name: Install flatpak themes
+          block:
+            - name: Check flathub repo
+              shell:
+                cmd: |
+                  flatpak remote-list | grep "flathub" >/dev/null
+                  echo "$?"
+              register: flatpak_return
+            - name: Install themes
+              block:
+                - name: Install Matcha-dark-aliz GTK theme
+                  flatpak:
+                    name: org.gtk.Gtk3theme.Matcha-dark-aliz
+                    state: present
+              when: flatpak_return.stdout=="0"
         - name: Enable themes
           shell:
             cmd: dconf load / <"{{ dconf_path }}/mate_theme.dconf"

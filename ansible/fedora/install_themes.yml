@@ -15,4 +15,19 @@
             state: latest
             update_cache: true
             install_weak_deps: false
+        - name: Install flatpak themes
+          block:
+            - name: Check flathub repo
+              shell:
+                cmd: |
+                  flatpak remote-list | grep "flathub" >/dev/null
+                  echo "$?"
+              register: flatpak_return
+            - name: Install themes
+              block:
+                - name: Install adw-gtk3 theme
+                  flatpak:
+                    name: org.gtk.Gtk3theme.adw-gtk3-dark
+                    state: present
+              when: flatpak_return.stdout=="0"
       when: ansible_distribution=="Fedora"
