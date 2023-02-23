@@ -8,7 +8,12 @@
       block:
         - name: Install pkgs to Debian
           apt:
-            name: [gnome-boxes, vagrant, vagrant-libvirt, vagrant-sshfs]
+            name:
+              - gnome-boxes
+              - podman
+              - vagrant
+              - vagrant-libvirt
+              - vagrant-sshfs
             state: latest
             update_cache: true
         - name: Install VSCodium
