@@ -78,7 +78,7 @@ installInitDeps() {
 	# Check if git and ansibe is installed by return code
 	for i in "${PKGS_LIST[@]}"; do
 		if "$i" --version 2>/dev/null 1>&2; then
-			return "$?"
+			continue
 		else
 			PKGS_TO_INSTALL="$i $PKGS_TO_INSTALL"
 		fi
