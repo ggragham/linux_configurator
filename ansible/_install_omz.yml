@@ -37,4 +37,32 @@
         version: master
         update: true
       with_items: [zsh-syntax-highlighting, zsh-autosuggestions]
+    - name: Config OMZ
+      block:
+        - name: Get distro_name name
+          set_fact:
+            distro_name: '{{ ansible_distribution | lower }}'
+        - name: Create omz config directory
+          file:
+            path: '{{ omz_path }}'
+            state: directory
+            owner: '{{ user }}'
+            mode: 0700
+        - name: Make .zshrc symlink
+          file:
+            src: '{{ omz_path }}/.zshrc'
+            dest: '{{ home_path }}/.zshrc'
+            state: link
+            force: true
+            owner: '{{ user }}'
+            mode: 0700
+        - name: Make config symlinks
+          file:
+            src: '{{ omz_path }}/{{ item }}'
+            dest: '{{ local_config_path }}/omz/{{ item }}'
+            state: link
+            force: true
+            owner: '{{ user }}'
+            mode: 0700
+          with_items: [alias_zsh, '{{ distro_name }}_zsh']
   become_user: '{{ user }}'

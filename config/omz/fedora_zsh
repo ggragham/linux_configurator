@@ -1,0 +1,7 @@
+# Fedora aliases
+alias dnfi="sudo dnf install"
+alias dnfu="sudo dnf update"
+alias dnfr="sudo dnf remove"
+alias dnfar="sudo dnf autoremove"
+alias dnfs="dnf search"
+alias dnfc="sudo dnf clean all"

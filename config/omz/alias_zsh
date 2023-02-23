@@ -18,21 +18,9 @@ alias rexifp="exiftool -all= -TagsFromFile @ -ColorSpaceTags DIRorFILES"
 alias orexif="exiftool -overwrite_original -all="
 alias et="exiftool"
 
-# Android tool
-alias fastboot="sudo fastboot"
-alias adb="sudo adb"
-
 # Misc
 alias cal="cal -3"
 alias py3="python3"
 alias his="history"
 
 alias tb="nc termbin.com 9999"
-
-# DNF 
-alias dnfi="sudo dnf install"
-alias dnfu="sudo dnf update"
-alias dnfr="sudo dnf remove"
-alias dnfar="sudo dnf autoremove"
-alias dnfs="dnf search"
-alias dnfc="sudo dnf clean all"

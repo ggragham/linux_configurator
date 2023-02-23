@@ -1,0 +1,7 @@
+# Debain aliases
+alias apti="sudo apt install --no-install-recommends --no-install-suggests" 
+alias aptii="sudo apt install"
+alias aptu="sudo apt update && sudo apt upgrade"
+alias aptr="sudo apt autoremove --purge"
+alias apts="apt search"
+alias aptc="sudo sudo apt autoclean"
