@@ -6,7 +6,7 @@ ZSH_THEME="robbyrussell"
 COMPLETION_WAITING_DOTS="true"
 OMZ_CONFIG_PATH="$HOME/.config/omz"
 
-plugins=(git compleat cp zsh-syntax-highlighting zsh-autosuggestions colored-man-pages $devops_plugins)
+plugins=(git compleat cp zsh-syntax-highlighting zsh-autosuggestions colored-man-pages)
 source "$ZSH/oh-my-zsh.sh"
 
 # User configuration
