@@ -195,7 +195,7 @@ toplevel-id='top'
 applet-iid='NotificationAreaAppletFactory::NotificationArea'
 locked=true
 object-type='applet'
-panel-right-stick=false
+panel-right-stick=true
 position=4
 toplevel-id='top'
 
