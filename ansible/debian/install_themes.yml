@@ -56,4 +56,18 @@
           environment:
             DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
           become_user: '{{ user }}'
+        - name: Set LightDM themes
+          block:
+            - name: Set LightDM GTK theme
+              lineinfile:
+                dest: /etc/lightdm/lightdm-gtk-greeter.conf
+                regexp: ^theme-name =
+                line: theme-name = Matcha-dark-aliz
+                state: present
+            - name: Set LightDM icon theme
+              lineinfile:
+                dest: /etc/lightdm/lightdm-gtk-greeter.conf
+                regexp: ^icon-theme-name =
+                line: icon-theme-name = Qogir-ubuntu-dark
+                state: present
       when: ansible_distribution=="Debian"
