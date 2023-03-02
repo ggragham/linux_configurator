@@ -52,7 +52,7 @@ backlight-battery-reduce=false
 brightness-ac=100.0
 button-lid-ac='suspend'
 button-lid-battery='suspend'
-button-power='interactive'
+button-power='suspend'
 button-suspend='suspend'
 icon-policy='present'
 idle-dim-ac=false
@@ -100,6 +100,11 @@ name='Brave Browser'
 action='codium'
 binding='<Mod4>a'
 name='VSCodium'
+
+[org/mate/desktop/keybindings/custom5]
+action='flatpak run org.telegram.desktop'
+binding='<Mod4>e'
+name='Telegram'
 
 [org/mate/desktop/keybindings/custom6]
 action="gsettings set org.mate.peripherals-keyboard-xkb.kbd layouts \"['us', 'ru']\""
