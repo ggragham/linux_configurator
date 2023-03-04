@@ -10,12 +10,18 @@
           apt:
             name:
               - gnome-boxes
+              - libvirt-daemon-system
               - podman
               - vagrant
               - vagrant-libvirt
               - vagrant-sshfs
             state: latest
             update_cache: true
+        - name: Add {{ user }} to libvirt group
+          user:
+            name: '{{ user }}'
+            groups: libvirt
+            append: true
         - name: Apply zsh config
           include_tasks: '{{ ansible_path }}/_apply_dev_omz_config.yml'
         - name: Install VSCodium
