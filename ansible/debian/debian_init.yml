@@ -120,6 +120,7 @@
               - network-manager-openvpn-gnome
               - pluma
               - pulseaudio
+              - rng-tools
               - tlp
               - unzip
             state: latest
