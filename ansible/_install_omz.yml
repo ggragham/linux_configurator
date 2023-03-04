@@ -44,7 +44,7 @@
             distro_name: '{{ ansible_distribution | lower }}'
         - name: Create omz config directory
           file:
-            path: '{{ omz_path }}'
+            path: '{{ local_config_path }}/omz'
             state: directory
             owner: '{{ user }}'
             mode: 0700
