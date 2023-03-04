@@ -34,4 +34,4 @@
         url: https://raw.githubusercontent.com/ggragham/just_bunch_of_scripts/master/bin/{{ item }}
         dest: '{{ local_bin_path }}/'
         mode: 0700
-      with_items: [weather, getip]
+      with_items: [weather, getip, gen_secret]
