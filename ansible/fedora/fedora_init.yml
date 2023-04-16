@@ -77,7 +77,6 @@
               - gnome-shell-extension-appindicator
               - gnome-shell-extension-drive-menu
               - gnome-shell-extension-gsconnect
-              - gnome-shell-extension-sound-output-device-chooser
               - gnome-system-monitor
               - gnome-tweaks
               - gnome-usage
