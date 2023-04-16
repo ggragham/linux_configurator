@@ -2,6 +2,7 @@
 - name: Install themes
   hosts: localhost
   become: true
+  vars_files: [../vars.yml]
   tasks:
     - name: Install themes
       block:
@@ -30,4 +31,10 @@
                     name: org.gtk.Gtk3theme.adw-gtk3-dark
                     state: present
               when: flatpak_return.stdout=="0"
+        - name: Enable themes
+          shell:
+            cmd: dconf load / <"{{ dconf_path }}/gnome_theme.dconf"
+          environment:
+            DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
+          become_user: '{{ user }}'
       when: ansible_distribution=="Fedora"
