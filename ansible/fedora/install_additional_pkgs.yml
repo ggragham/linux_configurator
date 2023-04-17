@@ -24,6 +24,7 @@
               - sane-backends-drivers-scanners
               - simple-scan
               - yt-dlp
+              - zip
             state: latest
             update_cache: true
             install_weak_deps: false
