@@ -49,7 +49,6 @@
             - name: Set graphical.target
               command:
                 cmd: systemctl set-default graphical.target
-                creates: /etc/systemd/system/default.target
             - name: Set plymouth theme
               command:
                 cmd: plymouth-set-default-theme bgrt --rebuild-initrd
