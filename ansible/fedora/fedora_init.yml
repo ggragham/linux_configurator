@@ -72,10 +72,7 @@
               - gnome-calendar
               - gnome-clocks
               - gnome-disk-utility
-              - gnome-extensions-app
-              - gnome-shell-extension-appindicator
-              - gnome-shell-extension-drive-menu
-              - gnome-shell-extension-gsconnect
+              - gnome-firmware
               - gnome-system-monitor
               - gnome-tweaks
               - gnome-usage

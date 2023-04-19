@@ -9,8 +9,26 @@
     - name: Get window system protocol
       set_fact:
         wsp_name: '{{ ansible_env.XDG_SESSION_TYPE }}'
+    - name: Get DE name
+      set_fact:
+        de_name: '{{ ansible_env.XDG_CURRENT_DESKTOP | lower }}'
     - name: Install flatpak pkgs
       block:
+        - name: Extension Manager
+          block:
+            - name: Install Extension Manager
+              flatpak:
+                name: com.mattjakeman.ExtensionManager
+                state: present
+            - name: Configure Extension Manager
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    com.mattjakeman.ExtensionManager
+              when: wsp_name=="wayland"
+          when: de_name=="gnome"
         - name: Flatseal
           block:
             - name: Install Flatseal

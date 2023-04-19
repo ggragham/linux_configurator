@@ -49,7 +49,7 @@
     - mads-hartmann.bash-ide-vscode
     - MattiasBaake.vscode-snippets-for-ansible
     - PKief.material-icon-theme
-    - redhat.ansible
+    - redhat.vscode-yaml
     - timonwong.shellcheck
     - vscodevim.vim
     - wholroyd.jinja
