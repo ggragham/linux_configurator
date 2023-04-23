@@ -8,7 +8,7 @@
     "telemetry.enableTelemetry": false,
     "explorer.confirmDelete": false,
     "files.associations": {
-        "*.yml": "ansible"
+        "*.yml": "yaml"
     },
     "workbench.colorTheme": "Monokai++",
     "git.autofetch": true,
