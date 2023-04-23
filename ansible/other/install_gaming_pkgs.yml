@@ -20,12 +20,12 @@
                   flatpak override --user \
                     --filesystem=xdg-data/applications \
                     com.usebottles.bottles
-          when: ansible_distribution=="Fedora"
-        - name: Lutris
-          block:
-            - name: Install Lutris
-              flatpak:
-                name: net.lutris.Lutris
-                state: present
-          when: ansible_distribution=="Debian"
+        #   when: ansible_distribution=="Fedora"
+        # - name: Lutris
+        #   block:
+        #     - name: Install Lutris
+        #       flatpak:
+        #         name: net.lutris.Lutris
+        #         state: present
+        #   when: ansible_distribution=="Debian"
       become_user: '{{ user }}'
