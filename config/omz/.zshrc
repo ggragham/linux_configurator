@@ -1,6 +1,7 @@
 # Oh-my-zsh configuration
 export PATH=$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 export ZSH="$HOME/.local/opt/oh-my-zsh"
+export GROFF_NO_SGR=1
 
 ZSH_THEME="robbyrussell"
 COMPLETION_WAITING_DOTS="true"
