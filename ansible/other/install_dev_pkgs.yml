@@ -6,11 +6,48 @@
 
   tasks:
     # Preparatory checks
-    - name: Check zsh
-      stat:
-        path: '{{ home_path }}/.zshrc'
-      register: zsh_exist
+    - name: Preparatory checks
+      block:
+        - name: Check zsh
+          stat:
+            path: '{{ home_path }}/.zshrc'
+          register: zsh_exist
+
+        - name: Create local dirs
+          include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
+
       tags: check
+
+    # Base DevOps
+    - name: Install base DevOps pkgs
+      block:
+        - name: Install pkgs to Fedora
+          dnf:
+            name: awscli
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+          when: ansible_distribution=="Fedora"
+
+        - name: Install pkgs to Debian
+          apt:
+            name: awscli
+            state: latest
+            update_cache: true
+          when: ansible_distribution=="Debian"
+
+        - name: Make devops omz config symlink
+          file:
+            src: '{{ omz_path }}/devops_zsh'
+            dest: '{{ local_config_path }}/omz/devops_zsh'
+            state: link
+            force: true
+            owner: '{{ user }}'
+            mode: 0700
+          when: zsh_exist.stat.exists
+          become_user: '{{ user }}'
+
+      tags: devops
 
     # VSCodium
     - name: Install and config VSCodium
