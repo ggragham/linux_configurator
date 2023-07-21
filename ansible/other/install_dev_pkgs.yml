@@ -145,5 +145,6 @@
             owner: '{{ user }}'
             mode: 0700
           when: zsh_exist.stat.exists
+          become_user: '{{ user }}'
 
       tags: virtualization
