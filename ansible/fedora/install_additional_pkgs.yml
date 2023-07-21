@@ -13,8 +13,10 @@
               - cups
               - google-noto-emoji-color-fonts
               - google-noto-emoji-fonts
+              - webp-pixbuf-loader
               - hplip
               - ibus-kkc
+              - jetbrains-mono-fonts
               - liberation-fonts
               - neofetch
               - net-tools
@@ -24,6 +26,7 @@
               - s-tui
               - sane-backends-drivers-scanners
               - simple-scan
+              - tree
               - yt-dlp
               - zip
             state: latest
