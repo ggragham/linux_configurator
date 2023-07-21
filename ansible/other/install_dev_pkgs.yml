@@ -4,6 +4,14 @@
   become: true
   vars_files: [../vars.yml]
 
+  tasks:
+    # Preparatory checks
+    - name: Check zsh
+      stat:
+        path: '{{ home_path }}/.zshrc'
+      register: zsh_exist
+      tags: check
+
     # VSCodium
     - name: Install and config VSCodium
       block:
@@ -65,3 +73,77 @@
 
       tags: vscodium
 
+    # Virtualization
+    - name: Install and config virtualization
+      block:
+        - name: Install virt pkgs to Fedora
+          dnf:
+            name:
+              - gnome-boxes
+              - vagrant
+              - vagrant-libvirt
+              - vagrant-sshfs
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+          when: ansible_distribution=="Fedora"
+
+        - name: Install virt pkgs to Debian
+          apt:
+            name:
+              - gnome-boxes
+              - libvirt-daemon-system
+              - vagrant
+              - vagrant-libvirt
+              - vagrant-sshfs
+            state: latest
+            update_cache: true
+          when: ansible_distribution=="Debian"
+
+        - name: Config virt dirs
+          block:
+            - name: Config Gnome Boxes images dirs
+              shell:
+                cmd: |
+                  mkdir -p {{ gnome_boxes_local_path }}
+                  {{ script_path }}/_make_btrfs_subvols.sh {{ gnome_boxes_local_images_path }} {{ gnome_boxes_dir_name }}
+                  chattr +C {{ gnome_boxes_local_images_path }}
+              environment:
+                BACKUP_PATH: '{{ backup_path}}'
+              vars:
+                gnome_boxes_dir_name: gnome-boxes
+                gnome_boxes_local_path: '{{ local_share_path }}/{{ gnome_boxes_dir_name }}'
+                gnome_boxes_local_images_path: '{{ gnome_boxes_local_path }}/images'
+            - name: Config libvirt images dirs
+              shell:
+                cmd: |
+                  mkdir -p {{ libvirt_local_path }}
+                  {{ script_path }}/_make_btrfs_subvols.sh {{ libvirt_local_images_path }} {{ libvirt_dir_name }}
+                  chattr +C {{ libvirt_local_images_path }}
+              environment:
+                BACKUP_PATH: '{{ backup_path }}'
+              vars:
+                libvirt_dir_name: libvirt
+                libvirt_local_path: '{{ local_share_path }}/{{ libvirt_dir_name }}'
+                libvirt_local_images_path: '{{ libvirt_local_path }}/images'
+          become_user: '{{ user }}'
+          when: ansible_distribution=="Fedora"
+
+        - name: Add {{ user }} to libvirt group
+          user:
+            name: '{{ user }}'
+            groups: libvirt
+            append: true
+          when: ansible_distribution=="Debian"
+
+        - name: Apply virt zsh config
+          file:
+            src: '{{ omz_path }}/virt_zsh'
+            dest: '{{ local_config_path }}/omz/virt_zsh'
+            state: link
+            force: true
+            owner: '{{ user }}'
+            mode: 0700
+          when: zsh_exist.stat.exists
+
+      tags: virtualization
