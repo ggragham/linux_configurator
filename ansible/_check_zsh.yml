@@ -1,0 +1,5 @@
+---
+- name: Check zsh
+  stat:
+    path: '{{ home_path }}/.zshrc'
+  register: zsh_exist

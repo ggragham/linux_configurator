@@ -8,11 +8,6 @@
     # Preparatory checks
     - name: Preparatory checks
       block:
-        - name: Check zsh
-          stat:
-            path: '{{ home_path }}/.zshrc'
-          register: zsh_exist
-
         - name: Create local dirs
           include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
 
@@ -126,6 +121,9 @@
     # Virtualization
     - name: Install and config virtualization
       block:
+        - name: Check zsh existence
+          include_tasks: '{{ ansible_path }}/_check_zsh.yml'
+
         - name: Install virt pkgs to Fedora
           dnf:
             name:
