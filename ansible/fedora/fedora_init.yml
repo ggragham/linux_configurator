@@ -94,7 +94,7 @@
             install_weak_deps: false
         - name: Make nested BTRFS volumes
           script:
-            cmd: '{{ script_path }}/_makeBtrfsSubvols.sh {{ item }}'
+            cmd: '{{ script_path }}/_make_btrfs_subvols.sh.sh {{ item }}'
           environment:
             BACKUP_PATH: '{{ backup_path }}'
           become_user: '{{ user }}'
