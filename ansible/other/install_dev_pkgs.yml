@@ -194,3 +194,38 @@
           become_user: '{{ user }}'
 
       tags: virtualization
+
+     # Kubernetes
+    - name: Install kubernetes pkgs
+      block:
+        - name: Install minikube
+          get_url:
+            url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+            dest: '{{ local_bin_path }}/minikube'
+            mode: 0700
+          become_user: '{{ user }}'
+
+        - name: Install kubectl
+          block:
+            - name: Get kubectl version
+              set_fact:
+                KUBECTL_VERSION: "{{ lookup('url', 'https://dl.k8s.io/release/stable.txt') }}"
+            - name: Download kubectl
+              get_url:
+                url: https://dl.k8s.io/release/{{ KUBECTL_VERSION }}/bin/linux/amd64/kubectl
+                dest: '{{ local_bin_path }}/kubectl'
+                mode: 0700
+          become_user: '{{ user }}'
+
+        - name: Apply kubernetes zsh config
+          file:
+            src: '{{ omz_path }}/k8s_zsh'
+            dest: '{{ local_config_path }}/omz/k8s_zsh'
+            state: link
+            force: true
+            owner: '{{ user }}'
+            mode: 0700
+          when: zsh_exist.stat.exists
+          become_user: '{{ user }}'
+
+      tags: kubernetes
