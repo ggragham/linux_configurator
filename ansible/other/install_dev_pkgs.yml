@@ -1,0 +1,67 @@
+---
+- name: Install dev pkgs
+  hosts: localhost
+  become: true
+  vars_files: [../vars.yml]
+
+    # VSCodium
+    - name: Install and config VSCodium
+      block:
+        - name: Install VSCode to Fedora
+          block:
+            - name: Add VSCodium repo to Fedora
+              yum_repository:
+                name: vscodium
+                description: vscodium repository
+                baseurl: https://download.vscodium.com/rpms/
+                enabled: true
+                gpgkey: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg
+                gpgcheck: true
+                metadata_expire: 3600
+            - name: Install VSCodium to Fedora
+              dnf:
+                name: codium
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+          when: ansible_distribution=="Fedora"
+
+        - name: Install VSCode to Debian
+          block:
+            - name: Add VSCodium repo to Debian
+              block:
+                - name: Add apt GPG key
+                  get_url:
+                    url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+                    dest: /etc/apt/trusted.gpg.d/vscodium-archive-keyring.asc
+                - name: Add apt repository
+                  apt_repository:
+                    repo: deb [ signed-by=/etc/apt/trusted.gpg.d/vscodium-archive-keyring.asc ] https://download.vscodium.com/debs
+                      vscodium main
+                    state: present
+            - name: Install VSCodium to Debian
+              apt:
+                name: codium
+                state: latest
+                update_cache: true
+          when: ansible_distribution=="Debian"
+
+        - name: Install VSCodium extensoins
+          command:
+            cmd: codium --install-extension {{ item }}
+          with_items:
+            - dcasella.monokai-plusplus
+            - foxundermoon.shell-format
+            - Gruntfuggly.todo-tree
+            - lonefy.vscode-JS-CSS-HTML-formatter
+            - mads-hartmann.bash-ide-vscode
+            - MattiasBaake.vscode-snippets-for-ansible
+            - PKief.material-icon-theme
+            - redhat.vscode-yaml
+            - timonwong.shellcheck
+            - vscodevim.vim
+            - wholroyd.jinja
+          become_user: '{{ user }}'
+
+      tags: vscodium
+
