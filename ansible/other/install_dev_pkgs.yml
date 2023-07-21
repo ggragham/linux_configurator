@@ -36,6 +36,19 @@
             update_cache: true
           when: ansible_distribution=="Debian"
 
+        - name: Install terraform-switch
+          block:
+            - name: Set pkg vars
+              set_fact:
+                github_username: warrensbox
+                github_reponame: terraform-switcher
+                artifact_name: terraform-switcher
+                arch_type: linux_amd64
+                extensoin: tar.gz
+                pkg_name: tfswitch
+            - name: Install {{ pkg_name }}
+              include_tasks: '{{ ansible_path }}/_install_pkg_from_github.yml'
+
         - name: Make devops omz config symlink
           file:
             src: '{{ omz_path }}/devops_zsh'
