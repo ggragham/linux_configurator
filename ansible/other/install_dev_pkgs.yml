@@ -11,9 +11,6 @@
         - name: Create local dirs
           include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
 
-        - name: Check zsh existence
-          include_tasks: '{{ ansible_path }}/_check_zsh.yml'
-
         - name: Install pkgs to Fedora
           dnf:
             name: awscli
@@ -42,16 +39,13 @@
             - name: Install {{ pkg_name }}
               include_tasks: '{{ ansible_path }}/_install_pkg_from_github.yml'
 
-        - name: Make devops omz config symlink
-          file:
-            src: '{{ omz_path }}/devops_zsh'
-            dest: '{{ local_config_path }}/omz/devops_zsh'
-            state: link
-            force: true
-            owner: '{{ user }}'
-            mode: 0700
-          when: zsh_exist.stat.exists
-          become_user: '{{ user }}'
+        - name: Apply DevOps zsh config
+          block:
+            - name: Set config name
+              set_fact:
+                omz_config_name: devops
+            - name: Apply {{ omz_config_name }}_zsh config
+              include_tasks: '{{ ansible_path }}/_apply_zsh_config.yml'
 
       tags: devops
 
@@ -119,9 +113,6 @@
     # Virtualization
     - name: Install and config virtualization
       block:
-        - name: Check zsh existence
-          include_tasks: '{{ ansible_path }}/_check_zsh.yml'
-
         - name: Install virt pkgs to Fedora
           dnf:
             name:
@@ -182,16 +173,13 @@
             append: true
           when: ansible_distribution=="Debian"
 
-        - name: Apply virt zsh config
-          file:
-            src: '{{ omz_path }}/virt_zsh'
-            dest: '{{ local_config_path }}/omz/virt_zsh'
-            state: link
-            force: true
-            owner: '{{ user }}'
-            mode: 0700
-          when: zsh_exist.stat.exists
-          become_user: '{{ user }}'
+        - name: Apply virtualization zsh config
+          block:
+            - name: Set config name
+              set_fact:
+                omz_config_name: virt
+            - name: Apply {{ omz_config_name }}_zsh config
+              include_tasks: '{{ ansible_path }}/_apply_zsh_config.yml'
 
       tags: virtualization
 
@@ -266,6 +254,14 @@
             state: started
             enabled: true
 
+        - name: Apply Docker zsh config
+          block:
+            - name: Set config name
+              set_fact:
+                omz_config_name: docker
+            - name: Apply {{ omz_config_name }}_zsh config
+              include_tasks: '{{ ansible_path }}/_apply_zsh_config.yml'
+
       tags: docker
 
     # Podman
@@ -337,14 +333,11 @@
               include_tasks: '{{ ansible_path }}/_install_pkg_from_github.yml'
 
         - name: Apply kubernetes zsh config
-          file:
-            src: '{{ omz_path }}/k8s_zsh'
-            dest: '{{ local_config_path }}/omz/k8s_zsh'
-            state: link
-            force: true
-            owner: '{{ user }}'
-            mode: 0700
-          when: zsh_exist.stat.exists
-          become_user: '{{ user }}'
+          block:
+            - name: Set config name
+              set_fact:
+                omz_config_name: k8s
+            - name: Apply {{ omz_config_name }}_zsh config
+              include_tasks: '{{ ansible_path }}/_apply_zsh_config.yml'
 
       tags: kubernetes
