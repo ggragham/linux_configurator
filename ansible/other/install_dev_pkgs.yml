@@ -268,6 +268,26 @@
 
       tags: docker
 
+    # Podman
+    - name: Install Podman
+      block:
+        - name: Install Podman to Fedora
+          dnf:
+            name: podman
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+          when: ansible_distribution=="Fedora"
+
+        - name: Install Podman to Debian
+          apt:
+            name: podman
+            state: latest
+            update_cache: true
+          when: ansible_distribution == "Debian"
+
+      tags: podman
+
      # Kubernetes
     - name: Install kubernetes pkgs
       block:
