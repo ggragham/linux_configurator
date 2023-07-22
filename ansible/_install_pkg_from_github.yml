@@ -12,7 +12,7 @@
     - name: Find the URL for the {{ github_reponame }}_{{ arch_type }}.{{ extensoin }} release
       set_fact:
         release_url: '{{ item.browser_download_url }}'
-      when: item.name.startswith('{{ artifact_name }}') and item.name.endswith('_{{ arch_type }}.{{ extensoin }}')
+      when: item.name.startswith(artifact_name) and item.name.endswith('_' + arch_type + '.' + extensoin)
       with_items: '{{ json_response.json.assets }}'
 
     - name: Make tmp directory
