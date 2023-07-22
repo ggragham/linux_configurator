@@ -37,7 +37,7 @@
                 github_reponame: terraform-switcher
                 artifact_name: terraform-switcher
                 arch_type: linux_amd64
-                extensoin: tar.gz
+                extension: tar.gz
                 pkg_name: tfswitch
             - name: Install {{ pkg_name }}
               include_tasks: '{{ ansible_path }}/_install_pkg_from_github.yml'
@@ -97,7 +97,7 @@
                 update_cache: true
           when: ansible_distribution=="Debian"
 
-        - name: Install VSCodium extensoins
+        - name: Install VSCodium extensions
           command:
             cmd: codium --install-extension {{ item }}
           with_items:
@@ -298,7 +298,7 @@
                 github_reponame: kubectx
                 artifact_name: kubens
                 arch_type: linux_x86_64
-                extensoin: tar.gz
+                extension: tar.gz
                 pkg_name: kubens
             - name: Install {{ pkg_name }}
               include_tasks: '{{ ansible_path }}/_install_pkg_from_github.yml'
@@ -311,7 +311,7 @@
                 github_reponame: kubectx
                 artifact_name: kubectx
                 arch_type: linux_x86_64
-                extensoin: tar.gz
+                extension: tar.gz
                 pkg_name: kubectx
             - name: Install {{ pkg_name }}
               include_tasks: '{{ ansible_path }}/_install_pkg_from_github.yml'

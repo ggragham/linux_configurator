@@ -9,10 +9,10 @@
           Accept: application/vnd.github.v3+json
       register: json_response
 
-    - name: Find the URL for the {{ github_reponame }}_{{ arch_type }}.{{ extensoin }} release
+    - name: Find the URL for the {{ github_reponame }}_{{ arch_type }}.{{ extension }} release
       set_fact:
         release_url: '{{ item.browser_download_url }}'
-      when: item.name.startswith(artifact_name) and item.name.endswith('_' + arch_type + '.' + extensoin)
+      when: item.name.startswith(artifact_name) and item.name.endswith('_' + arch_type + '.' + extension)
       with_items: '{{ json_response.json.assets }}'
 
     - name: Make tmp directory
