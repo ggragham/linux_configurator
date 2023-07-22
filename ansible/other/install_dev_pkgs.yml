@@ -217,6 +217,32 @@
                 mode: 0700
           become_user: '{{ user }}'
 
+        - name: Install kubens
+          block:
+            - name: Set pkg vars
+              set_fact:
+                github_username: ahmetb
+                github_reponame: kubectx
+                artifact_name: kubens
+                arch_type: linux_x86_64
+                extensoin: tar.gz
+                pkg_name: kubens
+            - name: Install {{ pkg_name }}
+              include_tasks: '{{ ansible_path }}/_install_pkg_from_github.yml'
+
+        - name: Install kubectx
+          block:
+            - name: Set pkg vars
+              set_fact:
+                github_username: ahmetb
+                github_reponame: kubectx
+                artifact_name: kubectx
+                arch_type: linux_x86_64
+                extensoin: tar.gz
+                pkg_name: kubectx
+            - name: Install {{ pkg_name }}
+              include_tasks: '{{ ansible_path }}/_install_pkg_from_github.yml'
+
         - name: Apply kubernetes zsh config
           file:
             src: '{{ omz_path }}/k8s_zsh'
