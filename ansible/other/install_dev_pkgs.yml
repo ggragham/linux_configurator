@@ -341,3 +341,70 @@
               include_tasks: '{{ ansible_path }}/_apply_zsh_config.yml'
 
       tags: kubernetes
+
+    # PyEnv
+    - name: Install PyEnv
+      block:
+        - name: Install pyenv build dependencies
+          block:
+            - name: Install pyenv build deps to Fedora
+              dnf:
+                name:
+                  - make
+                  - gcc
+                  - patch
+                  - zlib-devel
+                  - bzip2
+                  - bzip2-devel
+                  - readline-devel
+                  - sqlite
+                  - sqlite-devel
+                  - openssl-devel
+                  - tk-devel
+                  - libffi-devel
+                  - xz-devel
+                  - libuuid-devel
+                  - gdbm-devel
+                  - libnsl2-devel
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+              when: ansible_distribution=="Fedora"
+            - name: Install pyenv build deps to Debian
+              apt:
+                name:
+                  - build-essential
+                  - libssl-dev
+                  - zlib1g-dev
+                  - libbz2-dev
+                  - libreadline-dev
+                  - libsqlite3-dev
+                  - curl
+                  - libncursesw5-dev
+                  - xz-utils
+                  - tk-dev
+                  - libxml2-dev
+                  - libxmlsec1-dev
+                  - libffi-dev
+                  - liblzma-dev
+                state: latest
+                update_cache: true
+              when: ansible_distribution=="Debian"
+
+        - name: Run pyenv install script
+          shell:
+            cmd: curl -o- htps://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
+            creates: '{{ local_opt_path }}/pyenv/bin/pyenv'
+          environment:
+            PYENV_ROOT: '{{ local_opt_path }}/pyenv'
+          become_user: '{{ user }}'
+
+        - name: Apply PyEnv zsh config
+          block:
+            - name: Set config name
+              set_fact:
+                omz_config_name: pyenv
+            - name: Apply {{ omz_config_name }}_zsh config
+              include_tasks: '{{ ansible_path }}/_apply_zsh_config.yml'
+
+      tags: pyenv
