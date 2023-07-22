@@ -408,3 +408,31 @@
               include_tasks: '{{ ansible_path }}/_apply_zsh_config.yml'
 
       tags: pyenv
+
+    # NVM
+    - name: Install nvm
+      block:
+        - name: Create nvm dir
+          file:
+            path: '{{ local_opt_path }}/nvm'
+            state: directory
+            owner: '{{ user }}'
+            mode: 0700
+
+        - name: Run nvm install script
+          shell:
+            cmd: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+            creates: '{{ local_opt_path }}/nvm/nvm.sh'
+          environment:
+            NVM_DIR: '{{ local_opt_path }}/nvm'
+          become_user: '{{ user }}'
+
+        - name: Apply NVM zsh config
+          block:
+            - name: Set config name
+              set_fact:
+                omz_config_name: nvm
+            - name: Apply {{ omz_config_name }}_zsh config
+              include_tasks: '{{ ansible_path }}/_apply_zsh_config.yml'
+
+      tags: nvm
