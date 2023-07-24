@@ -91,5 +91,39 @@
             mode: 0700
           with_items: [weather, getip, gen_secret]
 
+        - name: Debian User's Config
+          block:
+            - name: Make autostart dir
+              file:
+                path: '{{ home_path }}/.config/autostart'
+                state: directory
+                owner: '{{ user }}'
+                mode: 0755
+            - name: Config RedShift
+              block:
+                - name: Apply RedShift config
+                  copy:
+                    src: '{{ config_path }}/redshift.conf'
+                    dest: '{{ local_config_path }}/redshift.conf'
+                    mode: 0644
+                - name: Autostart RedShift
+                  copy:
+                    src: '{{ config_path }}/autostart/redshift-gtk.desktop'
+                    dest: '{{ local_config_path }}/autostart/redshift-gtk.desktop'
+                    mode: 0644
+            - name: Config ibus
+              block:
+                - name: Load ibus dconf
+                  shell:
+                    cmd: dconf load / <"{{ dconf_path }}/mate_ibus.dconf"
+                  environment:
+                    DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
+                - name: Autostart ibus
+                  copy:
+                    src: '{{ config_path }}/autostart/ibus-daemon.desktop'
+                    dest: '{{ home_path }}/.config/autostart/ibus-daemon.desktop'
+                    mode: 0644
+          when: ansible_distribution=="Debian"
+
       become_user: '{{ user }}'
       tags: user
