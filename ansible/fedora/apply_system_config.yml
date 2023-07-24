@@ -1,8 +1,0 @@
----
-- name: Apply system config
-  hosts: localhost
-  become: true
-  vars_files: [../vars.yml]
-  tasks:
-    - name: Config NetworkManager
-      include_tasks: '{{ ansible_path }}/_apply_nm_config.yml'
