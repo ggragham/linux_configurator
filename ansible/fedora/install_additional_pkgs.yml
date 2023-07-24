@@ -15,7 +15,7 @@
               - google-noto-emoji-fonts
               - webp-pixbuf-loader
               - hplip
-              - ibus-kkc
+              - ibus-anthy
               - jetbrains-mono-fonts
               - liberation-fonts
               - neofetch
