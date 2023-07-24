@@ -1,0 +1,242 @@
+---
+- name: Install extra packages
+  hosts: localhost
+  become: true
+  vars_files: [../vars.yml]
+
+  tasks:
+    # Extra Pkgs
+    - name: Install extra pkgs
+      block:
+        - name: Install extra pkgs to Fedora
+          block:
+            - name: Install Fedora pkgs
+              dnf:
+                name:
+                  - bat
+                  - bleachbit
+                  - cups
+                  - google-noto-emoji-color-fonts
+                  - google-noto-emoji-fonts
+                  - webp-pixbuf-loader
+                  - hplip
+                  - ibus-anthy
+                  - jetbrains-mono-fonts
+                  - liberation-fonts
+                  - neofetch
+                  - net-tools
+                  - nmap
+                  - p7zip
+                  - perl-Image-ExifTool
+                  - s-tui
+                  - sane-backends-drivers-scanners
+                  - simple-scan
+                  - tree
+                  - yt-dlp
+                  - zip
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+          when: ansible_distribution=="Fedora"
+
+        - name: Install extra pkgs to Debian
+          block:
+            - name: Install Debian pkgs [1/2]
+              apt:
+                name:
+                  - bat
+                  - bleachbit
+                  - p7zip
+                  - rofi
+                  - systemd-timesyncd
+                  - unrar
+                  - vainfo
+                state: latest
+                update_cache: true
+            - name: Install Debian pkgs [2/2]
+              apt:
+                name:
+                  - ibus
+                  - ibus-gtk
+                  - ibus-gtk3
+                  - ibus-kkc
+                  - libimage-exiftool-perl
+                  - neofetch
+                  - redshift-gtk
+                state: latest
+                update_cache: true
+                install_recommends: false
+            - name: Create bat symlink
+              file:
+                src: /usr/bin/batcat
+                dest: /usr/bin/bat
+                state: link
+          when: ansible_distribution=="Debian"
+
+      tags: extra
+
+    # Neovim
+    - name: Remove other editors and install neovim
+      block:
+        - name: Remove other editors and install neovim to Fedora
+          block:
+            - name: Remove nano and vi(m) from Fedora
+              dnf:
+                name: [nano, vim*]
+                state: absent
+            - name: Install NeoVim to Fedora
+              dnf:
+                name: neovim
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+          when: ansible_distribution=="Fedora"
+
+        - name: Remove other editors and install neovim to Debian
+          block:
+            - name: Remove nano and vi(m) from Debian
+              apt:
+                name: [nano, vim*]
+                state: absent
+                autoremove: true
+                purge: true
+            - name: Install neovim to Debian
+              apt:
+                name: neovim
+                state: latest
+                update_cache: true
+                install_recommends: false
+          when: ansible_distribution=="Debian"
+
+        - name: Config neovim symlinks
+          shell:
+            cmd: |
+              cd "{{ system_bin_path }}" || exit "$?"
+              for link in edit vedit vi vim; do
+                  ln -s nvim "$link"
+              done
+              echo -e '#!/bin/sh\nexec nvim -e "$@"' >ex
+              echo -e '#!/bin/sh\nexec nvim -R "$@"' >view
+              echo -e '#!/bin/sh\nexec nvim -d "$@"' >vimdiff
+              chmod 755 ex view vimdiff
+            creates: '{{ system_bin_path }}/vimdiff'
+          when: ansible_distribution=="Fedora"
+
+      tags: neovim
+
+    # Oh My Zsh
+    - name: Install zsh
+      block:
+        - name: Install zsh to Fedora
+          dnf:
+            name: zsh
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+          when: ansible_distribution=="Fedora"
+
+        - name: Install zsh to Debian
+          apt:
+            name: zsh
+            state: latest
+            update_cache: true
+          when: ansible_distribution=="Debian"
+
+        - name: Set zsh
+          user:
+            name: '{{ user }}'
+            shell: /bin/zsh
+
+        - name: Install and config Oh My ZSH
+          block:
+            - name: Run omz install script
+              shell:
+                cmd: >
+                  curl -o- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash
+                creates: '{{ local_opt_path }}/oh-my-zsh/oh-my-zsh.sh'
+              environment:
+                ZSH: '{{ local_opt_path }}/oh-my-zsh'
+                CHSH: 'no'
+                RUNZSH: 'no'
+            - name: Install OMZ plugins
+              git:
+                repo: https://github.com/zsh-users/{{ item }}.git
+                dest: '{{ local_opt_path }}/oh-my-zsh/custom/plugins/{{ item }}'
+                version: master
+                update: true
+              with_items: [zsh-syntax-highlighting, zsh-autosuggestions]
+            - name: Config OMZ
+              block:
+                - name: Get distro_name name
+                  set_fact:
+                    distro_name: '{{ ansible_distribution | lower }}'
+                - name: Create omz config directory
+                  file:
+                    path: '{{ local_config_path }}/omz'
+                    state: directory
+                    owner: '{{ user }}'
+                    mode: 0700
+                - name: Make .zshrc symlink
+                  file:
+                    src: '{{ omz_path }}/.zshrc'
+                    dest: '{{ home_path }}/.zshrc'
+                    state: link
+                    force: true
+                    owner: '{{ user }}'
+                    mode: 0700
+                - name: Make config symlinks
+                  file:
+                    src: '{{ omz_path }}/{{ item }}'
+                    dest: '{{ local_config_path }}/omz/{{ item }}'
+                    state: link
+                    force: true
+                    owner: '{{ user }}'
+                    mode: 0700
+                  with_items: [alias_zsh, '{{ distro_name }}_zsh']
+          become_user: '{{ user }}'
+
+      tags: omz
+
+    # iNet wireless daemon
+    - name: Install iNet wireless daemon
+      block:
+        - name: Install iwd to Fedora
+          dnf:
+            name: iwd
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+          when: ansible_distribution=="Fedora"
+
+        - name: Install iwd to Debian
+          apt:
+            name: iwd
+            state: latest
+            update_cache: true
+          when: ansible_distribution=="Debian"
+
+        - name: Config iwd
+          block:
+            - name: Make iwd config dir
+              file:
+                path: /etc/iwd
+                state: directory
+                mode: 0755
+            - name: Apply iwd config (1/2)
+              copy:
+                src: '{{ system_conf_path }}/iwd/main.conf'
+                dest: /etc/iwd/main.conf
+                mode: 0644
+            - name: Apply iwd config (2/2)
+              copy:
+                src: '{{ system_conf_path }}/iwd/wifi_backend.conf'
+                dest: /etc/NetworkManager/conf.d/wifi_backend.conf
+                mode: 0644
+
+        - name: Restart NetworkManager
+          service:
+            name: NetworkManager
+            state: restarted
+            enabled: true
+
+      tags: iwd
