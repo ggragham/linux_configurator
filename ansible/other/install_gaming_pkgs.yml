@@ -25,3 +25,12 @@
                 com.usebottles.bottles
       become_user: '{{ user }}'
       tags: bottles
+
+    # Lutris
+    - name: Install Lutris
+      flatpak:
+        name: net.lutris.Lutris
+        state: present
+      become_user: '{{ user }}'
+      tags: lutris
+
