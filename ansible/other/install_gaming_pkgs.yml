@@ -34,3 +34,11 @@
       become_user: '{{ user }}'
       tags: lutris
 
+    # Steam
+    - name: Install Steam
+      flatpak:
+        name: '{{ item }}'
+        state: present
+      with_items: [com.valvesoftware.Steam, com.github.Matoking.protontricks]
+      become_user: '{{ user }}'
+      tags: steam
