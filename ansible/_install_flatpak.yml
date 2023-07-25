@@ -1,19 +1,19 @@
 ---
-- name: Install flatpak
-  block:
-    - name: Install flatpak to Fedora
-      dnf:
-        name: flatpak
-        state: latest
-        update_cache: true
-        install_weak_deps: false
-      when: ansible_distribution=="Fedora"
-    - name: Install flatpak to Debian
-      apt:
-        name: flatpak
-        state: latest
-        update_cache: true
-      when: ansible_distribution=="Debian"
+- name: Install flatpak to Fedora
+  dnf:
+    name: flatpak
+    state: latest
+    update_cache: true
+    install_weak_deps: false
+  when: ansible_distribution=="Fedora"
+
+- name: Install flatpak to Debian
+  apt:
+    name: flatpak
+    state: latest
+    update_cache: true
+  when: ansible_distribution=="Debian"
+
 - name: Configure flatpak
   shell:
     cmd: |-
