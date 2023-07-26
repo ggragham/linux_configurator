@@ -2,7 +2,7 @@
 - name: Init Debian configuration
   hosts: localhost
   become: true
-  vars_files: [../vars.yml]
+  vars_files: [./vars.yml]
 
   tasks:
     - block:

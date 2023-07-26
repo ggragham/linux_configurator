@@ -25,7 +25,6 @@ CURRENT_SCRIPT_PATH="$(readlink -f "$0")"
 DEFAULT_SCRIPT_PATH="$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
 REPO_ROOT_PATH="$(git rev-parse --show-toplevel 2>/dev/null)"
 ANSIBLE_PLAYBOOK_PATH="$REPO_ROOT_PATH/ansible"
-ANSIBLE_OTHER_PATH="$ANSIBLE_PLAYBOOK_PATH/other"
 
 # Text formating
 BOLD='\033[1m'
@@ -170,7 +169,7 @@ menuItem() {
 
 installOtherPkgs() {
 	otherAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_OTHER_PATH/install_extra_pkgs.yml" --tags "$@"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_extra_pkgs.yml" --tags "$@"
 	}
 
 	local select="*"
@@ -218,7 +217,7 @@ installOtherPkgs() {
 
 installDevPkgs() {
 	devAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_OTHER_PATH/install_dev_pkgs.yml" --tags "$@"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_dev_pkgs.yml" --tags "$@"
 	}
 
 	local select="*"
@@ -290,7 +289,7 @@ installDevPkgs() {
 
 installFlatpakPkgs() {
 	flatpakAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_OTHER_PATH/install_flatpak_pkgs.yml" --tags "prepare,$*"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_flatpak_pkgs.yml" --tags "prepare,$*"
 	}
 
 	local select="*"
@@ -368,7 +367,7 @@ installFlatpakPkgs() {
 
 installGamingPkgs() {
 	gamingAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_OTHER_PATH/install_gaming_pkgs.yml" --tags "flatpak,$*"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_gaming_pkgs.yml" --tags "flatpak,$*"
 	}
 
 	local select="*"
@@ -410,7 +409,7 @@ installGamingPkgs() {
 
 applyConfig() {
 	configAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_OTHER_PATH/apply_config.yml" --tags "$@"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/apply_config.yml" --tags "$@"
 	}
 
 	local select="*"
@@ -471,7 +470,7 @@ installAddPkgs() {
 			select="*"
 			;;
 		4)
-			ansible-playbook "$ANSIBLE_OTHER_PATH/install_themes.yml"
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_themes.yml"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -516,7 +515,7 @@ main() {
 
 		case $select in
 		1)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/${CURRENT_DISTRO}_init.yml"
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/init_${CURRENT_DISTRO}.yml"
 			echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
 			pressAnyKeyToContinue
 			select="*"

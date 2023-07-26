@@ -2,7 +2,7 @@
 - name: Install Fatpak packages
   hosts: localhost
   become: true
-  vars_files: [../vars.yml]
+  vars_files: [./vars.yml]
 
   tasks:
     # Prepare
