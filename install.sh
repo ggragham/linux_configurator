@@ -30,6 +30,7 @@ ANSIBLE_OTHER_PATH="$ANSIBLE_PLAYBOOK_PATH/other"
 # Text formating
 BOLD='\033[1m'
 BLINK='\033[5m'
+LONG_TAB='\033[64G'
 RED='\033[0;31m'
 LIGHTBLUE='\033[1;34m'
 GREEN='\033[0;32m'
@@ -123,7 +124,7 @@ cloneRepo() {
 	}
 
 	if [[ -d "./.git" ]]; then
-		return "$?"
+		return 0
 	elif [[ "$DEFAULT_SCRIPT_PATH" != "$CURRENT_SCRIPT_PATH" ]]; then
 		if [[ ! -d "$DEST_PATH/$REPO_NAME" ]]; then
 			cloneLinuxConfigRepo
@@ -148,12 +149,13 @@ asciiLogo() {
 EOF
 }
 
-printLogo() {
+printHeader() {
+	clear
 	echo -e "${GREEN}${BOLD}"
 	asciiLogo
 	echo -e "${NORMAL}"
 	echo
-	echo -e "\033[64G By ${BOLD}ggragham${NORMAL}"
+	echo -e "${LONG_TAB} By ${BOLD}ggragham${NORMAL}"
 	echo -e "\tCurrent distro is ${DISTRO_NAME_COLOR}${BOLD}${CURRENT_DISTRO^}${NORMAL}"
 	echo
 	echo -e "${GREEN}Choose an option:${NORMAL}"
@@ -169,8 +171,7 @@ menuItem() {
 installAddPkgs() {
 	local select="*"
 	while :; do
-		clear
-		printLogo
+		printHeader
 		menuItem "1" "Install Additional pkgs"
 		menuItem "2" "Install Dev pkgs"
 		menuItem "3" "Install DevOps pkgs"
@@ -245,8 +246,7 @@ main() {
 
 	local select="*"
 	while :; do
-		clear
-		printLogo
+		printHeader
 		menuItem "1" "Initial configuration"
 		menuItem "2" "Apply system config"
 		menuItem "3" "Install additional packages"
