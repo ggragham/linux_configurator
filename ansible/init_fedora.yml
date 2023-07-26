@@ -99,7 +99,7 @@
 
         - name: Make nested BTRFS volumes
           script:
-            cmd: '{{ script_path }}/_make_btrfs_subvols.sh.sh {{ item }}'
+            cmd: '{{ script_path }}/_make_btrfs_subvols.sh {{ item }}'
           environment:
             BACKUP_PATH: '{{ backup_path }}'
           become_user: '{{ user }}'
