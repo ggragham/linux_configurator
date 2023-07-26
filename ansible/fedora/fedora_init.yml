@@ -3,6 +3,7 @@
   hosts: localhost
   become: true
   vars_files: [../vars.yml]
+
   tasks:
     - block:
         - name: Configure dnf
@@ -25,23 +26,25 @@
                 update_cache: true
                 install_weak_deps: false
                 disable_gpg_check: true
+
+        - name: Install core pkgs
+          dnf:
+            name:
+              - abattis-cantarell-fonts
+              - bash-completion
+              - gdm
+              - git
+              - gnome-shell
+              - gnome-terminal
+              - linux-firmware
+              - mesa-dri-drivers
+              - plymouth-theme-spinner
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+
         - name: Base configuration
           block:
-            - name: Install core pkgs
-              dnf:
-                name:
-                  - abattis-cantarell-fonts
-                  - bash-completion
-                  - gdm
-                  - git
-                  - gnome-shell
-                  - gnome-terminal
-                  - linux-firmware
-                  - mesa-dri-drivers
-                  - plymouth-theme-spinner
-                state: latest
-                update_cache: true
-                install_weak_deps: false
             - name: Enable gdm
               systemd:
                 name: gdm
@@ -57,6 +60,7 @@
                 cmd: |
                   grub2-editenv - set menu_auto_hide=1
                   grub2-mkconfig -o /boot/grub2/grub.cfg
+
         - name: Install base pkgs
           dnf:
             name:
@@ -92,6 +96,7 @@
             state: latest
             update_cache: true
             install_weak_deps: false
+
         - name: Make nested BTRFS volumes
           script:
             cmd: '{{ script_path }}/_make_btrfs_subvols.sh.sh {{ item }}'
@@ -99,4 +104,5 @@
             BACKUP_PATH: '{{ backup_path }}'
           become_user: '{{ user }}'
           with_items: ['{{ home_path }}/.var var']
+
       when: ansible_distribution=="Fedora"
