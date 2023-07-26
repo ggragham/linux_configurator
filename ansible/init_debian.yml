@@ -1,0 +1,138 @@
+---
+- name: Init Debian configuration
+  hosts: localhost
+  become: true
+  vars_files: [./vars.yml]
+
+  tasks:
+    - block:
+        - name: Generate locales
+          locale_gen:
+            name: '{{ item }}'
+            state: present
+          with_items: [en_US.UTF-8, ru_RU.UTF-8, ru_RU.CP1251]
+
+        - name: Configure APT
+          block:
+            - name: Add backports repository
+              apt_repository:
+                repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main
+                state: present
+                filename: backports
+            - name: Install software-properties-common
+              apt:
+                name: [software-properties-common]
+                state: latest
+                update_cache: true
+            - name: enable contrib and non-free repo
+              shell:
+                cmd: |
+                  apt-add-repository contrib
+                  apt-add-repository non-free
+
+        - name: Install core pkgs
+          apt:
+            name:
+              - bash-completion
+              - firmware-misc-nonfree
+              - intel-microcode
+              - xfonts-base
+              - xserver-xorg-input-libinput
+              - xserver-xorg-video-intel
+              - zram-tools
+            state: latest
+            update_cache: true
+            install_recommends: false
+
+        - name: Configure grub
+          block:
+            - name: Hide grub on startup
+              lineinfile:
+                dest: /etc/default/grub
+                regexp: ^GRUB_CMDLINE_LINUX_DEFAULT=
+                line: GRUB_CMDLINE_LINUX_DEFAULT="quiet splash raid=noautodetect"
+                state: present
+            - name: Set default cmdline entries
+              lineinfile:
+                dest: /etc/default/grub
+                regexp: ^GRUB_TIMEOUT=
+                line: GRUB_TIMEOUT=0
+                state: present
+            - name: Update grub config
+              command: update-grub
+
+        - name: Configure LightDM
+          block:
+            - name: Create LightDM config dir
+              file:
+                path: /etc/lightdm/lightdm.conf.d
+                state: directory
+                mode: 0755
+            - name: Apply LightDM config
+              copy:
+                src: '{{ system_conf_path }}/lightdm/lightdm.conf'
+                dest: /etc/lightdm/lightdm.conf.d/01-default.conf
+                mode: 0644
+            - name: Apply LightDM config
+              copy:
+                src: '{{ system_conf_path }}/lightdm/lightdm-gtk-greeter.conf'
+                dest: /etc/lightdm/lightdm-gtk-greeter.conf
+                mode: 0644
+
+        - name: Config xorg
+          block:
+            - name: Create xorg config dir
+              file:
+                path: /etc/X11/xorg.conf.d
+                state: directory
+                mode: 0755
+            - name: Apply xorg config
+              copy:
+                src: '{{ system_conf_path }}/xorg/{{ item }}.conf'
+                dest: /etc/X11/xorg.conf.d/{{ item }}.conf
+                mode: 0644
+              with_items: [20-intel, 30-touchpad]
+
+        - name: Config sysctl
+          blockinfile:
+            block: "{{ lookup('file', '{{ system_conf_path }}/sysctl.conf') }}"
+            path: /etc/sysctl.d/99-sysctl.conf
+
+        - name: Install base pkgs
+          apt:
+            name:
+              - atril
+              - blueman
+              - caja-open-terminal
+              - engrampa
+              - eom
+              - gnome-disk-utility
+              - htop
+              - lightdm
+              - lightdm-gtk-greeter-settings
+              - mate-applet-brisk-menu
+              - mate-applets
+              - mate-desktop-environment-core
+              - mate-media
+              - mate-notification-daemon
+              - mate-screensaver
+              - mate-sensors-applet
+              - mate-tweak
+              - mate-utils
+              - network-manager-gnome
+              - network-manager-openvpn-gnome
+              - pluma
+              - pulseaudio
+              - rng-tools
+              - tlp
+              - unzip
+            state: latest
+            update_cache: true
+
+        - name: Enable TLP
+          service:
+            name: tlp
+            state: started
+            enabled: true
+
+      when: ansible_distribution=="Debian"

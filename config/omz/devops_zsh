@@ -1,1 +1,1 @@
-plugins+=(docker kubectl minikube terraform aws)
+plugins+=(terraform aws)

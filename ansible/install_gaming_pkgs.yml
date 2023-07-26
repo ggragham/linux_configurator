@@ -1,0 +1,44 @@
+---
+- name: Install gaming packages
+  hosts: localhost
+  become: true
+  vars_files: [./vars.yml]
+
+  tasks:
+    # Flatpak
+    - name: Install flatpak
+      include_tasks: '{{ ansible_path }}/_install_flatpak.yml'
+      tags: flatpak
+
+    # Bottles
+    - name: Install Bottles
+      block:
+        - name: Install Bottles
+          flatpak:
+            name: com.usebottles.bottles
+            state: present
+        - name: Configure permissions for Bottles
+          shell:
+            cmd: >
+              flatpak override --user \
+                --filesystem=xdg-data/applications \
+                com.usebottles.bottles
+      become_user: '{{ user }}'
+      tags: bottles
+
+    # Lutris
+    - name: Install Lutris
+      flatpak:
+        name: net.lutris.Lutris
+        state: present
+      become_user: '{{ user }}'
+      tags: lutris
+
+    # Steam
+    - name: Install Steam
+      flatpak:
+        name: '{{ item }}'
+        state: present
+      with_items: [com.valvesoftware.Steam, com.github.Matoking.protontricks]
+      become_user: '{{ user }}'
+      tags: steam

@@ -2,10 +2,13 @@
     "editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace",
     "editor.fontSize": 14,
     "editor.fontLigatures": true,
+    "editor.insertSpaces": false,
+    "editor.renderWhitespace": "boundary",
     "terminal.integrated.fontFamily": "monospace",
     "terminal.integrated.fontSize": 12,
     "redhat.telemetry.enabled": false,
     "telemetry.enableTelemetry": false,
+    "telemetry.telemetryLevel": "off",
     "explorer.confirmDelete": false,
     "files.associations": {
         "*.yml": "yaml"

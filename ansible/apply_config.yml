@@ -1,0 +1,129 @@
+---
+- name: Apply system config
+  hosts: localhost
+  become: true
+  vars_files: [./vars.yml]
+
+  tasks:
+    # System Configs
+    - name: Apply system configs
+      block:
+        - name: Config network
+          block:
+            - name: Get wifi mac addres
+              shell:
+                cmd: |
+                  INTERFACE_NAME=$(ip link show | grep "wl" | awk '{print $2}' | tr -d ':')
+                  ip link show "$INTERFACE_NAME" 2>/dev/null | awk '/permaddr/ {print $6}'
+              register: getMacAddr
+            - set_fact:
+                MAC_ADDR: '{{ getMacAddr.stdout }}'
+                systemd_networkd_path: /etc/systemd/network
+                network_manager_path: /etc/NetworkManager
+            - name: Apply systemd-network config
+              template:
+                src: '{{ system_conf_path }}/systemd_networkd/{{ item }}.j2'
+                dest: '{{ systemd_networkd_path }}/{{ item }}.network'
+                mode: 0644
+              with_items: [00-wifi, 10-net]
+            - name: Make NetworkManager config dir
+              file:
+                path: '{{ network_manager_path }}/conf.d'
+                state: directory
+                recurse: true
+                mode: 0755
+            - name: Apply NetworkManager config
+              copy:
+                src: '{{ system_conf_path }}/nm.conf'
+                dest: '{{ network_manager_path }}/conf.d'
+                mode: 0644
+            - name: Restart NetworkManager
+              systemd:
+                name: NetworkManager
+                state: restarted
+                enabled: true
+
+        - name: Disable bluetooth autostart
+          lineinfile:
+            dest: /etc/bluetooth/main.conf
+            regexp: ^AutoEnable=
+            line: AutoEnable=false
+            state: present
+          when: ansible_distribution=="Debian"
+
+      tags: system
+
+    # User's Configs
+    - name: Apply user's configs
+      block:
+        - name: Backup and apply dotfiles
+          command:
+            cmd: bash {{ script_path }}/_load_dotfiles.sh
+            creates: '{{ local_config_path }}/alias_zsh'
+
+        - name: Backup and apply dconf
+          block:
+            - name: DE name
+              set_fact:
+                de_name: '{{ ansible_env.XDG_CURRENT_DESKTOP | lower }}'
+            - name: Dconf
+              block:
+                - name: Backup dconf
+                  shell:
+                    cmd: |
+                      currentTimestamp="$(date +'%d_%m_%Y_%H_%M_%S')"
+                      dconf dump / >"{{ backup_path }}/{{ de_name }}_${currentTimestamp}.dconf"
+                - name: Load dconf
+                  shell:
+                    cmd: dconf load / <"{{ dconf_path }}/{{ de_name }}.dconf"
+                  environment:
+                    DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
+              when: (de_name=='gnome') or (de_name=='mate')
+          when: ( ansible_env.XDG_CURRENT_DESKTOP is defined )
+
+        - name: Create local dirs
+          include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
+
+        - name: Download some scripts
+          get_url:
+            url: https://raw.githubusercontent.com/ggragham/just_bunch_of_scripts/master/bin/{{ item }}
+            dest: '{{ local_bin_path }}/'
+            mode: 0700
+          with_items: [weather, getip, gen_secret]
+
+        - name: Debian User's Config
+          block:
+            - name: Make autostart dir
+              file:
+                path: '{{ home_path }}/.config/autostart'
+                state: directory
+                owner: '{{ user }}'
+                mode: 0755
+            - name: Config RedShift
+              block:
+                - name: Apply RedShift config
+                  copy:
+                    src: '{{ config_path }}/redshift.conf'
+                    dest: '{{ local_config_path }}/redshift.conf'
+                    mode: 0644
+                - name: Autostart RedShift
+                  copy:
+                    src: '{{ config_path }}/autostart/redshift-gtk.desktop'
+                    dest: '{{ local_config_path }}/autostart/redshift-gtk.desktop'
+                    mode: 0644
+            - name: Config ibus
+              block:
+                - name: Load ibus dconf
+                  shell:
+                    cmd: dconf load / <"{{ dconf_path }}/mate_ibus.dconf"
+                  environment:
+                    DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
+                - name: Autostart ibus
+                  copy:
+                    src: '{{ config_path }}/autostart/ibus-daemon.desktop'
+                    dest: '{{ home_path }}/.config/autostart/ibus-daemon.desktop'
+                    mode: 0644
+          when: ansible_distribution=="Debian"
+
+      become_user: '{{ user }}'
+      tags: user

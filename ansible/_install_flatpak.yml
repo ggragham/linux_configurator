@@ -1,4 +1,24 @@
 ---
+- name: Set desired flatpak config vars
+  set_fact:
+    flatpak_repo_name: flathub
+    flatpak_locales: en;ru;ua;po;jp
+
+- name: Check flatpak existence
+  command: flatpak --version
+  ignore_errors: true
+  register: flatpak_existence
+
+- name: Check flathub repo existence
+  shell: flatpak remote-list | grep "flathub" | awk '{print $1}'
+  ignore_errors: true
+  register: flathub_existence
+
+- name: Check flatpak locales existence
+  command: flatpak --system config --get languages
+  ignore_errors: true
+  register: locale_existence
+
 - name: Install flatpak
   block:
     - name: Install flatpak to Fedora
@@ -14,9 +34,15 @@
         state: latest
         update_cache: true
       when: ansible_distribution=="Debian"
-- name: Configure flatpak
+  when: flatpak_existence.failed
+
+- name: Add flathub repo
   shell:
-    cmd: |-
+    cmd: |
       flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
       flatpak remote-modify --enable flathub
-      flatpak config --set languages "en;ru;ua;po;jp"
+  when: flatpak_repo_name not in flathub_existence.stdout
+
+- name: Add flatpak locales
+  shell: flatpak config --set languages "{{ flatpak_locales }}"
+  when: flatpak_locales not in locale_existence.stdout

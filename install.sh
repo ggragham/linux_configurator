@@ -25,11 +25,11 @@ CURRENT_SCRIPT_PATH="$(readlink -f "$0")"
 DEFAULT_SCRIPT_PATH="$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
 REPO_ROOT_PATH="$(git rev-parse --show-toplevel 2>/dev/null)"
 ANSIBLE_PLAYBOOK_PATH="$REPO_ROOT_PATH/ansible"
-ANSIBLE_OTHER_PATH="$ANSIBLE_PLAYBOOK_PATH/other"
 
 # Text formating
 BOLD='\033[1m'
 BLINK='\033[5m'
+LONG_TAB='\033[64G'
 RED='\033[0;31m'
 LIGHTBLUE='\033[1;34m'
 GREEN='\033[0;32m'
@@ -123,7 +123,7 @@ cloneRepo() {
 	}
 
 	if [[ -d "./.git" ]]; then
-		return "$?"
+		return 0
 	elif [[ "$DEFAULT_SCRIPT_PATH" != "$CURRENT_SCRIPT_PATH" ]]; then
 		if [[ ! -d "$DEST_PATH/$REPO_NAME" ]]; then
 			cloneLinuxConfigRepo
@@ -148,12 +148,13 @@ asciiLogo() {
 EOF
 }
 
-printLogo() {
+printHeader() {
+	clear
 	echo -e "${GREEN}${BOLD}"
 	asciiLogo
 	echo -e "${NORMAL}"
 	echo
-	echo -e "\033[64G By ${BOLD}ggragham${NORMAL}"
+	echo -e "${LONG_TAB} By ${BOLD}ggragham${NORMAL}"
 	echo -e "\tCurrent distro is ${DISTRO_NAME_COLOR}${BOLD}${CURRENT_DISTRO^}${NORMAL}"
 	echo
 	echo -e "${GREEN}Choose an option:${NORMAL}"
@@ -166,56 +167,315 @@ menuItem() {
 	echo -e "${GREEN}$number.${NORMAL} $text"
 }
 
-installAddPkgs() {
+installOtherPkgs() {
+	otherAnsiblePlaybook() {
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_extra_pkgs.yml" --tags "$@"
+	}
+
 	local select="*"
 	while :; do
-		clear
-		printLogo
-		menuItem "1" "Install Additional pkgs"
-		menuItem "2" "Install Dev pkgs"
-		menuItem "3" "Install DevOps pkgs"
-		menuItem "4" "Install IWD"
-		menuItem "5" "Install Flatpak pkgs"
-		menuItem "6" "Install Themes"
-		menuItem "7" "I wanna play games"
+		printHeader
+		menuItem "1" "Extra"
+		menuItem "2" "Neovim"
+		menuItem "3" "Oh My Zsh"
+		menuItem "4" "iNet wireless daemon"
 		echo
 		menuItem "0" "Back"
 		echo
 
 		case $select in
 		1)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/install_additional_pkgs.yml"
+			otherAnsiblePlaybook "extra"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/install_dev_pkgs.yml"
+			otherAnsiblePlaybook "neovim"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
-			ansible-playbook "$ANSIBLE_OTHER_PATH/install_devops_pkgs.yml"
+			otherAnsiblePlaybook "omz"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		4)
-			ansible-playbook "$ANSIBLE_OTHER_PATH/install_iwd.yml"
+			otherAnsiblePlaybook "iwd"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		0)
+			return 0
+			;;
+		*)
+			read -rp "> " select
+			continue
+			;;
+		esac
+	done
+}
+
+installDevPkgs() {
+	devAnsiblePlaybook() {
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_dev_pkgs.yml" --tags "$@"
+	}
+
+	local select="*"
+	while :; do
+		printHeader
+		menuItem "1" "VSCodium"
+		menuItem "2" "Virtualization"
+		menuItem "3" "DevOps Base"
+		menuItem "4" "Docker"
+		menuItem "5" "Podman"
+		menuItem "6" "Kubernetes"
+		menuItem "7" "PyEnv"
+		menuItem "8" "Node Version Manager"
+		echo
+		menuItem "0" "Back"
+		echo
+
+		case $select in
+		1)
+			devAnsiblePlaybook "vscodium"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		2)
+			devAnsiblePlaybook "virtualization"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		3)
+			devAnsiblePlaybook "devops"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		4)
+			devAnsiblePlaybook "docker"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		5)
-			ansible-playbook "$ANSIBLE_OTHER_PATH/install_flatpak_pkgs.yml"
+			devAnsiblePlaybook "podman"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		6)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/install_themes.yml"
+			devAnsiblePlaybook "kubernetes"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		7)
-			ansible-playbook "$ANSIBLE_OTHER_PATH/install_gaming_pkgs.yml"
+			devAnsiblePlaybook "pyenv"
 			pressAnyKeyToContinue
+			select="*"
+			;;
+		8)
+			devAnsiblePlaybook "nvm"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		0)
+			return 0
+			;;
+		*)
+			read -rp "> " select
+			continue
+			;;
+		esac
+	done
+}
+
+installFlatpakPkgs() {
+	flatpakAnsiblePlaybook() {
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_flatpak_pkgs.yml" --tags "prepare,$*"
+	}
+
+	local select="*"
+	while :; do
+		printHeader
+		menuItem "1" "Base pkgs"
+		menuItem "2" "Media pkgs"
+		menuItem "3" "Brave"
+		menuItem "4" "Librewolf"
+		menuItem "5" "Bitwarden"
+		menuItem "6" "Telegram"
+		menuItem "7" "Spotify"
+		menuItem "8" "FreeTube"
+		menuItem "9" "LibreOffice"
+		echo
+		menuItem "0" "Back"
+		echo
+
+		case $select in
+		1)
+			flatpakAnsiblePlaybook "base"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		2)
+			flatpakAnsiblePlaybook "media"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		3)
+			flatpakAnsiblePlaybook "brave"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		4)
+			flatpakAnsiblePlaybook "librewolf"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		5)
+			flatpakAnsiblePlaybook "bitwarden"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		6)
+			flatpakAnsiblePlaybook "telegram"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		7)
+			flatpakAnsiblePlaybook "spotify"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		8)
+			flatpakAnsiblePlaybook "freetube"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		9)
+			flatpakAnsiblePlaybook "libreoffice"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		0)
+			return 0
+			;;
+		*)
+			read -rp "> " select
+			continue
+			;;
+		esac
+	done
+}
+
+installGamingPkgs() {
+	gamingAnsiblePlaybook() {
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_gaming_pkgs.yml" --tags "flatpak,$*"
+	}
+
+	local select="*"
+	while :; do
+		printHeader
+		menuItem "1" "Bottles"
+		menuItem "2" "Lutris"
+		menuItem "3" "Steam"
+		echo
+		menuItem "0" "Back"
+		echo
+
+		case $select in
+		1)
+			gamingAnsiblePlaybook "bottles"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		2)
+			gamingAnsiblePlaybook "lutris"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		3)
+			gamingAnsiblePlaybook "steam"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		0)
+			return 0
+			;;
+		*)
+			read -rp "> " select
+			continue
+			;;
+		esac
+	done
+}
+
+applyConfig() {
+	configAnsiblePlaybook() {
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/apply_config.yml" --tags "$@"
+	}
+
+	local select="*"
+	while :; do
+		printHeader
+		menuItem "1" "Apply system config"
+		menuItem "2" "Apply local config"
+		echo
+		menuItem "0" "Back"
+		echo
+
+		case $select in
+		1)
+			configAnsiblePlaybook "system"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		2)
+			configAnsiblePlaybook "user"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		0)
+			return 0
+			;;
+		*)
+			read -rp "> " select
+			continue
+			;;
+		esac
+	done
+}
+
+installAddPkgs() {
+	local select="*"
+	while :; do
+		printHeader
+		menuItem "1" "Install Extra pkgs"
+		menuItem "2" "Install Dev pkgs"
+		menuItem "3" "Install Flatpak pkgs"
+		menuItem "4" "Install Themes"
+		menuItem "5" "I wanna play games"
+		echo
+		menuItem "0" "Back"
+		echo
+
+		case $select in
+		1)
+			installOtherPkgs
+			select="*"
+			;;
+		2)
+			installDevPkgs
+			select="*"
+			;;
+		3)
+			installFlatpakPkgs
+			select="*"
+			;;
+		4)
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_themes.yml"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		5)
+			installGamingPkgs
 			select="*"
 			;;
 		0)
@@ -245,35 +505,27 @@ main() {
 
 	local select="*"
 	while :; do
-		clear
-		printLogo
+		printHeader
 		menuItem "1" "Initial configuration"
-		menuItem "2" "Apply system config"
-		menuItem "3" "Install additional packages"
-		menuItem "4" "Apply local config"
+		menuItem "2" "Install extra packages"
+		menuItem "3" "Apply configs"
 		echo
 		menuItem "0" "Exit"
 		echo
 
 		case $select in
 		1)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/${CURRENT_DISTRO}_init.yml"
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/init_${CURRENT_DISTRO}.yml"
 			echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			runAsUser ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$CURRENT_DISTRO/apply_system_config.yml"
-			pressAnyKeyToContinue
-			select="*"
-			;;
-		3)
 			installAddPkgs
 			select="*"
 			;;
-		4)
-			runAsUser ansible-playbook "$ANSIBLE_OTHER_PATH/apply_local_config.yml"
-			pressAnyKeyToContinue
+		3)
+			applyConfig
 			select="*"
 			;;
 		0)

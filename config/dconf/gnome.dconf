@@ -121,7 +121,7 @@ name='RU layout'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2]
 binding='<Alt>F9'
-command="gsettings set org.gnome.desktop.input-sources sources \"[('ibus','kkc')]\""
+command="gsettings set org.gnome.desktop.input-sources sources \"[('ibus','anthy')]\""
 name='Jap Layout'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3]
