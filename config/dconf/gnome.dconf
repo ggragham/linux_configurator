@@ -126,8 +126,8 @@ name='Jap Layout'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3]
 binding='<Primary><Shift>Escape'
-command='gnome-system-monitor'
-name='Gnome System Monitor'
+command='flatpak run io.missioncenter.MissionCenter'
+name='Mission Center'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4]
 binding='<Super>Return'

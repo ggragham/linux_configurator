@@ -367,7 +367,7 @@ installFlatpakPkgs() {
 
 installGamingPkgs() {
 	gamingAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_gaming_pkgs.yml" --tags "flatpak,$*"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_gaming_pkgs.yml" --tags "flatpak,gamemode,$*"
 	}
 
 	local select="*"

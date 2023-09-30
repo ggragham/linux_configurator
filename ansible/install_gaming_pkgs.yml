@@ -10,6 +10,14 @@
       include_tasks: '{{ ansible_path }}/_install_flatpak.yml'
       tags: flatpak
 
+    - name: Install gamemode
+      dnf:
+        name: gamemode
+        state: latest
+        update_cache: true
+        install_weak_deps: false
+      tags: gamemode
+
     # Bottles
     - name: Install Bottles
       block:

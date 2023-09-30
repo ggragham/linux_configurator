@@ -44,6 +44,14 @@
               when: wsp_name=="wayland"
           when: de_name=="gnome"
 
+        - name: Mission Center
+          block:
+            - name: Install Mission Center
+              flatpak:
+                name: io.missioncenter.MissionCenter
+                state: present
+          when: de_name=="gnome"
+
       become_user: '{{ user }}'
       tags: base
 
@@ -101,6 +109,30 @@
                     org.gnome.Rhythmbox
               when: wsp_name=="x11"
           when: ansible_distribution=="Debian"
+
+        - name: Loupe
+          block:
+            - name: Install Loupe
+              flatpak:
+                name: org.gnome.Loupe
+                state: present
+            - name: Configure Amberol permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    org.gnome.Loupe
+              when: wsp_name=="wayland"
+            - name: Configure Amberol permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --nosocket=wayland \
+                    org.gnome.Loupe
+              when: wsp_name=="x11"
+          when: ansible_distribution=="Fedora"
 
         - name: Celluloid
           block:

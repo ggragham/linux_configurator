@@ -32,7 +32,6 @@
                   - sane-backends-drivers-scanners
                   - simple-scan
                   - tree
-                  - yt-dlp
                   - zip
                 state: latest
                 update_cache: true

@@ -67,9 +67,6 @@
               - NetworkManager-openvpn-gnome
               - NetworkManager-wifi
               - baobab
-              - eog
-              - evince
-              - evince-djvu
               - ffmpegthumbnailer
               - file-roller
               - gnome-bluetooth
@@ -78,9 +75,7 @@
               - gnome-clocks
               - gnome-disk-utility
               - gnome-firmware
-              - gnome-system-monitor
               - gnome-tweaks
-              - gnome-usage
               - gnome-weather
               - gvfs-mtp
               - htop
