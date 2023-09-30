@@ -116,7 +116,7 @@
               flatpak:
                 name: org.gnome.Loupe
                 state: present
-            - name: Configure Amberol permissions [Wayland]
+            - name: Configure Loupe permissions [Wayland]
               shell:
                 cmd: >
                   flatpak override --user \
@@ -125,7 +125,7 @@
                     --nosocket=fallback-x11 \
                     org.gnome.Loupe
               when: wsp_name=="wayland"
-            - name: Configure Amberol permissions [X11]
+            - name: Configure Loupe permissions [X11]
               shell:
                 cmd: >
                   flatpak override --user \
