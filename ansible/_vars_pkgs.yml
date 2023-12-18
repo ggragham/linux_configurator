@@ -35,3 +35,39 @@ fedora_base_pkgs:
   - sushi
   - unzip
   - xdg-desktop-portal-gnome
+
+debian_core_pkgs:
+  - bash-completion
+  - firmware-misc-nonfree
+  - intel-microcode
+  - xfonts-base
+  - xserver-xorg-input-libinput
+  - xserver-xorg-video-intel
+  - zram-tools
+
+debian_base_pkgs:
+  - atril
+  - blueman
+  - caja-open-terminal
+  - engrampa
+  - eom
+  - gnome-disk-utility
+  - htop
+  - lightdm
+  - lightdm-gtk-greeter-settings
+  - mate-applet-brisk-menu
+  - mate-applets
+  - mate-desktop-environment-core
+  - mate-media
+  - mate-notification-daemon
+  - mate-screensaver
+  - mate-sensors-applet
+  - mate-tweak
+  - mate-utils
+  - network-manager-gnome
+  - network-manager-openvpn-gnome
+  - pluma
+  - pulseaudio
+  - rng-tools
+  - tlp
+  - unzip

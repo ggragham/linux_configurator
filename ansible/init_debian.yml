@@ -4,6 +4,7 @@
   become: true
   vars_files:
     - _vars_base.yml
+    - _vars_pkgs.yml
 
   tasks:
     - block:
@@ -33,14 +34,7 @@
 
         - name: Install core pkgs
           apt:
-            name:
-              - bash-completion
-              - firmware-misc-nonfree
-              - intel-microcode
-              - xfonts-base
-              - xserver-xorg-input-libinput
-              - xserver-xorg-video-intel
-              - zram-tools
+            name: '{{ debian_core_pkgs }}'
             state: latest
             update_cache: true
             install_recommends: false
@@ -101,32 +95,7 @@
 
         - name: Install base pkgs
           apt:
-            name:
-              - atril
-              - blueman
-              - caja-open-terminal
-              - engrampa
-              - eom
-              - gnome-disk-utility
-              - htop
-              - lightdm
-              - lightdm-gtk-greeter-settings
-              - mate-applet-brisk-menu
-              - mate-applets
-              - mate-desktop-environment-core
-              - mate-media
-              - mate-notification-daemon
-              - mate-screensaver
-              - mate-sensors-applet
-              - mate-tweak
-              - mate-utils
-              - network-manager-gnome
-              - network-manager-openvpn-gnome
-              - pluma
-              - pulseaudio
-              - rng-tools
-              - tlp
-              - unzip
+            name: '{{ debian_base_pkgs }}'
             state: latest
             update_cache: true
 
