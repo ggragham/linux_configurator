@@ -4,13 +4,18 @@
   become: true
   vars_files: [./vars.yml]
 
-  tasks:
-    # Base DevOps
-    - name: Install base DevOps pkgs
+  pre_tasks:
+    - name: Preparatory steps
       block:
         - name: Create local dirs
           include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
 
+      tags: prepare
+
+  tasks:
+    # Base DevOps
+    - name: Install base DevOps pkgs
+      block:
         - name: Install pkgs to Fedora
           dnf:
             name: awscli
