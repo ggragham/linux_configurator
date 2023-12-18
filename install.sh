@@ -515,7 +515,7 @@ main() {
 
 		case $select in
 		1)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/init_${CURRENT_DISTRO}.yml"
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/init.yml"
 			echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
 			pressAnyKeyToContinue
 			select="*"
