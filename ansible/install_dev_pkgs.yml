@@ -2,7 +2,8 @@
 - name: Install dev pkgs
   hosts: localhost
   become: true
-  vars_files: [./vars.yml]
+  vars_files:
+    - _vars_base.yml
 
   pre_tasks:
     - name: Preparatory steps
