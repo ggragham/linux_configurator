@@ -4,6 +4,7 @@
   become: true
   vars_files:
     - _vars_base.yml
+    - _vars_pkgs.yml
 
   pre_tasks:
     - name: Preparatory steps
@@ -21,27 +22,7 @@
           block:
             - name: Install Fedora pkgs
               dnf:
-                name:
-                  - bat
-                  - bleachbit
-                  - cups
-                  - google-noto-emoji-color-fonts
-                  - google-noto-emoji-fonts
-                  - webp-pixbuf-loader
-                  - hplip
-                  - ibus-anthy
-                  - jetbrains-mono-fonts
-                  - liberation-fonts
-                  - neofetch
-                  - net-tools
-                  - nmap
-                  - p7zip
-                  - perl-Image-ExifTool
-                  - s-tui
-                  - sane-backends-drivers-scanners
-                  - simple-scan
-                  - tree
-                  - zip
+                name: '{{ fedora_extra_pkgs }}'
                 state: latest
                 update_cache: true
                 install_weak_deps: false
@@ -51,26 +32,12 @@
           block:
             - name: Install Debian pkgs [1/2]
               apt:
-                name:
-                  - bat
-                  - bleachbit
-                  - p7zip
-                  - rofi
-                  - systemd-timesyncd
-                  - unrar
-                  - vainfo
+                name: '{{ debian_extra_p1_pkgs }}'
                 state: latest
                 update_cache: true
             - name: Install Debian pkgs [2/2]
               apt:
-                name:
-                  - ibus
-                  - ibus-gtk
-                  - ibus-gtk3
-                  - ibus-kkc
-                  - libimage-exiftool-perl
-                  - neofetch
-                  - redshift-gtk
+                name: '{{ debian_extra_p2_pkgs }}'
                 state: latest
                 update_cache: true
                 install_recommends: false

@@ -36,6 +36,28 @@ fedora_base_pkgs:
   - unzip
   - xdg-desktop-portal-gnome
 
+fedora_extra_pkgs:
+  - bat
+  - bleachbit
+  - cups
+  - google-noto-emoji-color-fonts
+  - google-noto-emoji-fonts
+  - webp-pixbuf-loader
+  - hplip
+  - ibus-anthy
+  - jetbrains-mono-fonts
+  - liberation-fonts
+  - neofetch
+  - net-tools
+  - nmap
+  - p7zip
+  - perl-Image-ExifTool
+  - s-tui
+  - sane-backends-drivers-scanners
+  - simple-scan
+  - tree
+  - zip
+
 fedora_devops_pkgs:
   - awscli
 
@@ -98,6 +120,24 @@ debian_base_pkgs:
   - rng-tools
   - tlp
   - unzip
+
+debian_extra_p1_pkgs:
+  - bat
+  - bleachbit
+  - p7zip
+  - rofi
+  - systemd-timesyncd
+  - unrar
+  - vainfo
+
+debian_extra_p2_pkgs:
+  - ibus
+  - ibus-gtk
+  - ibus-gtk3
+  - ibus-kkc
+  - libimage-exiftool-perl
+  - neofetch
+  - redshift-gtk
 
 debian_devops_pkgs:
   - awscli
