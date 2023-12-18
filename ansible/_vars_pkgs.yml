@@ -36,6 +36,33 @@ fedora_base_pkgs:
   - unzip
   - xdg-desktop-portal-gnome
 
+fedora_devops_pkgs:
+  - awscli
+
+fedora_virt_pkgs:
+  - gnome-boxes
+  - vagrant
+  - vagrant-libvirt
+  - vagrant-sshfs
+
+fedora_pyenv_deps_pkgs:
+  - make
+  - gcc
+  - patch
+  - zlib-devel
+  - bzip2
+  - bzip2-devel
+  - readline-devel
+  - sqlite
+  - sqlite-devel
+  - openssl-devel
+  - tk-devel
+  - libffi-devel
+  - xz-devel
+  - libuuid-devel
+  - gdbm-devel
+  - libnsl2-devel
+
 debian_core_pkgs:
   - bash-completion
   - firmware-misc-nonfree
@@ -71,3 +98,49 @@ debian_base_pkgs:
   - rng-tools
   - tlp
   - unzip
+
+debian_devops_pkgs:
+  - awscli
+
+debina_virt_pkgs:
+  - gnome-boxes
+  - libvirt-daemon-system
+  - vagrant
+  - vagrant-libvirt
+  - vagrant-sshfs
+
+debian_pyenv_deps_pkgs:
+  - build-essential
+  - libssl-dev
+  - zlib1g-dev
+  - libbz2-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - curl
+  - libncursesw5-dev
+  - xz-utils
+  - tk-dev
+  - libxml2-dev
+  - libxmlsec1-dev
+  - libffi-dev
+  - liblzma-dev
+
+docker_pkgs:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+
+vscode_extensions:
+  - dcasella.monokai-plusplus
+  - foxundermoon.shell-format
+  - Gruntfuggly.todo-tree
+  - lonefy.vscode-JS-CSS-HTML-formatter
+  - mads-hartmann.bash-ide-vscode
+  - MattiasBaake.vscode-snippets-for-ansible
+  - PKief.material-icon-theme
+  - redhat.vscode-yaml
+  - timonwong.shellcheck
+  - vscodevim.vim
+  - wholroyd.jinja

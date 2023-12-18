@@ -4,6 +4,7 @@
   become: true
   vars_files:
     - _vars_base.yml
+    - _vars_pkgs.tml
 
   pre_tasks:
     - name: Preparatory steps
@@ -19,7 +20,7 @@
       block:
         - name: Install pkgs to Fedora
           dnf:
-            name: awscli
+            name: '{{ fedora_devops_pkgs }}'
             state: latest
             update_cache: true
             install_weak_deps: false
@@ -27,7 +28,7 @@
 
         - name: Install pkgs to Debian
           apt:
-            name: awscli
+            name: '{{ debian_devops_pkgs }}'
             state: latest
             update_cache: true
           when: ansible_distribution=="Debian"
@@ -99,18 +100,7 @@
         - name: Install VSCodium extensions
           command:
             cmd: codium --install-extension {{ item }}
-          with_items:
-            - dcasella.monokai-plusplus
-            - foxundermoon.shell-format
-            - Gruntfuggly.todo-tree
-            - lonefy.vscode-JS-CSS-HTML-formatter
-            - mads-hartmann.bash-ide-vscode
-            - MattiasBaake.vscode-snippets-for-ansible
-            - PKief.material-icon-theme
-            - redhat.vscode-yaml
-            - timonwong.shellcheck
-            - vscodevim.vim
-            - wholroyd.jinja
+          with_items: '{{ vscode_extensions }}'
           become_user: '{{ user }}'
 
       tags: vscodium
@@ -120,11 +110,7 @@
       block:
         - name: Install virt pkgs to Fedora
           dnf:
-            name:
-              - gnome-boxes
-              - vagrant
-              - vagrant-libvirt
-              - vagrant-sshfs
+            name: '{{ fedora_virt_pkgs }}'
             state: latest
             update_cache: true
             install_weak_deps: false
@@ -132,12 +118,7 @@
 
         - name: Install virt pkgs to Debian
           apt:
-            name:
-              - gnome-boxes
-              - libvirt-daemon-system
-              - vagrant
-              - vagrant-libvirt
-              - vagrant-sshfs
+            name: '{{ debina_virt_pkgs }}'
             state: latest
             update_cache: true
           when: ansible_distribution=="Debian"
@@ -207,12 +188,7 @@
                 gpgkey: https://download.docker.com/linux/{{ distro_name }}/gpg
             - name: Install docker to Fedora
               dnf:
-                name:
-                  - docker-ce
-                  - docker-ce-cli
-                  - containerd.io
-                  - docker-buildx-plugin
-                  - docker-compose-plugin
+                name: '{{ docker_pkgs }}'
                 state: latest
                 update_cache: true
                 install_weak_deps: false
@@ -232,12 +208,7 @@
                     state: present
             - name: Install docker to Debian
               apt:
-                name:
-                  - docker-ce
-                  - docker-ce-cli
-                  - containerd.io
-                  - docker-buildx-plugin
-                  - docker-compose-plugin
+                name: '{{ docker_pkgs }}'
                 state: latest
                 update_cache: true
           when: ansible_distribution == "Debian"
@@ -354,44 +325,14 @@
           block:
             - name: Install pyenv build deps to Fedora
               dnf:
-                name:
-                  - make
-                  - gcc
-                  - patch
-                  - zlib-devel
-                  - bzip2
-                  - bzip2-devel
-                  - readline-devel
-                  - sqlite
-                  - sqlite-devel
-                  - openssl-devel
-                  - tk-devel
-                  - libffi-devel
-                  - xz-devel
-                  - libuuid-devel
-                  - gdbm-devel
-                  - libnsl2-devel
+                name: '{{ fedora_pyenv_deps_pkgs }}'
                 state: latest
                 update_cache: true
                 install_weak_deps: false
               when: ansible_distribution=="Fedora"
             - name: Install pyenv build deps to Debian
               apt:
-                name:
-                  - build-essential
-                  - libssl-dev
-                  - zlib1g-dev
-                  - libbz2-dev
-                  - libreadline-dev
-                  - libsqlite3-dev
-                  - curl
-                  - libncursesw5-dev
-                  - xz-utils
-                  - tk-dev
-                  - libxml2-dev
-                  - libxmlsec1-dev
-                  - libffi-dev
-                  - liblzma-dev
+                name: '{{ debian_pyenv_deps_pkgs }}'
                 state: latest
                 update_cache: true
               when: ansible_distribution=="Debian"
