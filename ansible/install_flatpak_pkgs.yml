@@ -5,8 +5,7 @@
   vars_files:
     - _vars_base.yml
 
-  tasks:
-    # Prepare
+  pre_tasks:
     - name: Prepare steps
       block:
         - name: Install flatpak
@@ -19,6 +18,7 @@
 
       tags: prepare
 
+  tasks:
     # Base
     - name: Base pkgs
       block:
