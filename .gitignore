@@ -1,4 +1,3 @@
 backup/*
-!backup/README.md
 *.tmp
 .vagrant/

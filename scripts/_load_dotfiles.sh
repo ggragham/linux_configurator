@@ -29,6 +29,7 @@ pressAnyKeyToContinue() {
 }
 
 backupConfig() {
+    mkdir "$BACKUP_PATH"
     # Make dir with current timestamp
     local currentTimestamp=""
     currentTimestamp=$(date +'%d_%m_%Y_%H_%M_%S')
