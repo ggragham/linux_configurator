@@ -81,8 +81,7 @@
                     dest: /etc/apt/trusted.gpg.d/vscodium-archive-keyring.asc
                 - name: Add apt repository
                   apt_repository:
-                    repo: deb [ signed-by=/etc/apt/trusted.gpg.d/vscodium-archive-keyring.asc ] https://download.vscodium.com/debs
-                      vscodium main
+                    repo: deb [ signed-by=/etc/apt/trusted.gpg.d/vscodium-archive-keyring.asc ] https://download.vscodium.com/debs vscodium main
                     state: present
             - name: Install VSCodium to Debian
               apt:
