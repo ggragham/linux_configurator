@@ -169,7 +169,7 @@ menuItem() {
 
 installOtherPkgs() {
 	otherAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_extra_pkgs.yml" --tags "$@"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_extra_pkgs.yml" --tags "prepare,$*"
 	}
 
 	local select="*"
@@ -217,7 +217,7 @@ installOtherPkgs() {
 
 installDevPkgs() {
 	devAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_dev_pkgs.yml" --tags "$@"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_dev_pkgs.yml" --tags "prepare,$*"
 	}
 
 	local select="*"
@@ -367,7 +367,7 @@ installFlatpakPkgs() {
 
 installGamingPkgs() {
 	gamingAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_gaming_pkgs.yml" --tags "flatpak,gamemode,$*"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_gaming_pkgs.yml" --tags "prepare,$*"
 	}
 
 	local select="*"
@@ -409,7 +409,7 @@ installGamingPkgs() {
 
 applyConfig() {
 	configAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/apply_config.yml" --tags "$@"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/apply_config.yml" --tags "prepare,$*"
 	}
 
 	local select="*"
