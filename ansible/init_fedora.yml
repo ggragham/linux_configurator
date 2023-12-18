@@ -4,6 +4,7 @@
   become: true
   vars_files:
     - _vars_base.yml
+    - _vars_pkgs.yml
 
   tasks:
     - block:
@@ -30,16 +31,7 @@
 
         - name: Install core pkgs
           dnf:
-            name:
-              - abattis-cantarell-fonts
-              - bash-completion
-              - gdm
-              - git
-              - gnome-shell
-              - gnome-terminal
-              - linux-firmware
-              - mesa-dri-drivers
-              - plymouth-theme-spinner
+            name: '{{ fedora_core_pkgs }}'
             state: latest
             update_cache: true
             install_weak_deps: false
@@ -64,31 +56,7 @@
 
         - name: Install base pkgs
           dnf:
-            name:
-              - NetworkManager-openvpn-gnome
-              - NetworkManager-wifi
-              - baobab
-              - ffmpegthumbnailer
-              - file-roller
-              - gnome-bluetooth
-              - gnome-calculator
-              - gnome-calendar
-              - gnome-clocks
-              - gnome-disk-utility
-              - gnome-firmware
-              - gnome-tweaks
-              - gnome-weather
-              - gvfs-mtp
-              - htop
-              - lm_sensors
-              - nautilus
-              - nautilus-gsconnect
-              - nautilus-open-terminal
-              - power-profiles-daemon
-              - sqlite
-              - sushi
-              - unzip
-              - xdg-desktop-portal-gnome
+            name: '{{ fedora_base_pkgs }}'
             state: latest
             update_cache: true
             install_weak_deps: false
