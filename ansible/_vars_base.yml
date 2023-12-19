@@ -1,6 +1,6 @@
 ---
-user: '{{ ansible_env.SUDO_USER }}'
-uid: '{{ ansible_env.SUDO_UID }}'
+user: '{{ ansible_env.USER }}'
+uid: '{{ ansible_env.UID }}'
 
 # Repo path
 repo_root_path: "{{ lookup('pipe', 'git rev-parse --show-toplevel') }}"

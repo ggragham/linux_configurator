@@ -1,7 +1,7 @@
 ---
 - name: Install extra packages
   hosts: localhost
-  become: true
+
   vars_files:
     - _vars_base.yml
     - _vars_pkgs.yml
@@ -40,6 +40,7 @@
                 state: link
           when: ansible_distribution=="Debian"
 
+      become: true
       tags: extra
 
     # Neovim
@@ -89,6 +90,7 @@
             creates: '{{ system_bin_path }}/vimdiff'
           when: ansible_distribution=="Fedora"
 
+      become: true
       tags: neovim
 
     # Oh My Zsh
@@ -103,6 +105,7 @@
             state: latest
             update_cache: true
             install_weak_deps: false
+          become: true
           when: ansible_distribution=="Fedora"
 
         - name: Install zsh to Debian
@@ -110,12 +113,14 @@
             name: zsh
             state: latest
             update_cache: true
+          become: true
           when: ansible_distribution=="Debian"
 
         - name: Set zsh
           user:
             name: '{{ user }}'
             shell: /bin/zsh
+          become: true
 
         - name: Install and config Oh My ZSH
           block:
@@ -163,7 +168,6 @@
                     owner: '{{ user }}'
                     mode: 0700
                   with_items: [alias_zsh, '{{ distro_name }}_zsh']
-          become_user: '{{ user }}'
 
       tags: omz
 
@@ -209,4 +213,5 @@
             state: restarted
             enabled: true
 
+      become: true
       tags: iwd

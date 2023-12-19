@@ -1,7 +1,7 @@
 ---
 - name: Install themes
   hosts: localhost
-  become: true
+
   vars_files:
     - _vars_base.yml
 
@@ -15,6 +15,7 @@
             state: latest
             update_cache: true
             install_weak_deps: false
+          become: true
 
         # - name: Install flatpak themes
         #   block:
@@ -37,7 +38,6 @@
             cmd: dconf load / <"{{ dconf_path }}/gnome_theme.dconf"
           environment:
             DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
-          become_user: '{{ user }}'
 
       when: ansible_distribution=="Fedora"
 
@@ -61,7 +61,6 @@
                 version: master
                 clone: true
                 update: true
-              become_user: '{{ user }}'
             - name: Install Matcha theme
               shell:
                 cmd: bash {{ matcha_gtk_theme_path }}/install.sh
@@ -75,7 +74,6 @@
                 version: master
                 clone: true
                 update: true
-              become_user: '{{ user }}'
             - name: Install Qogir theme
               shell:
                 cmd: bash {{ qogir_icon_theme_path }}/install.sh
@@ -101,7 +99,6 @@
             cmd: dconf load / <"{{ dconf_path }}/mate_theme.dconf"
           environment:
             DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
-          become_user: '{{ user }}'
 
         - name: Set LightDM themes
           block:
@@ -117,5 +114,6 @@
                 regexp: ^icon-theme-name =
                 line: icon-theme-name = Qogir-ubuntu-dark
                 state: present
+          become: true
 
       when: ansible_distribution=="Debian"

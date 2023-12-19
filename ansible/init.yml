@@ -1,7 +1,7 @@
 ---
 - name: Init configuration
   hosts: localhost
-  become: true
+
   vars_files:
     - _vars_base.yml
     - _vars_pkgs.yml
@@ -66,9 +66,10 @@
             cmd: '{{ script_path }}/_make_btrfs_subvols.sh {{ item }}'
           environment:
             BACKUP_PATH: '{{ backup_path }}'
-          become_user: '{{ user }}'
+          become: false
           with_items: ['{{ home_path }}/.var var']
 
+      become: true
       when: ansible_distribution=="Fedora"
 
     - block:
@@ -169,4 +170,5 @@
             state: started
             enabled: true
 
+      become: true
       when: ansible_distribution=="Debian"

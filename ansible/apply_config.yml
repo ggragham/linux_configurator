@@ -1,7 +1,7 @@
 ---
 - name: Apply system config
   hosts: localhost
-  become: true
+
   vars_files:
     - _vars_base.yml
     - _vars_pkgs.yml
@@ -61,6 +61,7 @@
             state: present
           when: ansible_distribution=="Debian"
 
+      become: true
       tags: system
 
     # User's Configs
@@ -132,5 +133,4 @@
                     mode: 0644
           when: ansible_distribution=="Debian"
 
-      become_user: '{{ user }}'
       tags: user

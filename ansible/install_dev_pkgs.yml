@@ -1,7 +1,7 @@
 ---
 - name: Install dev pkgs
   hosts: localhost
-  become: true
+
   vars_files:
     - _vars_base.yml
     - _vars_pkgs.yml
@@ -24,6 +24,7 @@
             state: latest
             update_cache: true
             install_weak_deps: false
+          become: true
           when: ansible_distribution=="Fedora"
 
         - name: Install pkgs to Debian
@@ -31,6 +32,7 @@
             name: '{{ debian_devops_pkgs }}'
             state: latest
             update_cache: true
+          become: true
           when: ansible_distribution=="Debian"
 
         - name: Install terraform-switch
@@ -76,6 +78,7 @@
                 state: latest
                 update_cache: true
                 install_weak_deps: false
+          become: true
           when: ansible_distribution=="Fedora"
 
         - name: Install VSCode to Debian
@@ -95,13 +98,13 @@
                 name: codium
                 state: latest
                 update_cache: true
+          become: true
           when: ansible_distribution=="Debian"
 
         - name: Install VSCodium extensions
           command:
             cmd: codium --install-extension {{ item }}
           with_items: '{{ vscode_extensions }}'
-          become_user: '{{ user }}'
 
       tags: vscodium
 
@@ -114,6 +117,7 @@
             state: latest
             update_cache: true
             install_weak_deps: false
+          become: true
           when: ansible_distribution=="Fedora"
 
         - name: Install virt pkgs to Debian
@@ -121,6 +125,7 @@
             name: '{{ debina_virt_pkgs }}'
             state: latest
             update_cache: true
+          become: true
           when: ansible_distribution=="Debian"
 
         - name: Config virt dirs
@@ -149,7 +154,6 @@
                 libvirt_dir_name: libvirt
                 libvirt_local_path: '{{ local_share_path }}/{{ libvirt_dir_name }}'
                 libvirt_local_images_path: '{{ libvirt_local_path }}/images'
-          become_user: '{{ user }}'
           when: ansible_distribution=="Fedora"
 
         - name: Add {{ user }} to libvirt group
@@ -157,6 +161,7 @@
             name: '{{ user }}'
             groups: libvirt
             append: true
+          become: true
           when: ansible_distribution=="Debian"
 
         - name: Apply virtualization zsh config
@@ -237,7 +242,9 @@
                 omz_config_name: docker
             - name: Apply {{ omz_config_name }}_zsh config
               include_tasks: '{{ ansible_path }}/_apply_zsh_config.yml'
+          become: false
 
+      become: true
       tags: docker
 
     # Podman
@@ -258,6 +265,7 @@
             update_cache: true
           when: ansible_distribution == "Debian"
 
+      become: true
       tags: podman
 
      # Kubernetes
@@ -268,7 +276,6 @@
             url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
             dest: '{{ local_bin_path }}/minikube'
             mode: 0700
-          become_user: '{{ user }}'
 
         - name: Install kubectl
           block:
@@ -280,7 +287,6 @@
                 url: https://dl.k8s.io/release/{{ KUBECTL_VERSION }}/bin/linux/amd64/kubectl
                 dest: '{{ local_bin_path }}/kubectl'
                 mode: 0700
-          become_user: '{{ user }}'
 
         - name: Install kubens
           block:
@@ -336,6 +342,7 @@
                 state: latest
                 update_cache: true
               when: ansible_distribution=="Debian"
+          become: true
 
         - name: Run pyenv install script
           shell:
@@ -343,7 +350,6 @@
             creates: '{{ local_opt_path }}/pyenv/bin/pyenv'
           environment:
             PYENV_ROOT: '{{ local_opt_path }}/pyenv'
-          become_user: '{{ user }}'
 
         - name: Apply PyEnv zsh config
           block:
@@ -371,7 +377,6 @@
             creates: '{{ local_opt_path }}/nvm/nvm.sh'
           environment:
             NVM_DIR: '{{ local_opt_path }}/nvm'
-          become_user: '{{ user }}'
 
         - name: Apply NVM zsh config
           block:

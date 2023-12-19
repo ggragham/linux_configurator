@@ -1,7 +1,7 @@
 ---
 - name: Install gaming packages
   hosts: localhost
-  become: true
+
   vars_files:
     - _vars_base.yml
 
@@ -17,6 +17,7 @@
             state: latest
             update_cache: true
             install_weak_deps: false
+          become: true
           when: ansible_distribution=="Fedora"
 
       tags: prepare
@@ -35,7 +36,6 @@
               flatpak override --user \
                 --filesystem=xdg-data/applications \
                 com.usebottles.bottles
-      become_user: '{{ user }}'
       tags: bottles
 
     # Lutris
@@ -43,7 +43,6 @@
       flatpak:
         name: net.lutris.Lutris
         state: present
-      become_user: '{{ user }}'
       tags: lutris
 
     # Steam
@@ -52,5 +51,4 @@
         name: '{{ item }}'
         state: present
       with_items: [com.valvesoftware.Steam, com.github.Matoking.protontricks]
-      become_user: '{{ user }}'
       tags: steam

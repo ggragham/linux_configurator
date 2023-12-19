@@ -9,9 +9,7 @@ export ANSIBLE_LOCALHOST_WARNING=False
 export ANSIBLE_INVENTORY_UNPARSED_WARNING=False
 
 # Global vars
-USERNAME="$SUDO_USER"
-PRESERVE_USER_ENV="XDG_SESSION_TYPE,XDG_CURRENT_DESKTOP"
-PRESERVE_ENV="${PRESERVE_USER_ENV},ANSIBLE_LOCALHOST_WARNING,ANSIBLE_INVENTORY_UNPARSED_WARNING,SUDO_USER,SUDO_UID"
+USER_PASSWORD="${USER_PASSWORD:-}"
 DISTRO_LIST=("fedora" "debian")
 CURRENT_DISTRO=""
 DISTRO_NAME_COLOR=""
@@ -35,15 +33,54 @@ LIGHTBLUE='\033[1;34m'
 GREEN='\033[0;32m'
 NORMAL='\033[0m'
 
-isSudo() {
-	if [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
-		sudo --preserve-env="$PRESERVE_USER_ENV" bash "$SCRIPT_NAME"
+cleanup() {
+	local exitStatus="$?"
+	unset USER_PASSWORD
+	exit "$exitStatus"
+}
+
+trap cleanup TERM EXIT
+
+checkSudo() {
+	if [ "$EUID" -eq 0 ]; then
+		echo "Error: Running this script with sudo is not allowed."
 		exit 1
 	fi
 }
 
-runAsUser() {
-	sudo --preserve-env="$PRESERVE_ENV" --user="$USERNAME" "$@"
+enterUserPassword() {
+	sudo -K
+
+	checkPassword() {
+		if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
+			sudo -K
+			return 0
+		else
+			echo -e "\nSorry, try again."
+			return 1
+		fi
+	}
+
+	if [ -n "$USER_PASSWORD" ]; then
+		if checkPassword; then
+			return 0
+		fi
+		exit $?
+	fi
+
+	while :; do
+		read -rsp "Password: " USER_PASSWORD
+		if checkPassword; then
+			break
+		fi
+	done
+
+	return 0
+}
+
+runAsSudo() {
+	echo "$USER_PASSWORD" | sudo --stdin "$@"
+	sudo -K
 }
 
 pressAnyKeyToContinue() {
@@ -88,13 +125,13 @@ installInitDeps() {
 		return 0
 	else
 		if [[ "$CURRENT_DISTRO" == "fedora" ]]; then
-			dnf install -y \
+			runAsSudo dnf install -y \
 				--setopt=install_weak_deps=False \
 				--setopt=countme=False \
 				$PKGS_TO_INSTALL
 		elif [[ "$CURRENT_DISTRO" == "debian" ]]; then
-			apt update
-			apt install -y \
+			runAsSudo apt update
+			runAsSudo apt install -y \
 				--no-install-suggests \
 				--no-install-recommends \
 				$PKGS_TO_INSTALL
@@ -108,8 +145,8 @@ installInitDeps() {
 cloneRepo() {
 	cloneLinuxConfigRepo() { (
 		set -eu
-		runAsUser mkdir -p "$DEST_PATH"
-		runAsUser git clone "$REPO_LINK" "$DEST_PATH/$REPO_NAME"
+		mkdir -p "$DEST_PATH"
+		git clone "$REPO_LINK" "$DEST_PATH/$REPO_NAME"
 	); }
 
 	runConfigurator() {
@@ -169,7 +206,7 @@ menuItem() {
 
 installOtherPkgs() {
 	otherAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_extra_pkgs.yml" --tags "prepare,$*"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_extra_pkgs.yml" --tags "prepare,$*" --extra-vars "ansible_become_password=$USER_PASSWORD"
 	}
 
 	local select="*"
@@ -217,7 +254,7 @@ installOtherPkgs() {
 
 installDevPkgs() {
 	devAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_dev_pkgs.yml" --tags "prepare,$*"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_dev_pkgs.yml" --tags "prepare,$*" --extra-vars "ansible_become_password=$USER_PASSWORD"
 	}
 
 	local select="*"
@@ -289,7 +326,7 @@ installDevPkgs() {
 
 installFlatpakPkgs() {
 	flatpakAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_flatpak_pkgs.yml" --tags "prepare,$*"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_flatpak_pkgs.yml" --tags "prepare,$*" --extra-vars "ansible_become_password=$USER_PASSWORD"
 	}
 
 	local select="*"
@@ -367,7 +404,7 @@ installFlatpakPkgs() {
 
 installGamingPkgs() {
 	gamingAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_gaming_pkgs.yml" --tags "prepare,$*"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_gaming_pkgs.yml" --tags "prepare,$*" --extra-vars "ansible_become_password=$USER_PASSWORD"
 	}
 
 	local select="*"
@@ -409,7 +446,7 @@ installGamingPkgs() {
 
 applyConfig() {
 	configAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/apply_config.yml" --tags "prepare,$*"
+		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/apply_config.yml" --tags "prepare,$*" --extra-vars "ansible_become_password=$USER_PASSWORD"
 	}
 
 	local select="*"
@@ -470,7 +507,7 @@ installAddPkgs() {
 			select="*"
 			;;
 		4)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_themes.yml"
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_themes.yml" --extra-vars "ansible_become_password=$USER_PASSWORD"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -490,7 +527,8 @@ installAddPkgs() {
 }
 
 main() {
-	isSudo
+	checkSudo
+	enterUserPassword
 	getDistroName
 	installInitDeps
 	cloneRepo
@@ -515,7 +553,7 @@ main() {
 
 		case $select in
 		1)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/init.yml"
+			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/init.yml" --extra-vars "ansible_become_password=$USER_PASSWORD"
 			echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
 			pressAnyKeyToContinue
 			select="*"
