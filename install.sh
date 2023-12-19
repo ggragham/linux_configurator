@@ -8,26 +8,28 @@ cd "$(dirname "$0")" || exit "$?"
 export ANSIBLE_LOCALHOST_WARNING=False
 export ANSIBLE_INVENTORY_UNPARSED_WARNING=False
 
+# Global constants
+readonly DISTRO_LIST=("fedora" "debian")
+readonly PKGS_LIST=("git" "ansible")
+readonly REPO_NAME="linux_configurator"
+readonly REPO_LINK="https://github.com/ggragham/${REPO_NAME}.git"
+
 # Global vars
 USER_PASSWORD="${USER_PASSWORD:-}"
-DISTRO_LIST=("fedora" "debian")
-CURRENT_DISTRO=""
-DISTRO_NAME_COLOR=""
-PKGS_LIST=("git" "ansible")
-PKGS_TO_INSTALL=""
-REPO_NAME="linux_configurator"
-REPO_LINK="https://github.com/ggragham/${REPO_NAME}.git"
 REPO_ROOT_PATH="${REPO_ROOT_PATH:-$HOME/.local/opt/$REPO_NAME}"
 ANSIBLE_PLAYBOOK_PATH="$REPO_ROOT_PATH/ansible"
+CURRENT_DISTRO=""
+DISTRO_NAME_COLOR=""
+PKGS_TO_INSTALL=""
 
 # Text formating
-BOLD='\033[1m'
-BLINK='\033[5m'
-LONG_TAB='\033[64G'
-RED='\033[0;31m'
-LIGHTBLUE='\033[1;34m'
-GREEN='\033[0;32m'
-NORMAL='\033[0m'
+readonly BOLD='\033[1m'
+readonly BLINK='\033[5m'
+readonly LONG_TAB='\033[64G'
+readonly RED='\033[0;31m'
+readonly LIGHTBLUE='\033[1;34m'
+readonly GREEN='\033[0;32m'
+readonly NORMAL='\033[0m'
 
 cleanup() {
 	local exitStatus="$?"
