@@ -17,6 +17,7 @@
             state: latest
             update_cache: true
             install_weak_deps: false
+          when: ansible_distribution=="Fedora"
 
       tags: prepare
 
