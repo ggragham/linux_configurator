@@ -4,7 +4,7 @@
   become: true
   vars_files:
     - _vars_base.yml
-    - _vars_pkgs.tml
+    - _vars_pkgs.yml
 
   tasks:
     - block:
