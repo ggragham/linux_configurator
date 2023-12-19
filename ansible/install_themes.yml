@@ -9,14 +9,9 @@
     # Fedora (Gnome)
     - name: Install Fedora themes
       block:
-        - name: Add adw-gtk3 copr repo
-          community.general.copr:
-            name: nickavem/adw-gtk3
-            state: enabled
-
         - name: Install adw-gtk3 gtk theme and Papirus icon theme
           dnf:
-            name: [adw-gtk3, papirus-icon-theme]
+            name: [adw-gtk3-theme, papirus-icon-theme]
             state: latest
             update_cache: true
             install_weak_deps: false
