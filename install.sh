@@ -15,13 +15,9 @@ CURRENT_DISTRO=""
 DISTRO_NAME_COLOR=""
 PKGS_LIST=("git" "ansible")
 PKGS_TO_INSTALL=""
-DEST_PATH="/home/$USERNAME/.local/opt"
 REPO_NAME="linux_configurator"
 REPO_LINK="https://github.com/ggragham/${REPO_NAME}.git"
-SCRIPT_NAME="install.sh"
-CURRENT_SCRIPT_PATH="$(readlink -f "$0")"
-DEFAULT_SCRIPT_PATH="$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
-REPO_ROOT_PATH="$(git rev-parse --show-toplevel 2>/dev/null)"
+REPO_ROOT_PATH="${REPO_ROOT_PATH:-$HOME/.local/opt/$REPO_NAME}"
 ANSIBLE_PLAYBOOK_PATH="$REPO_ROOT_PATH/ansible"
 
 # Text formating
@@ -143,30 +139,21 @@ installInitDeps() {
 }
 
 cloneRepo() {
-	cloneLinuxConfigRepo() { (
+	(
 		set -eu
-		mkdir -p "$DEST_PATH"
-		git clone "$REPO_LINK" "$DEST_PATH/$REPO_NAME"
-	); }
-
-	runConfigurator() {
-		if bash "$DEFAULT_SCRIPT_PATH"; then
-			exit "$?"
-		else
-			local errcode="$?"
-			echo "Failed to start Linux Configurator"
-			exit "$errcode"
+		if [[ ! -d "$REPO_ROOT_PATH/.git" ]]; then
+			mkdir -p "$REPO_ROOT_PATH"
+			git clone "$REPO_LINK" "$REPO_ROOT_PATH"
 		fi
-	}
+	)
+}
 
-	if [[ -d "./.git" ]]; then
-		return 0
-	elif [[ "$DEFAULT_SCRIPT_PATH" != "$CURRENT_SCRIPT_PATH" ]]; then
-		if [[ ! -d "$DEST_PATH/$REPO_NAME" ]]; then
-			cloneLinuxConfigRepo
-		fi
-		runConfigurator
+init() {
+	installInitDeps
+	if [ "$PWD/$0" != "$REPO_ROOT_PATH/$0" ]; then
+		cloneRepo
 	fi
+	cd "$REPO_ROOT_PATH" || exit "$?"
 }
 
 asciiLogo() {
