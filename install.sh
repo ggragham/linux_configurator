@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Main script.
-# Check and download depen
+# Check and download dependencies
 # Interactive menu to execute playbooks.
 
 cd "$(dirname "$0")" || exit "$?"
