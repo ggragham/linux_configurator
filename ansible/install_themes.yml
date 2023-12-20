@@ -40,6 +40,7 @@
             DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
 
       when: ansible_distribution=="Fedora"
+      tags: themes
 
     # Debian (Mate)
     - name: Install themes
@@ -117,3 +118,4 @@
           become: true
 
       when: ansible_distribution=="Debian"
+      tags: themes
