@@ -197,11 +197,14 @@ menuItem() {
 	echo -e "${GREEN}$number.${NORMAL} $text"
 }
 
-installOtherPkgs() {
-	otherAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_extra_pkgs.yml" --tags "prepare,$*" --extra-vars "ansible_become_password=$USER_PASSWORD"
-	}
+runAnsiblePlaybook() {
+	local playbookName="$1"
+	shift
+	local tagsList="$*"
+	ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$playbookName.yml" --tags "prepare,$tagsList" --extra-vars "ansible_become_password=$USER_PASSWORD"
+}
 
+installOtherPkgs() {
 	local select="*"
 	while :; do
 		printHeader
@@ -215,22 +218,22 @@ installOtherPkgs() {
 
 		case $select in
 		1)
-			otherAnsiblePlaybook "extra"
+			runAnsiblePlaybook "install_extra_pkgs" "extra"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			otherAnsiblePlaybook "neovim"
+			runAnsiblePlaybook "install_extra_pkgs" "neovim"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
-			otherAnsiblePlaybook "omz"
+			runAnsiblePlaybook "install_extra_pkgs" "omz"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		4)
-			otherAnsiblePlaybook "iwd"
+			runAnsiblePlaybook "install_extra_pkgs" "iwd"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -246,10 +249,6 @@ installOtherPkgs() {
 }
 
 installDevPkgs() {
-	devAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_dev_pkgs.yml" --tags "prepare,$*" --extra-vars "ansible_become_password=$USER_PASSWORD"
-	}
-
 	local select="*"
 	while :; do
 		printHeader
@@ -267,42 +266,42 @@ installDevPkgs() {
 
 		case $select in
 		1)
-			devAnsiblePlaybook "vscodium"
+			runAnsiblePlaybook "install_dev_pkgs" "vscodium"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			devAnsiblePlaybook "virtualization"
+			runAnsiblePlaybook "install_dev_pkgs" "virtualization"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
-			devAnsiblePlaybook "devops"
+			runAnsiblePlaybook "install_dev_pkgs" "devops"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		4)
-			devAnsiblePlaybook "docker"
+			runAnsiblePlaybook "install_dev_pkgs" "docker"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		5)
-			devAnsiblePlaybook "podman"
+			runAnsiblePlaybook "install_dev_pkgs" "podman"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		6)
-			devAnsiblePlaybook "kubernetes"
+			runAnsiblePlaybook "install_dev_pkgs" "kubernetes"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		7)
-			devAnsiblePlaybook "pyenv"
+			runAnsiblePlaybook "install_dev_pkgs" "pyenv"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		8)
-			devAnsiblePlaybook "nvm"
+			runAnsiblePlaybook "install_dev_pkgs" "nvm"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -318,10 +317,6 @@ installDevPkgs() {
 }
 
 installFlatpakPkgs() {
-	flatpakAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_flatpak_pkgs.yml" --tags "prepare,$*" --extra-vars "ansible_become_password=$USER_PASSWORD"
-	}
-
 	local select="*"
 	while :; do
 		printHeader
@@ -340,47 +335,47 @@ installFlatpakPkgs() {
 
 		case $select in
 		1)
-			flatpakAnsiblePlaybook "base"
+			runAnsiblePlaybook "install_flatpak_pkgs" "base"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			flatpakAnsiblePlaybook "media"
+			runAnsiblePlaybook "install_flatpak_pkgs" "media"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
-			flatpakAnsiblePlaybook "brave"
+			runAnsiblePlaybook "install_flatpak_pkgs" "brave"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		4)
-			flatpakAnsiblePlaybook "librewolf"
+			runAnsiblePlaybook "install_flatpak_pkgs" "librewolf"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		5)
-			flatpakAnsiblePlaybook "bitwarden"
+			runAnsiblePlaybook "install_flatpak_pkgs" "bitwarden"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		6)
-			flatpakAnsiblePlaybook "telegram"
+			runAnsiblePlaybook "install_flatpak_pkgs" "telegram"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		7)
-			flatpakAnsiblePlaybook "spotify"
+			runAnsiblePlaybook "install_flatpak_pkgs" "spotify"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		8)
-			flatpakAnsiblePlaybook "freetube"
+			runAnsiblePlaybook "install_flatpak_pkgs" "freetube"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		9)
-			flatpakAnsiblePlaybook "libreoffice"
+			runAnsiblePlaybook "install_flatpak_pkgs" "libreoffice"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -396,10 +391,6 @@ installFlatpakPkgs() {
 }
 
 installGamingPkgs() {
-	gamingAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_gaming_pkgs.yml" --tags "prepare,$*" --extra-vars "ansible_become_password=$USER_PASSWORD"
-	}
-
 	local select="*"
 	while :; do
 		printHeader
@@ -412,17 +403,17 @@ installGamingPkgs() {
 
 		case $select in
 		1)
-			gamingAnsiblePlaybook "bottles"
+			runAnsiblePlaybook "install_gaming_pkgs" "bottles"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			gamingAnsiblePlaybook "lutris"
+			runAnsiblePlaybook "install_gaming_pkgs" "lutris"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
-			gamingAnsiblePlaybook "steam"
+			runAnsiblePlaybook "install_gaming_pkgs" "steam"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -438,10 +429,6 @@ installGamingPkgs() {
 }
 
 applyConfig() {
-	configAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/apply_config.yml" --tags "prepare,$*" --extra-vars "ansible_become_password=$USER_PASSWORD"
-	}
-
 	local select="*"
 	while :; do
 		printHeader
@@ -453,12 +440,12 @@ applyConfig() {
 
 		case $select in
 		1)
-			configAnsiblePlaybook "system"
+			runAnsiblePlaybook "apply_config" "system"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			configAnsiblePlaybook "user"
+			runAnsiblePlaybook "apply_config" "user"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -500,7 +487,7 @@ installAddPkgs() {
 			select="*"
 			;;
 		4)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_themes.yml" --extra-vars "ansible_become_password=$USER_PASSWORD"
+			runAnsiblePlaybook "install_themes" "themes"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -546,7 +533,7 @@ main() {
 
 		case $select in
 		1)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/init.yml" --extra-vars "ansible_become_password=$USER_PASSWORD"
+			runAnsiblePlaybook "init" "init"
 			echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
 			pressAnyKeyToContinue
 			select="*"
