@@ -41,7 +41,7 @@
           when: ansible_distribution=="Debian"
 
       become: true
-      tags: extra
+      tags: extra_pkgs
 
     # Neovim
     - name: Remove other editors and install neovim

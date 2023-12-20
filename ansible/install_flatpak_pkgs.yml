@@ -53,7 +53,7 @@
                 state: present
           when: de_name=="gnome"
 
-      tags: base
+      tags: base_flatpak_pkgs
 
     # Media
     - name: Media pkgs

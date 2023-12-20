@@ -218,7 +218,7 @@ installOtherPkgs() {
 
 		case $select in
 		1)
-			runAnsiblePlaybook "install_extra_pkgs" "extra"
+			runAnsiblePlaybook "install_extra_pkgs" "extra_pkgs"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -335,7 +335,7 @@ installFlatpakPkgs() {
 
 		case $select in
 		1)
-			runAnsiblePlaybook "install_flatpak_pkgs" "base"
+			runAnsiblePlaybook "install_flatpak_pkgs" "base_flatpak_pkgs"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -440,12 +440,12 @@ applyConfig() {
 
 		case $select in
 		1)
-			runAnsiblePlaybook "apply_config" "system"
+			runAnsiblePlaybook "apply_config" "system_config"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			runAnsiblePlaybook "apply_config" "user"
+			runAnsiblePlaybook "apply_config" "local_config"
 			pressAnyKeyToContinue
 			select="*"
 			;;

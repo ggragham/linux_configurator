@@ -62,7 +62,7 @@
           when: ansible_distribution=="Debian"
 
       become: true
-      tags: system
+      tags: system_config
 
     # User's Configs
     - name: Apply user's configs
@@ -133,4 +133,4 @@
                     mode: 0644
           when: ansible_distribution=="Debian"
 
-      tags: user
+      tags: local_config
