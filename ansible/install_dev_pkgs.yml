@@ -1,29 +1,38 @@
 ---
 - name: Install dev pkgs
   hosts: localhost
-  become: true
-  vars_files: [./vars.yml]
+
+  vars_files:
+    - _vars_base.yml
+    - _vars_pkgs.yml
+
+  pre_tasks:
+    - name: Preparatory steps
+      block:
+        - name: Create local dirs
+          include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
+
+      tags: prepare
 
   tasks:
     # Base DevOps
     - name: Install base DevOps pkgs
       block:
-        - name: Create local dirs
-          include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
-
         - name: Install pkgs to Fedora
           dnf:
-            name: awscli
+            name: '{{ fedora_devops_pkgs }}'
             state: latest
             update_cache: true
             install_weak_deps: false
+          become: true
           when: ansible_distribution=="Fedora"
 
         - name: Install pkgs to Debian
           apt:
-            name: awscli
+            name: '{{ debian_devops_pkgs }}'
             state: latest
             update_cache: true
+          become: true
           when: ansible_distribution=="Debian"
 
         - name: Install terraform-switch
@@ -69,6 +78,7 @@
                 state: latest
                 update_cache: true
                 install_weak_deps: false
+          become: true
           when: ansible_distribution=="Fedora"
 
         - name: Install VSCode to Debian
@@ -81,32 +91,20 @@
                     dest: /etc/apt/trusted.gpg.d/vscodium-archive-keyring.asc
                 - name: Add apt repository
                   apt_repository:
-                    repo: deb [ signed-by=/etc/apt/trusted.gpg.d/vscodium-archive-keyring.asc ] https://download.vscodium.com/debs
-                      vscodium main
+                    repo: deb [ signed-by=/etc/apt/trusted.gpg.d/vscodium-archive-keyring.asc ] https://download.vscodium.com/debs vscodium main
                     state: present
             - name: Install VSCodium to Debian
               apt:
                 name: codium
                 state: latest
                 update_cache: true
+          become: true
           when: ansible_distribution=="Debian"
 
         - name: Install VSCodium extensions
           command:
             cmd: codium --install-extension {{ item }}
-          with_items:
-            - dcasella.monokai-plusplus
-            - foxundermoon.shell-format
-            - Gruntfuggly.todo-tree
-            - lonefy.vscode-JS-CSS-HTML-formatter
-            - mads-hartmann.bash-ide-vscode
-            - MattiasBaake.vscode-snippets-for-ansible
-            - PKief.material-icon-theme
-            - redhat.vscode-yaml
-            - timonwong.shellcheck
-            - vscodevim.vim
-            - wholroyd.jinja
-          become_user: '{{ user }}'
+          with_items: '{{ vscode_extensions }}'
 
       tags: vscodium
 
@@ -115,26 +113,19 @@
       block:
         - name: Install virt pkgs to Fedora
           dnf:
-            name:
-              - gnome-boxes
-              - vagrant
-              - vagrant-libvirt
-              - vagrant-sshfs
+            name: '{{ fedora_virt_pkgs }}'
             state: latest
             update_cache: true
             install_weak_deps: false
+          become: true
           when: ansible_distribution=="Fedora"
 
         - name: Install virt pkgs to Debian
           apt:
-            name:
-              - gnome-boxes
-              - libvirt-daemon-system
-              - vagrant
-              - vagrant-libvirt
-              - vagrant-sshfs
+            name: '{{ debina_virt_pkgs }}'
             state: latest
             update_cache: true
+          become: true
           when: ansible_distribution=="Debian"
 
         - name: Config virt dirs
@@ -163,7 +154,6 @@
                 libvirt_dir_name: libvirt
                 libvirt_local_path: '{{ local_share_path }}/{{ libvirt_dir_name }}'
                 libvirt_local_images_path: '{{ libvirt_local_path }}/images'
-          become_user: '{{ user }}'
           when: ansible_distribution=="Fedora"
 
         - name: Add {{ user }} to libvirt group
@@ -171,6 +161,7 @@
             name: '{{ user }}'
             groups: libvirt
             append: true
+          become: true
           when: ansible_distribution=="Debian"
 
         - name: Apply virtualization zsh config
@@ -202,12 +193,7 @@
                 gpgkey: https://download.docker.com/linux/{{ distro_name }}/gpg
             - name: Install docker to Fedora
               dnf:
-                name:
-                  - docker-ce
-                  - docker-ce-cli
-                  - containerd.io
-                  - docker-buildx-plugin
-                  - docker-compose-plugin
+                name: '{{ docker_pkgs }}'
                 state: latest
                 update_cache: true
                 install_weak_deps: false
@@ -227,12 +213,7 @@
                     state: present
             - name: Install docker to Debian
               apt:
-                name:
-                  - docker-ce
-                  - docker-ce-cli
-                  - containerd.io
-                  - docker-buildx-plugin
-                  - docker-compose-plugin
+                name: '{{ docker_pkgs }}'
                 state: latest
                 update_cache: true
           when: ansible_distribution == "Debian"
@@ -261,7 +242,9 @@
                 omz_config_name: docker
             - name: Apply {{ omz_config_name }}_zsh config
               include_tasks: '{{ ansible_path }}/_apply_zsh_config.yml'
+          become: false
 
+      become: true
       tags: docker
 
     # Podman
@@ -282,6 +265,7 @@
             update_cache: true
           when: ansible_distribution == "Debian"
 
+      become: true
       tags: podman
 
      # Kubernetes
@@ -292,7 +276,6 @@
             url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
             dest: '{{ local_bin_path }}/minikube'
             mode: 0700
-          become_user: '{{ user }}'
 
         - name: Install kubectl
           block:
@@ -304,7 +287,6 @@
                 url: https://dl.k8s.io/release/{{ KUBECTL_VERSION }}/bin/linux/amd64/kubectl
                 dest: '{{ local_bin_path }}/kubectl'
                 mode: 0700
-          become_user: '{{ user }}'
 
         - name: Install kubens
           block:
@@ -349,55 +331,25 @@
           block:
             - name: Install pyenv build deps to Fedora
               dnf:
-                name:
-                  - make
-                  - gcc
-                  - patch
-                  - zlib-devel
-                  - bzip2
-                  - bzip2-devel
-                  - readline-devel
-                  - sqlite
-                  - sqlite-devel
-                  - openssl-devel
-                  - tk-devel
-                  - libffi-devel
-                  - xz-devel
-                  - libuuid-devel
-                  - gdbm-devel
-                  - libnsl2-devel
+                name: '{{ fedora_pyenv_deps_pkgs }}'
                 state: latest
                 update_cache: true
                 install_weak_deps: false
               when: ansible_distribution=="Fedora"
             - name: Install pyenv build deps to Debian
               apt:
-                name:
-                  - build-essential
-                  - libssl-dev
-                  - zlib1g-dev
-                  - libbz2-dev
-                  - libreadline-dev
-                  - libsqlite3-dev
-                  - curl
-                  - libncursesw5-dev
-                  - xz-utils
-                  - tk-dev
-                  - libxml2-dev
-                  - libxmlsec1-dev
-                  - libffi-dev
-                  - liblzma-dev
+                name: '{{ debian_pyenv_deps_pkgs }}'
                 state: latest
                 update_cache: true
               when: ansible_distribution=="Debian"
+          become: true
 
         - name: Run pyenv install script
           shell:
-            cmd: curl -o- htps://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
+            cmd: curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
             creates: '{{ local_opt_path }}/pyenv/bin/pyenv'
           environment:
             PYENV_ROOT: '{{ local_opt_path }}/pyenv'
-          become_user: '{{ user }}'
 
         - name: Apply PyEnv zsh config
           block:
@@ -425,7 +377,6 @@
             creates: '{{ local_opt_path }}/nvm/nvm.sh'
           environment:
             NVM_DIR: '{{ local_opt_path }}/nvm'
-          become_user: '{{ user }}'
 
         - name: Apply NVM zsh config
           block:

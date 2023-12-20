@@ -1,11 +1,11 @@
 ---
 - name: Install Fatpak packages
   hosts: localhost
-  become: true
-  vars_files: [./vars.yml]
 
-  tasks:
-    # Prepare
+  vars_files:
+    - _vars_base.yml
+
+  pre_tasks:
     - name: Prepare steps
       block:
         - name: Install flatpak
@@ -18,6 +18,7 @@
 
       tags: prepare
 
+  tasks:
     # Base
     - name: Base pkgs
       block:
@@ -52,8 +53,7 @@
                 state: present
           when: de_name=="gnome"
 
-      become_user: '{{ user }}'
-      tags: base
+      tags: base_flatpak_pkgs
 
     # Media
     - name: Media pkgs
@@ -165,7 +165,6 @@
                     io.github.celluloid_player.Celluloid
               when: wsp_name=="x11"
 
-      become_user: '{{ user }}'
       tags: media
 
     # Brave
@@ -206,7 +205,6 @@
                 com.brave.Browser
           when: wsp_name=="x11"
 
-      become_user: '{{ user }}'
       tags: brave
 
     # Librewolf
@@ -235,7 +233,6 @@
                 io.gitlab.librewolf-community
           when: wsp_name=="x11"
 
-      become_user: '{{ user }}'
       tags: librewolf
 
     # Bitwarden
@@ -261,7 +258,6 @@
                 com.bitwarden.desktop
           when: wsp_name=="x11"
 
-      become_user: '{{ user }}'
       tags: bitwarden
 
     # Telegram
@@ -292,7 +288,6 @@
                 org.telegram.desktop
           when: wsp_name=="x11"
 
-      become_user: '{{ user }}'
       tags: telegram
 
     # Spotify
@@ -320,7 +315,6 @@
                 com.spotify.Client
           when: wsp_name=="x11"
 
-      become_user: '{{ user }}'
       tags: spotify
 
     # FreeTube
@@ -338,7 +332,6 @@
                 io.freetubeapp.FreeTube
           when: wsp_name=="wayland"
 
-      become_user: '{{ user }}'
       tags: freetube
 
     # LibreOffice
@@ -375,5 +368,4 @@
                 org.libreoffice.LibreOffice
           when: wsp_name=="x11"
 
-      become_user: '{{ user }}'
       tags: libreoffice

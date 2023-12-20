@@ -1,8 +1,18 @@
 ---
 - name: Apply system config
   hosts: localhost
-  become: true
-  vars_files: [./vars.yml]
+
+  vars_files:
+    - _vars_base.yml
+    - _vars_pkgs.yml
+
+  pre_tasks:
+    - name: Preparatory steps
+      block:
+        - name: Create local dirs
+          include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
+
+      tags: prepare
 
   tasks:
     # System Configs
@@ -51,7 +61,8 @@
             state: present
           when: ansible_distribution=="Debian"
 
-      tags: system
+      become: true
+      tags: system_config
 
     # User's Configs
     - name: Apply user's configs
@@ -81,15 +92,12 @@
               when: (de_name=='gnome') or (de_name=='mate')
           when: ( ansible_env.XDG_CURRENT_DESKTOP is defined )
 
-        - name: Create local dirs
-          include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
-
         - name: Download some scripts
           get_url:
             url: https://raw.githubusercontent.com/ggragham/just_bunch_of_scripts/master/bin/{{ item }}
             dest: '{{ local_bin_path }}/'
             mode: 0700
-          with_items: [weather, getip, gen_secret]
+          with_items: '{{ script_list }}'
 
         - name: Debian User's Config
           block:
@@ -125,5 +133,4 @@
                     mode: 0644
           when: ansible_distribution=="Debian"
 
-      become_user: '{{ user }}'
-      tags: user
+      tags: local_config

@@ -1,0 +1,18 @@
+---
+- name: Install extra PKGs
+  import_playbook: ./ansible/install_extra_pkgs.yml
+
+- name: Install Dev PKGs
+  import_playbook: ./ansible/install_dev_pkgs.yml
+
+- name: Install Flatpak PKGs
+  import_playbook: ./ansible/install_flatpak_pkgs.yml
+
+- name: Install Themes PKGs
+  import_playbook: ./ansible/install_themes.yml
+
+- name: Install Gaming PKGs
+  import_playbook: ./ansible/install_gaming_pkgs.yml
+
+- name: Apply config
+  import_playbook: ./ansible/apply_config.yml

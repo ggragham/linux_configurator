@@ -1,8 +1,10 @@
 ---
 - name: Install extra packages
   hosts: localhost
-  become: true
-  vars_files: [./vars.yml]
+
+  vars_files:
+    - _vars_base.yml
+    - _vars_pkgs.yml
 
   tasks:
     # Extra Pkgs
@@ -12,27 +14,7 @@
           block:
             - name: Install Fedora pkgs
               dnf:
-                name:
-                  - bat
-                  - bleachbit
-                  - cups
-                  - google-noto-emoji-color-fonts
-                  - google-noto-emoji-fonts
-                  - webp-pixbuf-loader
-                  - hplip
-                  - ibus-anthy
-                  - jetbrains-mono-fonts
-                  - liberation-fonts
-                  - neofetch
-                  - net-tools
-                  - nmap
-                  - p7zip
-                  - perl-Image-ExifTool
-                  - s-tui
-                  - sane-backends-drivers-scanners
-                  - simple-scan
-                  - tree
-                  - zip
+                name: '{{ fedora_extra_pkgs }}'
                 state: latest
                 update_cache: true
                 install_weak_deps: false
@@ -42,26 +24,12 @@
           block:
             - name: Install Debian pkgs [1/2]
               apt:
-                name:
-                  - bat
-                  - bleachbit
-                  - p7zip
-                  - rofi
-                  - systemd-timesyncd
-                  - unrar
-                  - vainfo
+                name: '{{ debian_extra_p1_pkgs }}'
                 state: latest
                 update_cache: true
             - name: Install Debian pkgs [2/2]
               apt:
-                name:
-                  - ibus
-                  - ibus-gtk
-                  - ibus-gtk3
-                  - ibus-kkc
-                  - libimage-exiftool-perl
-                  - neofetch
-                  - redshift-gtk
+                name: '{{ debian_extra_p2_pkgs }}'
                 state: latest
                 update_cache: true
                 install_recommends: false
@@ -72,7 +40,8 @@
                 state: link
           when: ansible_distribution=="Debian"
 
-      tags: extra
+      become: true
+      tags: extra_pkgs
 
     # Neovim
     - name: Remove other editors and install neovim
@@ -121,17 +90,22 @@
             creates: '{{ system_bin_path }}/vimdiff'
           when: ansible_distribution=="Fedora"
 
+      become: true
       tags: neovim
 
     # Oh My Zsh
     - name: Install zsh
       block:
+        - name: Create local dirs
+          include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
+
         - name: Install zsh to Fedora
           dnf:
             name: zsh
             state: latest
             update_cache: true
             install_weak_deps: false
+          become: true
           when: ansible_distribution=="Fedora"
 
         - name: Install zsh to Debian
@@ -139,12 +113,14 @@
             name: zsh
             state: latest
             update_cache: true
+          become: true
           when: ansible_distribution=="Debian"
 
         - name: Set zsh
           user:
             name: '{{ user }}'
             shell: /bin/zsh
+          become: true
 
         - name: Install and config Oh My ZSH
           block:
@@ -192,7 +168,6 @@
                     owner: '{{ user }}'
                     mode: 0700
                   with_items: [alias_zsh, '{{ distro_name }}_zsh']
-          become_user: '{{ user }}'
 
       tags: omz
 
@@ -238,4 +213,5 @@
             state: restarted
             enabled: true
 
+      become: true
       tags: iwd

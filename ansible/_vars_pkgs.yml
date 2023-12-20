@@ -1,0 +1,191 @@
+---
+fedora_core_pkgs:
+  - abattis-cantarell-fonts
+  - bash-completion
+  - gdm
+  - git
+  - gnome-shell
+  - gnome-terminal
+  - linux-firmware
+  - mesa-dri-drivers
+  - plymouth-theme-spinner
+
+fedora_base_pkgs:
+  - NetworkManager-openvpn-gnome
+  - NetworkManager-wifi
+  - baobab
+  - ffmpegthumbnailer
+  - file-roller
+  - gnome-bluetooth
+  - gnome-calculator
+  - gnome-calendar
+  - gnome-clocks
+  - gnome-disk-utility
+  - gnome-firmware
+  - gnome-tweaks
+  - gnome-weather
+  - gvfs-mtp
+  - htop
+  - lm_sensors
+  - nautilus
+  - nautilus-gsconnect
+  - nautilus-open-terminal
+  - power-profiles-daemon
+  - sqlite
+  - sushi
+  - unzip
+  - xdg-desktop-portal-gnome
+
+fedora_extra_pkgs:
+  - bat
+  - bleachbit
+  - cups
+  - google-noto-emoji-color-fonts
+  - google-noto-emoji-fonts
+  - webp-pixbuf-loader
+  - hplip
+  - ibus-anthy
+  - jetbrains-mono-fonts
+  - liberation-fonts
+  - neofetch
+  - net-tools
+  - nmap
+  - p7zip
+  - perl-Image-ExifTool
+  - s-tui
+  - sane-backends-drivers-scanners
+  - simple-scan
+  - tree
+  - zip
+
+fedora_devops_pkgs:
+  - awscli
+
+fedora_virt_pkgs:
+  - gnome-boxes
+  - vagrant
+  - vagrant-libvirt
+  - vagrant-sshfs
+
+fedora_pyenv_deps_pkgs:
+  - make
+  - gcc
+  - patch
+  - zlib-devel
+  - bzip2
+  - bzip2-devel
+  - readline-devel
+  - sqlite
+  - sqlite-devel
+  - openssl-devel
+  - tk-devel
+  - libffi-devel
+  - xz-devel
+  - libuuid-devel
+  - gdbm-devel
+  - libnsl2-devel
+
+debian_core_pkgs:
+  - bash-completion
+  - firmware-misc-nonfree
+  - intel-microcode
+  - xfonts-base
+  - xserver-xorg-input-libinput
+  - xserver-xorg-video-intel
+  - zram-tools
+
+debian_base_pkgs:
+  - atril
+  - blueman
+  - caja-open-terminal
+  - engrampa
+  - eom
+  - gnome-disk-utility
+  - htop
+  - lightdm
+  - lightdm-gtk-greeter-settings
+  - mate-applet-brisk-menu
+  - mate-applets
+  - mate-desktop-environment-core
+  - mate-media
+  - mate-notification-daemon
+  - mate-screensaver
+  - mate-sensors-applet
+  - mate-tweak
+  - mate-utils
+  - network-manager-gnome
+  - network-manager-openvpn-gnome
+  - pluma
+  - pulseaudio
+  - rng-tools
+  - tlp
+  - unzip
+
+debian_extra_p1_pkgs:
+  - bat
+  - bleachbit
+  - p7zip
+  - rofi
+  - systemd-timesyncd
+  - unrar
+  - vainfo
+
+debian_extra_p2_pkgs:
+  - ibus
+  - ibus-gtk
+  - ibus-gtk3
+  - ibus-kkc
+  - libimage-exiftool-perl
+  - neofetch
+  - redshift-gtk
+
+debian_devops_pkgs:
+  - awscli
+
+debina_virt_pkgs:
+  - gnome-boxes
+  - libvirt-daemon-system
+  - vagrant
+  - vagrant-libvirt
+  - vagrant-sshfs
+
+debian_pyenv_deps_pkgs:
+  - build-essential
+  - libssl-dev
+  - zlib1g-dev
+  - libbz2-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - curl
+  - libncursesw5-dev
+  - xz-utils
+  - tk-dev
+  - libxml2-dev
+  - libxmlsec1-dev
+  - libffi-dev
+  - liblzma-dev
+
+docker_pkgs:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+
+script_list:
+  - gen_secret
+  - getip
+  - weather
+
+vscode_extensions:
+  - dcasella.monokai-plusplus
+  - foxundermoon.shell-format
+  - Gruntfuggly.todo-tree
+  - lonefy.vscode-JS-CSS-HTML-formatter
+  - mads-hartmann.bash-ide-vscode
+  - MattiasBaake.vscode-snippets-for-ansible
+  - PKief.material-icon-theme
+  - redhat.vscode-yaml
+  - timonwong.shellcheck
+  - vscodevim.vim
+  - wholroyd.jinja

@@ -1,49 +1,90 @@
 #!/usr/bin/env bash
 
 # Main script.
-# Check and download depen
+# Check and download dependencies
 # Interactive menu to execute playbooks.
 
 cd "$(dirname "$0")" || exit "$?"
 export ANSIBLE_LOCALHOST_WARNING=False
 export ANSIBLE_INVENTORY_UNPARSED_WARNING=False
 
+# Global constants
+readonly DISTRO_LIST=("fedora" "debian")
+readonly PKGS_LIST=("git" "ansible")
+readonly REPO_NAME="linux_configurator"
+readonly REPO_LINK="https://github.com/ggragham/${REPO_NAME}.git"
+readonly DEFAULT_REPO_PATH="$HOME/.local/opt/$REPO_NAME"
+
 # Global vars
-USERNAME="$SUDO_USER"
-PRESERVE_USER_ENV="XDG_SESSION_TYPE,XDG_CURRENT_DESKTOP"
-PRESERVE_ENV="${PRESERVE_USER_ENV},ANSIBLE_LOCALHOST_WARNING,ANSIBLE_INVENTORY_UNPARSED_WARNING,SUDO_USER,SUDO_UID"
-DISTRO_LIST=("fedora" "debian")
+USER_PASSWORD="${USER_PASSWORD:-}"
+SCRIPT_PATH="$(dirname "$0")"
+if [[ -d "$SCRIPT_PATH/.git" ]]; then
+	REPO_ROOT_PATH="$SCRIPT_PATH"
+else
+	REPO_ROOT_PATH="${REPO_ROOT_PATH:-"$DEFAULT_REPO_PATH"}"
+fi
+ANSIBLE_PLAYBOOK_PATH="$REPO_ROOT_PATH/ansible"
 CURRENT_DISTRO=""
 DISTRO_NAME_COLOR=""
-PKGS_LIST=("git" "ansible")
 PKGS_TO_INSTALL=""
-DEST_PATH="/home/$USERNAME/.local/opt"
-REPO_NAME="linux_configurator"
-REPO_LINK="https://github.com/ggragham/${REPO_NAME}.git"
-SCRIPT_NAME="install.sh"
-CURRENT_SCRIPT_PATH="$(readlink -f "$0")"
-DEFAULT_SCRIPT_PATH="$DEST_PATH/$REPO_NAME/$SCRIPT_NAME"
-REPO_ROOT_PATH="$(git rev-parse --show-toplevel 2>/dev/null)"
-ANSIBLE_PLAYBOOK_PATH="$REPO_ROOT_PATH/ansible"
 
 # Text formating
-BOLD='\033[1m'
-BLINK='\033[5m'
-LONG_TAB='\033[64G'
-RED='\033[0;31m'
-LIGHTBLUE='\033[1;34m'
-GREEN='\033[0;32m'
-NORMAL='\033[0m'
+readonly BOLD='\033[1m'
+readonly BLINK='\033[5m'
+readonly LONG_TAB='\033[64G'
+readonly RED='\033[0;31m'
+readonly LIGHTBLUE='\033[1;34m'
+readonly GREEN='\033[0;32m'
+readonly NORMAL='\033[0m'
 
-isSudo() {
-	if [[ $EUID != 0 ]] || [[ -z $USERNAME ]]; then
-		sudo --preserve-env="$PRESERVE_USER_ENV" bash "$SCRIPT_NAME"
+cleanup() {
+	local exitStatus="$?"
+	unset USER_PASSWORD
+	exit "$exitStatus"
+}
+
+trap cleanup TERM EXIT
+
+checkSudo() {
+	if [ "$EUID" -eq 0 ]; then
+		echo "Error: Running this script with sudo is not allowed."
 		exit 1
 	fi
 }
 
-runAsUser() {
-	sudo --preserve-env="$PRESERVE_ENV" --user="$USERNAME" "$@"
+enterUserPassword() {
+	sudo -K
+
+	checkPassword() {
+		if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
+			sudo -K
+			return 0
+		else
+			echo -e "\nSorry, try again."
+			return 1
+		fi
+	}
+
+	if [ -n "$USER_PASSWORD" ]; then
+		if checkPassword; then
+			return 0
+		fi
+		exit $?
+	fi
+
+	while :; do
+		read -rsp "Password: " USER_PASSWORD
+		if checkPassword; then
+			break
+		fi
+	done
+
+	return 0
+}
+
+runAsSudo() {
+	echo "$USER_PASSWORD" | sudo --stdin "$@"
+	sudo -K
 }
 
 pressAnyKeyToContinue() {
@@ -88,13 +129,13 @@ installInitDeps() {
 		return 0
 	else
 		if [[ "$CURRENT_DISTRO" == "fedora" ]]; then
-			dnf install -y \
+			runAsSudo dnf install -y \
 				--setopt=install_weak_deps=False \
 				--setopt=countme=False \
 				$PKGS_TO_INSTALL
 		elif [[ "$CURRENT_DISTRO" == "debian" ]]; then
-			apt update
-			apt install -y \
+			runAsSudo apt update
+			runAsSudo apt install -y \
 				--no-install-suggests \
 				--no-install-recommends \
 				$PKGS_TO_INSTALL
@@ -106,30 +147,19 @@ installInitDeps() {
 }
 
 cloneRepo() {
-	cloneLinuxConfigRepo() { (
+	(
 		set -eu
-		runAsUser mkdir -p "$DEST_PATH"
-		runAsUser git clone "$REPO_LINK" "$DEST_PATH/$REPO_NAME"
-	); }
+		mkdir -p "$REPO_ROOT_PATH"
+		git clone "$REPO_LINK" "$REPO_ROOT_PATH"
+	)
+}
 
-	runConfigurator() {
-		if bash "$DEFAULT_SCRIPT_PATH"; then
-			exit "$?"
-		else
-			local errcode="$?"
-			echo "Failed to start Linux Configurator"
-			exit "$errcode"
-		fi
-	}
-
-	if [[ -d "./.git" ]]; then
-		return 0
-	elif [[ "$DEFAULT_SCRIPT_PATH" != "$CURRENT_SCRIPT_PATH" ]]; then
-		if [[ ! -d "$DEST_PATH/$REPO_NAME" ]]; then
-			cloneLinuxConfigRepo
-		fi
-		runConfigurator
+init() {
+	installInitDeps
+	if [ "$PWD/$0" != "$REPO_ROOT_PATH/$0" ]; then
+		cloneRepo
 	fi
+	cd "$REPO_ROOT_PATH" || exit "$?"
 }
 
 asciiLogo() {
@@ -167,11 +197,14 @@ menuItem() {
 	echo -e "${GREEN}$number.${NORMAL} $text"
 }
 
-installOtherPkgs() {
-	otherAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_extra_pkgs.yml" --tags "$@"
-	}
+runAnsiblePlaybook() {
+	local playbookName="$1"
+	shift
+	local tagsList="$*"
+	ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$playbookName.yml" --tags "prepare,$tagsList" --extra-vars "ansible_become_password=$USER_PASSWORD"
+}
 
+installOtherPkgs() {
 	local select="*"
 	while :; do
 		printHeader
@@ -185,22 +218,22 @@ installOtherPkgs() {
 
 		case $select in
 		1)
-			otherAnsiblePlaybook "extra"
+			runAnsiblePlaybook "install_extra_pkgs" "extra_pkgs"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			otherAnsiblePlaybook "neovim"
+			runAnsiblePlaybook "install_extra_pkgs" "neovim"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
-			otherAnsiblePlaybook "omz"
+			runAnsiblePlaybook "install_extra_pkgs" "omz"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		4)
-			otherAnsiblePlaybook "iwd"
+			runAnsiblePlaybook "install_extra_pkgs" "iwd"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -216,10 +249,6 @@ installOtherPkgs() {
 }
 
 installDevPkgs() {
-	devAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_dev_pkgs.yml" --tags "$@"
-	}
-
 	local select="*"
 	while :; do
 		printHeader
@@ -237,42 +266,42 @@ installDevPkgs() {
 
 		case $select in
 		1)
-			devAnsiblePlaybook "vscodium"
+			runAnsiblePlaybook "install_dev_pkgs" "vscodium"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			devAnsiblePlaybook "virtualization"
+			runAnsiblePlaybook "install_dev_pkgs" "virtualization"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
-			devAnsiblePlaybook "devops"
+			runAnsiblePlaybook "install_dev_pkgs" "devops"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		4)
-			devAnsiblePlaybook "docker"
+			runAnsiblePlaybook "install_dev_pkgs" "docker"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		5)
-			devAnsiblePlaybook "podman"
+			runAnsiblePlaybook "install_dev_pkgs" "podman"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		6)
-			devAnsiblePlaybook "kubernetes"
+			runAnsiblePlaybook "install_dev_pkgs" "kubernetes"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		7)
-			devAnsiblePlaybook "pyenv"
+			runAnsiblePlaybook "install_dev_pkgs" "pyenv"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		8)
-			devAnsiblePlaybook "nvm"
+			runAnsiblePlaybook "install_dev_pkgs" "nvm"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -288,10 +317,6 @@ installDevPkgs() {
 }
 
 installFlatpakPkgs() {
-	flatpakAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_flatpak_pkgs.yml" --tags "prepare,$*"
-	}
-
 	local select="*"
 	while :; do
 		printHeader
@@ -310,47 +335,47 @@ installFlatpakPkgs() {
 
 		case $select in
 		1)
-			flatpakAnsiblePlaybook "base"
+			runAnsiblePlaybook "install_flatpak_pkgs" "base_flatpak_pkgs"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			flatpakAnsiblePlaybook "media"
+			runAnsiblePlaybook "install_flatpak_pkgs" "media"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
-			flatpakAnsiblePlaybook "brave"
+			runAnsiblePlaybook "install_flatpak_pkgs" "brave"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		4)
-			flatpakAnsiblePlaybook "librewolf"
+			runAnsiblePlaybook "install_flatpak_pkgs" "librewolf"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		5)
-			flatpakAnsiblePlaybook "bitwarden"
+			runAnsiblePlaybook "install_flatpak_pkgs" "bitwarden"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		6)
-			flatpakAnsiblePlaybook "telegram"
+			runAnsiblePlaybook "install_flatpak_pkgs" "telegram"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		7)
-			flatpakAnsiblePlaybook "spotify"
+			runAnsiblePlaybook "install_flatpak_pkgs" "spotify"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		8)
-			flatpakAnsiblePlaybook "freetube"
+			runAnsiblePlaybook "install_flatpak_pkgs" "freetube"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		9)
-			flatpakAnsiblePlaybook "libreoffice"
+			runAnsiblePlaybook "install_flatpak_pkgs" "libreoffice"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -366,10 +391,6 @@ installFlatpakPkgs() {
 }
 
 installGamingPkgs() {
-	gamingAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_gaming_pkgs.yml" --tags "flatpak,gamemode,$*"
-	}
-
 	local select="*"
 	while :; do
 		printHeader
@@ -382,17 +403,17 @@ installGamingPkgs() {
 
 		case $select in
 		1)
-			gamingAnsiblePlaybook "bottles"
+			runAnsiblePlaybook "install_gaming_pkgs" "bottles"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			gamingAnsiblePlaybook "lutris"
+			runAnsiblePlaybook "install_gaming_pkgs" "lutris"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
-			gamingAnsiblePlaybook "steam"
+			runAnsiblePlaybook "install_gaming_pkgs" "steam"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -408,10 +429,6 @@ installGamingPkgs() {
 }
 
 applyConfig() {
-	configAnsiblePlaybook() {
-		ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/apply_config.yml" --tags "$@"
-	}
-
 	local select="*"
 	while :; do
 		printHeader
@@ -423,12 +440,12 @@ applyConfig() {
 
 		case $select in
 		1)
-			configAnsiblePlaybook "system"
+			runAnsiblePlaybook "apply_config" "system_config"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			configAnsiblePlaybook "user"
+			runAnsiblePlaybook "apply_config" "local_config"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -470,7 +487,7 @@ installAddPkgs() {
 			select="*"
 			;;
 		4)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/install_themes.yml"
+			runAnsiblePlaybook "install_themes" "themes"
 			pressAnyKeyToContinue
 			select="*"
 			;;
@@ -490,7 +507,8 @@ installAddPkgs() {
 }
 
 main() {
-	isSudo
+	checkSudo
+	enterUserPassword
 	getDistroName
 	installInitDeps
 	cloneRepo
@@ -515,7 +533,7 @@ main() {
 
 		case $select in
 		1)
-			ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/init_${CURRENT_DISTRO}.yml"
+			runAnsiblePlaybook "init" "init"
 			echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
 			pressAnyKeyToContinue
 			select="*"
