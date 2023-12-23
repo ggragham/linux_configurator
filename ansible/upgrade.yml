@@ -23,3 +23,19 @@
 
       become: true
 
+    # Flatpak
+    - name: Update Flatpak Packages
+      block:
+        - name: Check if Flatpak is installed
+          shell: which flatpak
+          register: flatpak
+          ignore_errors: true
+
+        - name: Update Flatpak PKGs
+          shell: flatpak update -y
+          when: flatpak.rc == 0
+
+        - name: Remove unused Flatpak runtimes
+          shell: flatpak uninstall --unused --delete-data -y
+          when: flatpak.rc == 0
+
