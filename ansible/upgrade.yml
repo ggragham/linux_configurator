@@ -1,0 +1,25 @@
+---
+- name: Upgrade Linux system
+  hosts: localhost
+
+  tasks:
+    # Built-in package manager
+    - name: Upgrade distro
+      block:
+        - name: Update and upgrade packages
+          package:
+            name: '*'
+            state: latest
+
+        - name: Autoremove unneeded packages (Debian based)
+          apt:
+            autoremove: true
+          when: ansible_os_family == "Debian"
+
+        - name: Autoremove unneeded packages (Red Hat based)
+          dnf:
+            autoremove: true
+          when: ansible_os_family == "RedHat"
+
+      become: true
+
