@@ -6,9 +6,27 @@ fedora_core_pkgs:
   - git
   - gnome-shell
   - gnome-terminal
-  - linux-firmware
   - mesa-dri-drivers
   - plymouth-theme-spinner
+
+fedora_firmware_pkgs:
+  - linux-firmware
+  # - atheros-firmware
+  # - brcmfmac-firmware
+  # - iwlegacy-firmware
+  # - iwlwifi-dvm-firmware
+  # - iwlwifi-mvm-firmware
+  # - libertas-firmware
+  # - mt7xxx-firmware
+  # - realtek-firmware
+  # - tiwilink-firmware
+
+fedora_amd_firmware_pkgs:
+  - amd-gpu-firmware
+  - amd-ucode-firmware
+
+fedora_intel_firmware_pkgs:
+  - intel-gpu-firmware
 
 fedora_base_pkgs:
   - NetworkManager-openvpn-gnome

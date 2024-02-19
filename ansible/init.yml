@@ -29,6 +29,36 @@
                 install_weak_deps: false
                 disable_gpg_check: true
 
+        - name: Install firmware
+          block:
+            - name: Install base firmware pkgs
+              dnf:
+                name: '{{ fedora_firmware_pkgs }}'
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+
+            - name: Install AMD firmware pkgs
+              dnf:
+                name: '{{ fedora_amd_firmware_pkgs }}'
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+              when: "'AuthenticAMD' in ansible_processor"
+
+            - name: Install Intel firmware pkgs`
+              dnf:
+                name: '{{ fedora_intel_firmware_pkgs }}'
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+              when: "'GenuineIntel' in ansible_processor"
+
+            - name: Warning for unsupported platform
+              debug:
+                msg: 'Platform: {{ ansible_processor[1] }} is not supported.'
+              when: "'AuthenticAMD' not in ansible_processor and 'GenuineIntel' not in ansible_processor_vendors"
+
         - name: Install core pkgs
           dnf:
             name: '{{ fedora_core_pkgs }}'
