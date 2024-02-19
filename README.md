@@ -107,15 +107,16 @@ ansible-playbook -K "$REPO_ROOT_PATH/playbook.yml" --tags="prepare,extra_pkgs,lo
     * [x] IWD config
     * [x] GnomeDE dconf
     * [x] MateDE dconf
-    * [ ] XFCE config
-    * [ ] Sway config
-    * [ ] i3wm config
+    * ~~XFCE config~~
+    * ~~Sway config~~
+    * ~~i3wm config~~
     * [x] Flatpak config
+    * [ ] Add some hardening
 * [x] Make more convenient and beautiful menu
 * [ ] Make configs for different types of hardware
     * [x] Intel/AMD
     * [ ] Radeon/Nvidia
-    * [ ] ARM devices
+    * ~~ARM devices~~
 
 
 ## Important Note
