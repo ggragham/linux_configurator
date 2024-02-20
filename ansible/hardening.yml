@@ -43,5 +43,12 @@
             mode: 0640
           become: true
 
+        - name: Hardening kernel settings
+          copy:
+            src: '{{ system_conf_path }}/sysctl.d/hardening.conf'
+            dest: '/etc/sysctl.d/hardening.conf'
+            mode: 0640
+          become: true
+
       when: ansible_distribution=="Fedora"
       tags: hardening
