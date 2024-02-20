@@ -1,0 +1,13 @@
+---
+- name: Hardening system
+  hosts: localhost
+
+  vars_files:
+    - _vars_base.yml
+
+  tasks:
+    - name: Fedora Hardening
+      block:
+
+      when: ansible_distribution=="Fedora"
+      tags: hardening
