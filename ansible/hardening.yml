@@ -35,6 +35,13 @@
                 backrefs: true
 
           become: true
+        
+        - name: Blacklist unused modules
+          copy:
+            src: '{{ system_conf_path }}/modprobe.d/blacklist.conf'
+            dest: '/etc/modprobe.d/blacklist.conf'
+            mode: 0640
+          become: true
 
       when: ansible_distribution=="Fedora"
       tags: hardening
