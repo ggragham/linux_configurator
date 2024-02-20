@@ -8,6 +8,33 @@
   tasks:
     - name: Fedora Hardening
       block:
+        - name: Update login.defs settings
+          block:
+            - name: Set umask to 027
+              lineinfile:
+                path: /etc/login.defs
+                regexp: ^#?UMASK
+                line: UMASK 027
+                state: present
+                backrefs: true
+
+            - name: Set home mode to 0700
+              lineinfile:
+                path: /etc/login.defs
+                regexp: ^#?HOME_MODE
+                line: HOME_MODE 0700
+                state: present
+                backrefs: true
+
+            - name: Set yescrypt cost factor to 11
+              lineinfile:
+                path: /etc/login.defs
+                regexp: ^#?YESCRYPT_COST_FACTOR
+                line: YESCRYPT_COST_FACTOR 11
+                state: present
+                backrefs: true
+
+          become: true
 
       when: ansible_distribution=="Fedora"
       tags: hardening
