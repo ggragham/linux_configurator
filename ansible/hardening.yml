@@ -82,6 +82,11 @@
                 src: '{{ system_conf_path }}/security/faillock.conf'
                 dest: /etc/security/faillock.conf
                 mode: 0640
+            - name: Apply pwquality config
+              copy:
+                src: '{{ system_conf_path }}/security/pwquality.conf'
+                dest: /etc/security/pwquality.conf
+                mode: 0640
             - name: Enbale faillock
               command: authselect enable-feature with-faillock
           become: true
