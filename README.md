@@ -97,9 +97,11 @@ ansible-playbook -K "$REPO_ROOT_PATH/playbook.yml" --tags="prepare,extra_pkgs,lo
 * **system_config** - apply system configuration.
 * **local_config** - apply user configuration.
 
+* **hardening** - apply security configuration.
+
 
 ## To Do
-* [ ] I need more configs (ﾉ◕ヮ◕)ﾉ*.✧
+* [x] I need more configs (ﾉ◕ヮ◕)ﾉ*.✧
     * [x] Basic Fedora config
     * [x] Basic Debian config
     * [x] Dotfiles symlinks
@@ -111,7 +113,7 @@ ansible-playbook -K "$REPO_ROOT_PATH/playbook.yml" --tags="prepare,extra_pkgs,lo
     * ~~Sway config~~
     * ~~i3wm config~~
     * [x] Flatpak config
-    * [ ] Add some hardening
+    * [x] Add some hardening
 * [x] Make more convenient and beautiful menu
 * [ ] Make configs for different types of hardware
     * [x] Intel/AMD

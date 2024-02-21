@@ -434,6 +434,7 @@ applyConfig() {
 		printHeader
 		menuItem "1" "Apply system config"
 		menuItem "2" "Apply local config"
+		menuItem "3" "System Hardening"
 		echo
 		menuItem "0" "Back"
 		echo
@@ -446,6 +447,11 @@ applyConfig() {
 			;;
 		2)
 			runAnsiblePlaybook "apply_config" "local_config"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		3)
+			runAnsiblePlaybook "hardening" "hardening"
 			pressAnyKeyToContinue
 			select="*"
 			;;
