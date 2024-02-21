@@ -50,5 +50,30 @@
             mode: 0640
           become: true
 
+        - name: Disable core dumps
+          block:
+            - name: Systemd coredump config
+              block:
+                - name: Get current timestamp
+                  set_fact:
+                    timestamp: "{{ lookup('pipe', 'date +%d_%m_%Y_%H_%M_%S') }}"
+                - name: Backup systemd coredump config with timestamp
+                  copy:
+                    src: /etc/systemd/coredump.conf
+                    dest: '{{ backup_path }}/coredump.conf_{{ timestamp }}'
+                - name: Apply systemd coredump config
+                  copy:
+                    src: '{{ system_conf_path }}/coredump.conf'
+                    dest: /etc/systemd/coredump.conf
+                    mode: 0640
+              become: true
+
+            - name: Ulimit coredump config
+              copy:
+                src: '{{ system_conf_path }}/security/limits.d/99-disable-coredump.conf'
+                dest: /etc/security/limits.d/99-disable-coredump.conf
+                mode: 0640
+              become: true
+
       when: ansible_distribution=="Fedora"
       tags: hardening
