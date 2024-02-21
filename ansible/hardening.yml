@@ -75,5 +75,16 @@
                 mode: 0640
           become: true
 
+        - name: Harden and enable pam faillock
+          block:
+            - name: Apply faillock config
+              copy:
+                src: '{{ system_conf_path }}/security/faillock.conf'
+                dest: /etc/security/faillock.conf
+                mode: 0640
+            - name: Enbale faillock
+              command: authselect enable-feature with-faillock
+          become: true
+
       when: ansible_distribution=="Fedora"
       tags: hardening
