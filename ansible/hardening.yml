@@ -91,5 +91,25 @@
               command: authselect enable-feature with-faillock
           become: true
 
+        - name: firewalld
+          block:
+            - name: Apply firewalld default zone config
+              copy:
+                src: '{{ system_conf_path }}/firewalld/zones/public.xml'
+                dest: /etc/firewalld/zones/public.xml
+                mode: 0640
+            - name: Ensure firewalld is running
+              service:
+                name: firewalld
+                state: restarted
+                enabled: true
+            - name: Set default zone to public
+              firewalld:
+                zone: public
+                state: enabled
+                permanent: true
+                immediate: true
+          become: true
+
       when: ansible_distribution=="Fedora"
       tags: hardening
