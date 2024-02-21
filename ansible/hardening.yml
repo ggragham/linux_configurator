@@ -17,7 +17,6 @@
                 line: UMASK 027
                 state: present
                 backrefs: true
-
             - name: Set home mode to 0700
               lineinfile:
                 path: /etc/login.defs
@@ -25,7 +24,6 @@
                 line: HOME_MODE 0700
                 state: present
                 backrefs: true
-
             - name: Set yescrypt cost factor to 11
               lineinfile:
                 path: /etc/login.defs
@@ -33,20 +31,19 @@
                 line: YESCRYPT_COST_FACTOR 11
                 state: present
                 backrefs: true
-
           become: true
-        
+
         - name: Blacklist unused modules
           copy:
             src: '{{ system_conf_path }}/modprobe.d/blacklist.conf'
-            dest: '/etc/modprobe.d/blacklist.conf'
+            dest: /etc/modprobe.d/blacklist.conf
             mode: 0640
           become: true
 
         - name: Hardening kernel settings
           copy:
             src: '{{ system_conf_path }}/sysctl.d/hardening.conf'
-            dest: '/etc/sysctl.d/hardening.conf'
+            dest: /etc/sysctl.d/hardening.conf
             mode: 0640
           become: true
 
