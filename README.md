@@ -30,6 +30,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/ggragham/linux_configura
 
 ## Usage (Manual way)
 1. Install git and ansible.
+
 On Fedora Linux:
 ```bash
 sudo dnf install git ansible
