@@ -17,7 +17,13 @@ fi
 # Backup dir.
 if [[ -d $CURRENT_DIR ]]; then
 	currentTimestamp="$(date +'%d_%m_%Y_%H_%M_%S')"
-	mv "$CURRENT_DIR" "$BACKUP_PATH/${DIR_NAME}_$currentTimestamp"
+	if mv "$CURRENT_DIR" "$BACKUP_PATH/${DIR_NAME}_$currentTimestamp"; then
+		echo "Backup of $CURRENT_DIR was successful"
+	else
+		errcode="$?"
+		echo "Backup of $CURRENT_DIR failed"
+		exit "$errcode"
+	fi
 fi
 
 # Create BTRFS subvol.
