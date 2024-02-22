@@ -8,6 +8,12 @@ DIR_NAME="$2"
 
 # set -euo pipefail
 
+# Check for subvol existing.
+if [ "$(stat --format=%i "$CURRENT_DIR")" == "256" ]; then
+	echo "Nested subvolume already created"
+	exit 0
+fi
+
 # Backup dir.
 if [[ -d $CURRENT_DIR ]]; then
 	currentTimestamp="$(date +'%d_%m_%Y_%H_%M_%S')"
