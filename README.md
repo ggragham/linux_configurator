@@ -1,4 +1,15 @@
 # Linux Configurator
+
+<p align="center">
+  <a href="https://fedoraproject.org/"><img src="https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white" alt="fedora"></a>
+  <a href="https://www.ansible.com/"><img src="https://img.shields.io/badge/ansible-%231A1918.svg?style=for-the-badge&logo=ansible" alt="ansible"></a>
+  <a href="https://www.debian.org/"><img src="https://img.shields.io/badge/Debian-D70A53?style=for-the-badge&logo=debian&logoColor=white" alt="debian"></a>
+  <br>
+  <img src="https://img.shields.io/github/last-commit/ggragham/linux_configurator" alt="last commit">
+  <img src="https://img.shields.io/github/repo-size/ggragham/linux_configurator" alt="repo size">
+  <a href="http://unlicense.org/"><img src="https://img.shields.io/badge/license-Unlicense-blue.svg" alt="license"></a>
+</p>
+
 Just bunch of Ansible playbooks and scripts designed for personal Linux system configuration. Primarily developed for Fedora and Debian. You feel free to use it as source for your configuration.
 
 
