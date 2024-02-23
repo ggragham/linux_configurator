@@ -1,10 +1,10 @@
 {
-    "editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace",
+    "editor.fontFamily": "'Comic Code', 'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace",
     "editor.fontSize": 14,
     "editor.fontLigatures": true,
     "editor.insertSpaces": false,
     "editor.renderWhitespace": "boundary",
-    "terminal.integrated.fontFamily": "monospace",
+    "terminal.integrated.fontFamily": "'Comic Code', 'JetBrains Mono', monospace",
     "terminal.integrated.fontSize": 12,
     "redhat.telemetry.enabled": false,
     "telemetry.enableTelemetry": false,
@@ -13,9 +13,10 @@
     "files.associations": {
         "*.yml": "yaml"
     },
-    "workbench.colorTheme": "Monokai++",
-    "git.autofetch": true,
+    "workbench.colorTheme": "Monokai++ Unified",
     "workbench.iconTheme": "material-icon-theme",
+    "git.autofetch": true,
+    "git.defaultBranchName": "master",
     "diffEditor.ignoreTrimWhitespace": false,
     "window.titleBarStyle": "custom",
     "vim.handleKeys": {
@@ -29,4 +30,5 @@
         "<C-f>": false,
         "<C-h>": false
     },
+    "continue.telemetryEnabled": false
 }
