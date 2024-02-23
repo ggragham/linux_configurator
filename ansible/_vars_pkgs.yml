@@ -197,14 +197,19 @@ script_list:
   - weather
 
 vscode_extensions:
+  - AaaaronZhou.nginx-config-formatter-vscode-extension
+  - ban.spellright
+  - codezombiech.gitignore
   - dcasella.monokai-plusplus
   - foxundermoon.shell-format
   - Gruntfuggly.todo-tree
+  - jeff-hykin.better-shellscript-syntax
+  - lkrms.inifmt
   - lonefy.vscode-JS-CSS-HTML-formatter
   - mads-hartmann.bash-ide-vscode
   - MattiasBaake.vscode-snippets-for-ansible
   - PKief.material-icon-theme
   - redhat.vscode-yaml
+  - samuelcolvin.jinjahtml
   - timonwong.shellcheck
   - vscodevim.vim
-  - wholroyd.jinja
