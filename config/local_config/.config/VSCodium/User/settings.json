@@ -30,5 +30,15 @@
         "<C-f>": false,
         "<C-h>": false
     },
+    "spellright.language": [
+        "en",
+        "uk",
+        "ru"
+    ],
+    "spellright.documentTypes": [
+        "markdown",
+        "latex",
+        "plaintext"
+    ],
     "continue.telemetryEnabled": false
 }
