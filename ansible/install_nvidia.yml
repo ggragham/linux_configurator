@@ -85,6 +85,14 @@
             - name: Recreates the initramfs image
               command: dracut --force
 
+            - name: Enable NVIDIA power services
+              service:
+                name: '{{ item }}'
+                enabled: true
+              loop:
+                - nvidia-suspend
+                - nvidia-resume
+
           tags: nvidia_firmware
           become: true
 
