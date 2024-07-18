@@ -36,11 +36,7 @@
           block:
             - name: Install necessary packages for signing modules
               dnf:
-                name:
-                  - kmodtool
-                  - akmods
-                  - mokutil
-                  - openssl
+                name: '{{ fedora_nvidia_secureboot_tools }}'
                 state: latest
                 update_cache: true
                 install_weak_deps: false
@@ -60,18 +56,17 @@
           block:
             - name: Install NVIDIA drivers
               dnf:
-                name:
-                  - akmod-nvidia
-                  - xorg-x11-drv-nvidia
-                  - xorg-x11-drv-nvidia-libs
-                  - xorg-x11-drv-nvidia-power
-                  - nvidia-settings
+                name: '{{ fedora_nvidia_firmware }}'
                 state: present
+                update_cache: true
+                install_weak_deps: false
 
             - name: Install CUDA
               dnf:
-                name: xorg-x11-drv-nvidia-cuda
+                name: '{{ fedora_nvidia_cuda }}'
                 state: present
+                update_cache: true
+                install_weak_deps: false
 
             - name: Wait for NVIDIA modules to build
               shell: |
