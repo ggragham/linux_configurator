@@ -61,8 +61,6 @@ fedora_extra_pkgs:
   - google-noto-color-emoji-fonts
   - google-noto-emoji-fonts
   - webp-pixbuf-loader
-  # - hplip
-  # - ibus-anthy
   - jetbrains-mono-fonts
   - liberation-fonts
   - neofetch
@@ -71,8 +69,6 @@ fedora_extra_pkgs:
   - p7zip
   - perl-Image-ExifTool
   - s-tui
-  # - sane-backends-drivers-scanners
-  # - simple-scan
   - tree
   - unrar
   - zip
