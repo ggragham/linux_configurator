@@ -66,7 +66,7 @@
             - name: Warning for unsupported platform
               debug:
                 msg: 'Platform: {{ ansible_processor[1] }} is not supported.'
-              when: "'AuthenticAMD' not in ansible_processor and 'GenuineIntel' not in ansible_processor_vendors"
+              when: "'AuthenticAMD' not in ansible_processor and 'GenuineIntel' not in ansible_processor"
 
         - name: Install core pkgs
           dnf:
