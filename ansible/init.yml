@@ -55,7 +55,7 @@
                 install_weak_deps: false
               when: "'AuthenticAMD' in ansible_processor"
 
-            - name: Install Intel firmware pkgs`
+            - name: Install Intel firmware pkgs
               dnf:
                 name: '{{ fedora_intel_firmware_pkgs }}'
                 state: latest
