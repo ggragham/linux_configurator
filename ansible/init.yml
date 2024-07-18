@@ -4,6 +4,7 @@
 
   vars_files:
     - _vars_base.yml
+    - _vars_firmware_pkgs.yml
     - '{{ repo_root_path }}/default.pkgs.yml'
 
   pre_tasks:
@@ -47,26 +48,50 @@
                 update_cache: true
                 install_weak_deps: false
 
-            - name: Install AMD firmware pkgs
-              dnf:
-                name: '{{ fedora_amd_firmware_pkgs }}'
-                state: latest
-                update_cache: true
-                install_weak_deps: false
-              when: "'AuthenticAMD' in ansible_processor"
+            - name: Install CPU firmware
+              block:
+                - name: Install AMD CPU firmware
+                  dnf:
+                    name: '{{ fedora_amd_cpu_firmware }}'
+                    state: latest
+                    update_cache: true
+                    install_weak_deps: false
+                  when: "'AuthenticAMD' in ansible_processor"
+                - name: Install Intel CPU firmware
+                  dnf:
+                    name: '{{ fedora_intel_cpu_firmware }}'
+                    state: latest
+                    update_cache: true
+                    install_weak_deps: false
+                  when: "'GenuineIntel' in ansible_processor"
+                - name: Warning for unsupported CPU
+                  debug:
+                    msg: 'CPU: {{ ansible_processor[1] }} is not supported.'
+                  when: "'AuthenticAMD' not in ansible_processor and 'GenuineIntel' not in ansible_processor"
 
-            - name: Install Intel firmware pkgs
-              dnf:
-                name: '{{ fedora_intel_firmware_pkgs }}'
-                state: latest
-                update_cache: true
-                install_weak_deps: false
-              when: "'GenuineIntel' in ansible_processor"
-
-            - name: Warning for unsupported platform
-              debug:
-                msg: 'Platform: {{ ansible_processor[1] }} is not supported.'
-              when: "'AuthenticAMD' not in ansible_processor and 'GenuineIntel' not in ansible_processor"
+            - name: Install GPU firmware
+              block:
+                - name: Gather GPU information
+                  shell: lspci -nn | grep -i vga
+                  register: gpu_info
+                - name: Install AMD GPU firmware
+                  dnf:
+                    name: '{{ fedora_amd_gpu_firmware }}'
+                    state: latest
+                    update_cache: true
+                    install_weak_deps: false
+                  when: "'ATI' in gpu_info.stdout or 'Radeon' in gpu_info.stdout"
+                - name: Install Intel GPU firmware
+                  dnf:
+                    name: '{{ fedora_intel_gpu_firmware }}'
+                    state: latest
+                    update_cache: true
+                    install_weak_deps: false
+                  when: "'Intel' in gpu_info.stdout"
+                - name: Warning for unsupported GPU
+                  debug:
+                    msg: 'CPU: {{ ansible_processor[1] }} is not supported.'
+                  when: "'ATI' not in gpu_info.stdout and 'Radeon' not in gpu_info.stdout and 'Intel' not in gpu_info.stdout"
 
         - name: Install core pkgs
           dnf:

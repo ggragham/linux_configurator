@@ -1,4 +1,8 @@
 ---
+###################
+### Fedora PKGs  ###
+###################
+
 fedora_core_pkgs:
   - abattis-cantarell-fonts
   - bash-completion
@@ -20,13 +24,6 @@ fedora_firmware_pkgs:
   # - mt7xxx-firmware
   # - realtek-firmware
   # - tiwilink-firmware
-
-fedora_amd_firmware_pkgs:
-  - amd-gpu-firmware
-  - amd-ucode-firmware
-
-fedora_intel_firmware_pkgs:
-  - intel-gpu-firmware
 
 fedora_base_pkgs:
   - NetworkManager-openvpn-gnome
@@ -99,6 +96,10 @@ fedora_pyenv_deps_pkgs:
   - libuuid-devel
   - gdbm-devel
   - libnsl2-devel
+
+###################
+### Debian PKGs  ###
+###################
 
 debian_core_pkgs:
   - bash-completion
@@ -179,6 +180,10 @@ debian_pyenv_deps_pkgs:
   - libxmlsec1-dev
   - libffi-dev
   - liblzma-dev
+
+##################
+### Other PKGs  ###
+##################
 
 docker_pkgs:
   - docker-ce
