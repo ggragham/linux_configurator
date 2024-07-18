@@ -57,9 +57,10 @@ export REPO_ROOT_PATH="~/.local/opt/linux_configurator"
 git clone https://github.com/ggragham/linux_configurator.git "$REPO_ROOT_PATH"
 ```
 
-3. Change the list of packages to install (optional).
+3. Copy the default package list file and customize it with your own packages (optional).
 ```bash
-vi "$REPO_ROOT_PATH/ansible/_vars_pkgs.yml"
+cp "$REPO_ROOT_PATH/default.pkgs.yml" "$REPO_ROOT_PATH/pkgs.yml"
+vi "$REPO_ROOT_PATH/pkgs.yml"
 ```
 
 4. Run playbook as is ...
