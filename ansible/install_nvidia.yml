@@ -25,6 +25,8 @@
             regexp: ^GRUB_TIMEOUT=
             line: GRUB_TIMEOUT=0
             state: present
+
+      become: true
       tags: prepare
 
   tasks:
