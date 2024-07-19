@@ -60,6 +60,7 @@
                     dest: '{{ backup_path }}/coredump.conf_{{ timestamp }}'
                     mode: 0644
                     flat: true
+                  ignore_errors: true
                 - name: Apply systemd coredump config
                   copy:
                     src: '{{ system_conf_path }}/coredump.conf'
