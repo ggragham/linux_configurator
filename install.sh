@@ -198,9 +198,12 @@ menuItem() {
 }
 
 restartSystemNote() {
-	echo
-	echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
-	echo
+	local returnCode="$?"
+	if [ "$returnCode" -eq 0 ]; then
+		echo
+		echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
+		echo
+	fi
 }
 
 runAnsiblePlaybook() {
@@ -443,9 +446,12 @@ extraActions() {
 		}
 
 		nvidiaSecureBootPostNote() {
-			echo
-			echo "TODO: fill note about next steps after setting up signing modules"
-			echo
+			local returnCode="$?"
+			if [ "$returnCode" -eq 0 ]; then
+				echo
+				echo "TODO: fill note about next steps after setting up signing modules"
+				echo
+			fi
 		}
 
 		local select="*"
