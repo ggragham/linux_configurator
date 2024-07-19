@@ -434,6 +434,26 @@ installGamingPkgs() {
 	done
 }
 
+extraActions() {
+	local select="*"
+	while :; do
+		printHeader
+		echo
+		menuItem "0" "Back"
+		echo
+
+		case $select in
+		0)
+			return 0
+			;;
+		*)
+			read -rp "> " select
+			continue
+			;;
+		esac
+	done
+}
+
 applyConfig() {
 	local select="*"
 	while :; do
@@ -537,8 +557,9 @@ main() {
 	while :; do
 		printHeader
 		menuItem "1" "Initial configuration"
-		menuItem "2" "Install extra packages"
-		menuItem "3" "Apply configs"
+		menuItem "2" "Extra Actions"
+		menuItem "3" "Install extra packages"
+		menuItem "4" "Apply configs"
 		echo
 		menuItem "0" "Exit"
 		echo
@@ -551,10 +572,14 @@ main() {
 			select="*"
 			;;
 		2)
-			installAddPkgs
+			extraActions
 			select="*"
 			;;
 		3)
+			installAddPkgs
+			select="*"
+			;;
+		4)
 			applyConfig
 			select="*"
 			;;
