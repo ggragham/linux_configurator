@@ -435,14 +435,67 @@ installGamingPkgs() {
 }
 
 extraActions() {
+	installNvidia() {
+		nvidiaSecureBootPreNote() {
+			echo
+			echo "TODO: fill note about SecureBoot and NVIDIA module"
+			echo
+		}
+
+		nvidiaSecureBootPostNote() {
+			echo
+			echo "TODO: fill note about next steps after setting up signing modules"
+			echo
+		}
+
+		local select="*"
+		while :; do
+			printHeader
+			menuItem "1" "Prepare SecureBoot signing modules"
+			menuItem "2" "Install NVIDIA drivers and firmware"
+			echo
+			menuItem "0" "Back"
+			echo
+			nvidiaSecureBootPreNote
+			echo
+
+			case $select in
+			1)
+				runAnsiblePlaybook "install_nvidia" "nvidia_secureboot"
+				nvidiaSecureBootPostNote
+				pressAnyKeyToContinue
+				select="*"
+				;;
+			2)
+				runAnsiblePlaybook "install_nvidia" "nvidia_secureboot"
+				restartSystemNote
+				pressAnyKeyToContinue
+				select="*"
+				;;
+			0)
+				return 0
+				;;
+			*)
+				read -rp "> " select
+				continue
+				;;
+			esac
+		done
+	}
+
 	local select="*"
 	while :; do
 		printHeader
+		menuItem "1" "Install NVIDIA drivers and firmware"
 		echo
 		menuItem "0" "Back"
 		echo
 
 		case $select in
+		1)
+			installNvidia
+			select="*"
+			;;
 		0)
 			return 0
 			;;
