@@ -197,6 +197,12 @@ menuItem() {
 	echo -e "${GREEN}$number.${NORMAL} $text"
 }
 
+restartSystemNote() {
+	echo
+	echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
+	echo
+}
+
 runAnsiblePlaybook() {
 	local playbookName="$1"
 	shift
@@ -540,7 +546,7 @@ main() {
 		case $select in
 		1)
 			runAnsiblePlaybook "init" "init"
-			echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
+			restartSystemNote
 			pressAnyKeyToContinue
 			select="*"
 			;;
