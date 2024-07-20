@@ -77,6 +77,8 @@ ansible-playbook -K "$REPO_ROOT_PATH/playbook.yml" --tags="prepare,extra_pkgs,lo
 ## Tags
 * **init** - init playbook. Install and config minimal base system.
 * **prepare** - preparatory steps. Restore the directory structure in the local directory or install the necessary dependencies.
+* **nvidia_secureboot** - install and configure the necessary signing modules and keys for SecureBoot support with NVIDIA drivers.
+* **nvidia_firmware** - install NVIDIA firmware and drivers.
 * **extra_pkgs** - install list of extra pkgs.
 * **neovim** - install [NeoVim](https://neovim.io/).
 * **omz** - install [Oh My Zsh](https://ohmyz.sh/).
