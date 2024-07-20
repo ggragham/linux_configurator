@@ -128,9 +128,14 @@ ansible-playbook -K "$REPO_ROOT_PATH/playbook.yml" --tags="prepare,extra_pkgs,lo
     * [x] Flatpak config
     * [x] Add some hardening
 * [x] Make more convenient and beautiful menu
-* [ ] Make configs for different types of hardware
-    * [x] Intel/AMD
-    * [ ] Radeon/Nvidia
+* [x] Make configs for different types of hardware
+    * [x] CPU
+      * [x] Intel
+      * [x] AMD
+    * [x] GPU
+      * [x] Radeon
+      * [x] Intel
+      * [x] Nvidia
     * ~~ARM devices~~
 
 
