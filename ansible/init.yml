@@ -90,7 +90,7 @@
                   when: "'Intel' in gpu_info.stdout"
                 - name: Warning for unsupported GPU
                   debug:
-                    msg: 'CPU: {{ ansible_processor[1] }} is not supported.'
+                    msg: GPU is not supported.
                   when: "'ATI' not in gpu_info.stdout and 'Radeon' not in gpu_info.stdout and 'Intel' not in gpu_info.stdout and 'NVIDIA' not in gpu_info.stdout"
 
         - name: Install core pkgs
