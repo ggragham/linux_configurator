@@ -443,19 +443,19 @@ extraActions() {
 	installNvidia() {
 		nvidiaSecureBootPreNote() {
 			echo
-			echo -e "\t========================================================================="
-			echo -e "\t================================ ${BOLD}${RED}${BLINK}WARNING${NORMAL} ================================"
-			echo -e "\t========================================================================="
-			echo -e "\t=                                                                       ="
-			echo -e "\t=                          ${BOLD}ONLY FOR SECUREBOOT${NORMAL}                          ="
-			echo -e "\t=                                                                       ="
-			echo -e "\t=       ${BOLD}Preconditions:${NORMAL}                                                  ="
-			echo -e "\t=    ${BOLD}1.${NORMAL} If you are ${BOLD}NOT using SecureBoot${NORMAL}, go straight to the ${BOLD}2${NORMAL} option.   ="
-			echo -e "\t=    ${BOLD}2.${NORMAL} Worked with ${LIGHTBLUE}Fedora 39+${NORMAL} versions and latest ${GREEN}NVIDIA${NORMAL} drivers.      ="
-			echo -e "\t=    ${BOLD}3.${NORMAL} Turn on ${BOLD}SecureBoot${NORMAL} in ${BOLD}Setup Mode${NORMAL}.                               ="
-			echo -e "\t=    ${BOLD}4.${NORMAL} Delete ${BOLD}ALL${NORMAL} older ${GREEN}NVIDIA${NORMAL} installations.                          ="
-			echo -e "\t=                                                                       ="
-			echo -e "\t========================================================================="
+			echo -e "\t==========================================================================="
+			echo -e "\t================================= ${BOLD}${RED}${BLINK}WARNING${NORMAL} ================================="
+			echo -e "\t==========================================================================="
+			echo -e "\t=                                                                         ="
+			echo -e "\t=                           ${BOLD}ONLY FOR SECUREBOOT${NORMAL}                           ="
+			echo -e "\t=                                                                         ="
+			echo -e "\t=    Preconditions:                                                       ="
+			echo -e "\t=      ${BOLD}1.${NORMAL} If you are ${BOLD}NOT using SecureBoot${NORMAL}, go straight to the ${BOLD}2${NORMAL} option.   ="
+			echo -e "\t=      ${BOLD}2.${NORMAL} Worked with ${LIGHTBLUE}Fedora 39+${NORMAL} versions and latest ${GREEN}NVIDIA${NORMAL} drivers.      ="
+			echo -e "\t=      ${BOLD}3.${NORMAL} Turn on ${BOLD}SecureBoot${NORMAL} in ${BOLD}Setup Mode${NORMAL}.                               ="
+			echo -e "\t=      ${BOLD}4.${NORMAL} Delete ${BOLD}ALL${NORMAL} older ${GREEN}NVIDIA${NORMAL} installations.                          ="
+			echo -e "\t=                                                                         ="
+			echo -e "\t==========================================================================="
 			echo
 		}
 
