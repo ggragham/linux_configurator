@@ -64,17 +64,35 @@
               args:
                 creates: /etc/pki/akmods/certs/public_key.der
 
-            - name: Import MOK keys with mokutil
-              expect:
-                command: mokutil --import /etc/pki/akmods/certs/public_key.der
-                responses:
-                  'input password:': '{{ mok_password }}'
-                  'input password again:': '{{ mok_password }}'
-              register: mok_import_result
-
-            - name: Debug output
-              debug:
-                var: mok_import_result
+            - name: Import MOK keys
+              block:
+                - name: Check python3-pexpect existence
+                  command: dnf list installed python3-pexpect
+                  register: dnf_pexpect_check
+                  ignore_errors: true
+                - name: Install python3-pexpect
+                  dnf:
+                    name: python3-pexpect
+                    state: latest
+                    update_cache: true
+                    install_weak_deps: false
+                  when: dnf_pexpect_check is failed
+                - name: Import MOK keys with mokutil
+                  expect:
+                    command: mokutil --import /etc/pki/akmods/certs/public_key.der
+                    responses:
+                      'input password:': '{{ mok_password }}'
+                      'input password again:': '{{ mok_password }}'
+                  register: mok_import_result
+                - name: Debug output
+                  debug:
+                    var: mok_import_result
+                - name: Uninstall python3-pexpect
+                  dnf:
+                    name: python3-pexpect
+                    state: absent
+                    autoremove: true
+                  when: dnf_pexpect_check is failed
 
           tags: nvidia_secureboot
           become: true
