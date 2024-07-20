@@ -463,7 +463,24 @@ extraActions() {
 			local returnCode="$?"
 			if [ "$returnCode" -eq 0 ]; then
 				echo
-				echo "TODO: fill note about next steps after setting up signing modules"
+				echo -e "\t=========================================================================="
+				echo -e "\t================================= ${BOLD}${RED}${BLINK}NOTICE${NORMAL} ================================="
+				echo -e "\t=========================================================================="
+				echo -e "\t=                                                                        ="
+				echo -e "\t=                               ${BOLD}NEXT STEPS${NORMAL}                               ="
+				echo -e "\t=                                                                        ="
+				echo -e "\t=    Reboot the system using the following command:                      ="
+				echo -e "\t=                                                                        ="
+				echo -e "\t=        ${BOLD}${GREEN}systemctl reboot${NORMAL}                                                ="
+				echo -e "\t=                                                                        ="
+				echo -e "\t=    After reboot, MOK manager will ask to proceed or enroll the key.    ="
+				echo -e "\t=    Follow these steps:                                                 ="
+				echo -e "\t=      ${BOLD}1.${NORMAL} Select ${BOLD}Enroll MOK${NORMAL}.                                             ="
+				echo -e "\t=      ${BOLD}2.${NORMAL} Select ${BOLD}Continue${NORMAL}.                                               ="
+				echo -e "\t=      ${BOLD}3.${NORMAL} Enter the password created for MOK Signing module.             ="
+				echo -e "\t=      ${BOLD}4.${NORMAL} Select ${BOLD}Reboot${NORMAL}.                                                 ="
+				echo -e "\t=                                                                        ="
+				echo -e "\t=========================================================================="
 				echo
 			fi
 		}
