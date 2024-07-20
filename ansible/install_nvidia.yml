@@ -6,6 +6,9 @@
     - _vars_base.yml
     - _vars_firmware_pkgs.yml
 
+  vars:
+    - mok_password: ''
+
   pre_tasks:
     - name: Preparatory steps
       block:
@@ -39,6 +42,11 @@
       block:
         - name: Install and configure signing modules
           block:
+            - name: Check if 'mok_password' is empty
+              fail:
+                msg: "The variable 'mok_password' is empty!"
+              when: mok_password == ""
+
             - name: Install necessary packages for signing modules
               dnf:
                 name: '{{ fedora_nvidia_secureboot_tools }}'
@@ -51,8 +59,17 @@
               args:
                 creates: /etc/pki/akmods/certs/public_key.der
 
-            - name: Import key for MOK
-              command: mokutil --import /etc/pki/akmods/certs/public_key.der
+            - name: Import MOK keys with mokutil
+              expect:
+                command: mokutil --import /etc/pki/akmods/certs/public_key.der
+                responses:
+                  'input password:': '{{ mok_password }}'
+                  'input password again:': '{{ mok_password }}'
+              register: mok_import_result
+
+            - name: Debug output
+              debug:
+                var: mok_import_result
 
           tags: nvidia_secureboot
           become: true

@@ -40,6 +40,7 @@ readonly NORMAL='\033[0m'
 cleanup() {
 	local exitStatus="$?"
 	unset USER_PASSWORD
+	unset mokPassword
 	exit "$exitStatus"
 }
 
@@ -455,6 +456,12 @@ extraActions() {
 			fi
 		}
 
+		getMokPassword() {
+			mokPassword=""
+			echo
+			read -rp "Enter MOK password: " -s mokPassword
+		}
+
 		local select="*"
 		while :; do
 			printHeader
@@ -468,7 +475,8 @@ extraActions() {
 
 			case $select in
 			1)
-				runAnsiblePlaybook "install_nvidia" "nvidia_secureboot"
+				getMokPassword
+				runAnsiblePlaybook "install_nvidia" "nvidia_secureboot" "mok_password=$mokPassword"
 				nvidiaSecureBootPostNote
 				pressAnyKeyToContinue
 				select="*"
