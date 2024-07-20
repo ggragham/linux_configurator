@@ -482,7 +482,7 @@ extraActions() {
 				select="*"
 				;;
 			2)
-				runAnsiblePlaybook "install_nvidia" "nvidia_secureboot"
+				runAnsiblePlaybook "install_nvidia" "nvidia_firmware"
 				restartSystemNote
 				pressAnyKeyToContinue
 				select="*"
