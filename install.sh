@@ -208,9 +208,10 @@ restartSystemNote() {
 
 runAnsiblePlaybook() {
 	local playbookName="$1"
-	shift
-	local tagsList="$*"
-	ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$playbookName.yml" --tags "prepare,$tagsList" --extra-vars "ansible_become_password=$USER_PASSWORD"
+	local tagsList="$2"
+	local extraVars="$3"
+
+	ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$playbookName.yml" --tags "prepare,$tagsList" --extra-vars "ansible_become_password=$USER_PASSWORD $extraVars"
 }
 
 installOtherPkgs() {
