@@ -49,7 +49,7 @@
           block:
             - name: Check if 'mok_password' is empty
               fail:
-                msg: "The variable 'mok_password' is empty!"
+                msg: The variable 'mok_password' is empty!
               when: mok_password == ""
 
             - name: Install necessary packages for signing modules
