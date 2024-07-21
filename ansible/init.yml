@@ -71,6 +71,12 @@
 
             - name: Install GPU firmware
               block:
+                - name: Install pciutils
+                  dnf:
+                    name: pciutils
+                    state: latest
+                    update_cache: true
+                    install_weak_deps: false
                 - name: Gather GPU information
                   shell: lspci -nn | grep -i vga
                   register: gpu_info
