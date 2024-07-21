@@ -1,0 +1,139 @@
+---
+- name: Install NVIDIA firmware and drivers
+  hosts: localhost
+
+  vars_files:
+    - _vars_base.yml
+    - _vars_firmware_pkgs.yml
+
+  vars:
+    - mok_password: ''
+
+  pre_tasks:
+    - name: Preparatory steps
+      block:
+        - name: Check GPU
+          block:
+            - name: Gather GPU information
+              shell: lspci -nn | grep -i vga
+              register: gpu_info
+            - name: Warning for unsupported GPU
+              fail:
+                msg: NVIDIA GPU not detected.
+              when: "'NVIDIA' not in gpu_info.stdout"
+
+        - name: Add RPMFusion repo
+          dnf:
+            name:
+              - https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
+              - https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm
+            state: latest
+            update_cache: true
+            install_weak_deps: false
+            disable_gpg_check: true
+
+        - name: Hide grub during boot
+          lineinfile:
+            dest: /etc/default/grub
+            regexp: ^GRUB_TIMEOUT=
+            line: GRUB_TIMEOUT=0
+            state: present
+
+      become: true
+      tags: prepare
+
+  tasks:
+    - name: Install NVIDIA to Fedora
+      block:
+        - name: Install and configure signing modules
+          block:
+            - name: Check if 'mok_password' is empty
+              fail:
+                msg: The variable 'mok_password' is empty!
+              when: mok_password == ""
+
+            - name: Install necessary packages for signing modules
+              dnf:
+                name: '{{ fedora_nvidia_secureboot_tools }}'
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+
+            - name: Generate a key for signing modules
+              command: kmodgenca -a
+              args:
+                creates: /etc/pki/akmods/certs/public_key.der
+
+            - name: Import MOK keys
+              block:
+                - name: Check python3-pexpect existence
+                  command: dnf list installed python3-pexpect
+                  register: dnf_pexpect_check
+                  ignore_errors: true
+                - name: Install python3-pexpect
+                  dnf:
+                    name: python3-pexpect
+                    state: latest
+                    update_cache: true
+                    install_weak_deps: false
+                  when: dnf_pexpect_check is failed
+                - name: Import MOK keys with mokutil
+                  expect:
+                    command: mokutil --import /etc/pki/akmods/certs/public_key.der
+                    responses:
+                      'input password:': '{{ mok_password }}'
+                      'input password again:': '{{ mok_password }}'
+                  register: mok_import_result
+                - name: Debug output
+                  debug:
+                    var: mok_import_result
+                - name: Uninstall python3-pexpect
+                  dnf:
+                    name: python3-pexpect
+                    state: absent
+                    autoremove: true
+                  when: dnf_pexpect_check is failed
+
+          tags: nvidia_secureboot
+          become: true
+
+        - name: Install NVIDIA firmware and drivers to Fedora
+          block:
+            - name: Install NVIDIA drivers
+              dnf:
+                name: '{{ fedora_nvidia_firmware }}'
+                state: present
+                update_cache: true
+                install_weak_deps: false
+
+            - name: Install CUDA
+              dnf:
+                name: '{{ fedora_nvidia_cuda }}'
+                state: present
+                update_cache: true
+                install_weak_deps: false
+
+            - name: Wait for NVIDIA modules to build
+              shell: |
+                until modinfo -F version nvidia; do
+                  sleep 5
+                done
+
+            - name: Recompile and install kernel modules
+              command: akmods --force
+
+            - name: Recreates the initramfs image
+              command: dracut --force
+
+            - name: Enable NVIDIA power services
+              service:
+                name: '{{ item }}'
+                enabled: true
+              loop:
+                - nvidia-suspend
+                - nvidia-resume
+
+          tags: nvidia_firmware
+          become: true
+
+      when: ansible_distribution=="Fedora"

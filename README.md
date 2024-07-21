@@ -57,9 +57,10 @@ export REPO_ROOT_PATH="~/.local/opt/linux_configurator"
 git clone https://github.com/ggragham/linux_configurator.git "$REPO_ROOT_PATH"
 ```
 
-3. Change the list of packages to install (optional).
+3. Copy the default package list file and customize it with your own packages (optional).
 ```bash
-vi "$REPO_ROOT_PATH/ansible/_vars_pkgs.yml"
+cp "$REPO_ROOT_PATH/default.pkgs.yml" "$REPO_ROOT_PATH/pkgs.yml"
+vi "$REPO_ROOT_PATH/pkgs.yml"
 ```
 
 4. Run playbook as is ...
@@ -76,6 +77,8 @@ ansible-playbook -K "$REPO_ROOT_PATH/playbook.yml" --tags="prepare,extra_pkgs,lo
 ## Tags
 * **init** - init playbook. Install and config minimal base system.
 * **prepare** - preparatory steps. Restore the directory structure in the local directory or install the necessary dependencies.
+* **nvidia_secureboot** - install and configure the necessary signing modules and keys for SecureBoot support with NVIDIA drivers.
+* **nvidia_firmware** - install NVIDIA firmware and drivers.
 * **extra_pkgs** - install list of extra pkgs.
 * **neovim** - install [NeoVim](https://neovim.io/).
 * **omz** - install [Oh My Zsh](https://ohmyz.sh/).
@@ -127,9 +130,14 @@ ansible-playbook -K "$REPO_ROOT_PATH/playbook.yml" --tags="prepare,extra_pkgs,lo
     * [x] Flatpak config
     * [x] Add some hardening
 * [x] Make more convenient and beautiful menu
-* [ ] Make configs for different types of hardware
-    * [x] Intel/AMD
-    * [ ] Radeon/Nvidia
+* [x] Make configs for different types of hardware
+    * [x] CPU
+      * [x] Intel
+      * [x] AMD
+    * [x] GPU
+      * [x] Radeon
+      * [x] Intel
+      * [x] Nvidia
     * ~~ARM devices~~
 
 

@@ -40,6 +40,7 @@ readonly NORMAL='\033[0m'
 cleanup() {
 	local exitStatus="$?"
 	unset USER_PASSWORD
+	unset mokPassword
 	exit "$exitStatus"
 }
 
@@ -197,11 +198,21 @@ menuItem() {
 	echo -e "${GREEN}$number.${NORMAL} $text"
 }
 
+restartSystemNote() {
+	local returnCode="$?"
+	if [ "$returnCode" -eq 0 ]; then
+		echo
+		echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
+		echo
+	fi
+}
+
 runAnsiblePlaybook() {
 	local playbookName="$1"
-	shift
-	local tagsList="$*"
-	ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$playbookName.yml" --tags "prepare,$tagsList" --extra-vars "ansible_become_password=$USER_PASSWORD"
+	local tagsList="$2"
+	local extraVars="$3"
+
+	ansible-playbook "$ANSIBLE_PLAYBOOK_PATH/$playbookName.yml" --tags "prepare,$tagsList" --extra-vars "ansible_become_password=$USER_PASSWORD $extraVars"
 }
 
 installOtherPkgs() {
@@ -428,6 +439,118 @@ installGamingPkgs() {
 	done
 }
 
+extraActions() {
+	installNvidia() {
+		nvidiaSecureBootPreNote() {
+			echo
+			echo -e "\t==========================================================================="
+			echo -e "\t================================= ${BOLD}${RED}${BLINK}WARNING${NORMAL} ================================="
+			echo -e "\t==========================================================================="
+			echo -e "\t=                                                                         ="
+			echo -e "\t=                           ${BOLD}ONLY FOR SECUREBOOT${NORMAL}                           ="
+			echo -e "\t=                                                                         ="
+			echo -e "\t=    Preconditions:                                                       ="
+			echo -e "\t=      ${BOLD}1.${NORMAL} If you are ${BOLD}NOT using SecureBoot${NORMAL}, go straight to the ${BOLD}2${NORMAL} option.   ="
+			echo -e "\t=      ${BOLD}2.${NORMAL} Worked with ${LIGHTBLUE}Fedora 39+${NORMAL} versions and latest ${GREEN}NVIDIA${NORMAL} drivers.      ="
+			echo -e "\t=      ${BOLD}3.${NORMAL} Turn on ${BOLD}SecureBoot${NORMAL} in ${BOLD}Setup Mode${NORMAL}.                               ="
+			echo -e "\t=      ${BOLD}4.${NORMAL} Delete ${BOLD}ALL${NORMAL} older ${GREEN}NVIDIA${NORMAL} installations.                          ="
+			echo -e "\t=                                                                         ="
+			echo -e "\t==========================================================================="
+			echo
+		}
+
+		nvidiaSecureBootPostNote() {
+			local returnCode="$?"
+			if [ "$returnCode" -eq 0 ]; then
+				echo
+				echo -e "\t=========================================================================="
+				echo -e "\t================================= ${BOLD}${RED}${BLINK}NOTICE${NORMAL} ================================="
+				echo -e "\t=========================================================================="
+				echo -e "\t=                                                                        ="
+				echo -e "\t=                               ${BOLD}NEXT STEPS${NORMAL}                               ="
+				echo -e "\t=                                                                        ="
+				echo -e "\t=    Reboot the system using the following command:                      ="
+				echo -e "\t=                                                                        ="
+				echo -e "\t=        ${BOLD}${GREEN}systemctl reboot${NORMAL}                                                ="
+				echo -e "\t=                                                                        ="
+				echo -e "\t=    After reboot, MOK manager will ask to proceed or enroll the key.    ="
+				echo -e "\t=    Follow these steps:                                                 ="
+				echo -e "\t=      ${BOLD}1.${NORMAL} Select ${BOLD}Enroll MOK${NORMAL}.                                             ="
+				echo -e "\t=      ${BOLD}2.${NORMAL} Select ${BOLD}Continue${NORMAL}.                                               ="
+				echo -e "\t=      ${BOLD}3.${NORMAL} Enter the password created for MOK Signing module.             ="
+				echo -e "\t=      ${BOLD}4.${NORMAL} Select ${BOLD}Reboot${NORMAL}.                                                 ="
+				echo -e "\t=                                                                        ="
+				echo -e "\t=========================================================================="
+				echo
+			fi
+		}
+
+		getMokPassword() {
+			mokPassword=""
+			echo
+			read -rp "Enter MOK password: " -s mokPassword
+		}
+
+		local select="*"
+		while :; do
+			printHeader
+			nvidiaSecureBootPreNote
+			echo
+			menuItem "1" "Prepare SecureBoot signing modules"
+			menuItem "2" "Install NVIDIA drivers and firmware"
+			echo
+			menuItem "0" "Back"
+			echo
+
+			case $select in
+			1)
+				getMokPassword
+				runAnsiblePlaybook "install_nvidia" "nvidia_secureboot" "mok_password=$mokPassword"
+				nvidiaSecureBootPostNote
+				pressAnyKeyToContinue
+				select="*"
+				;;
+			2)
+				runAnsiblePlaybook "install_nvidia" "nvidia_firmware"
+				restartSystemNote
+				pressAnyKeyToContinue
+				select="*"
+				;;
+			0)
+				return 0
+				;;
+			*)
+				read -rp "> " select
+				continue
+				;;
+			esac
+		done
+	}
+
+	local select="*"
+	while :; do
+		printHeader
+		menuItem "1" "Install NVIDIA drivers and firmware"
+		echo
+		menuItem "0" "Back"
+		echo
+
+		case $select in
+		1)
+			installNvidia
+			select="*"
+			;;
+		0)
+			return 0
+			;;
+		*)
+			read -rp "> " select
+			continue
+			;;
+		esac
+	done
+}
+
 applyConfig() {
 	local select="*"
 	while :; do
@@ -531,8 +654,9 @@ main() {
 	while :; do
 		printHeader
 		menuItem "1" "Initial configuration"
-		menuItem "2" "Install extra packages"
-		menuItem "3" "Apply configs"
+		menuItem "2" "Extra Actions"
+		menuItem "3" "Install extra packages"
+		menuItem "4" "Apply configs"
 		echo
 		menuItem "0" "Exit"
 		echo
@@ -540,15 +664,19 @@ main() {
 		case $select in
 		1)
 			runAnsiblePlaybook "init" "init"
-			echo -e "\t${BLINK}It's recommended to ${BOLD}restart${NORMAL} ${BLINK}the system${NORMAL}\n"
+			restartSystemNote
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
-			installAddPkgs
+			extraActions
 			select="*"
 			;;
 		3)
+			installAddPkgs
+			select="*"
+			;;
+		4)
 			applyConfig
 			select="*"
 			;;

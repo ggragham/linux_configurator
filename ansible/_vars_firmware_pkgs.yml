@@ -1,0 +1,20 @@
+---
+fedora_amd_cpu_firmware: amd-ucode-firmware
+fedora_amd_gpu_firmware: amd-gpu-firmware
+fedora_intel_cpu_firmware: microcode_ctl
+fedora_intel_gpu_firmware: intel-gpu-firmware
+
+fedora_nvidia_secureboot_tools:
+  - kmodtool
+  - akmods
+  - mokutil
+  - openssl
+
+fedora_nvidia_firmware:
+  - akmod-nvidia
+  - xorg-x11-drv-nvidia
+  - xorg-x11-drv-nvidia-libs
+  - xorg-x11-drv-nvidia-power
+  - nvidia-settings
+
+fedora_nvidia_cuda: xorg-x11-drv-nvidia-cuda
