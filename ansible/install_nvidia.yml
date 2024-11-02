@@ -119,6 +119,12 @@
                   sleep 5
                 done
 
+            - name: Apply dracut config for NVIDIA
+              copy:
+                src: '{{ system_conf_path }}/dracut.conf.d/nvidia.conf'
+                dest: /etc/dracut.conf.d/nvidia.conf
+                mode: 0640
+
             - name: Recompile and install kernel modules
               command: akmods --force
 
