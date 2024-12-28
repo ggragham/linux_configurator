@@ -9,9 +9,9 @@ fedora_core_pkgs:
   - gdm
   - git
   - gnome-shell
-  - gnome-terminal
   - mesa-dri-drivers
   - plymouth-theme-spinner
+  - ptyxis
 
 fedora_firmware_pkgs:
   - linux-firmware
@@ -37,7 +37,6 @@ fedora_base_pkgs:
   - gnome-clocks
   - gnome-disk-utility
   - gnome-firmware
-  - gnome-terminal-nautilus
   - gnome-tweaks
   - gnome-weather
   - gvfs-mtp

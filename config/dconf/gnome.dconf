@@ -15,14 +15,6 @@ sort-directories-first=true
 [org/gnome/eog/ui]
 statusbar=true
 
-[org/gnome/terminal/legacy]
-default-show-menubar=false
-headerbar=@mb false
-
-[org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
-font='Monospace 11'
-use-system-font=false
-
 [org/gnome/settings-daemon/plugins/color]
 night-light-enabled=true
 night-light-schedule-automatic=false
@@ -133,8 +125,8 @@ name='Mission Center'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4]
 binding='<Super>Return'
-command='gnome-terminal'
-name='Gnome Terminal'
+command='ptyxis --standalone'
+name='Gnome Prompt'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5]
 binding='<Super>b'
