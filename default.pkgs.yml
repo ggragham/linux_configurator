@@ -60,7 +60,6 @@ fedora_extra_pkgs:
   - webp-pixbuf-loader
   - jetbrains-mono-fonts
   - liberation-fonts
-  - neofetch
   - net-tools
   - nmap
   - p7zip
