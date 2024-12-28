@@ -60,7 +60,7 @@ fedora_extra_pkgs:
   - google-noto-emoji-fonts
   - webp-pixbuf-loader
   - jetbrains-mono-fonts
-  - liberation-fonts
+  - liberation-fonts-all
   - net-tools
   - nmap
   - p7zip
