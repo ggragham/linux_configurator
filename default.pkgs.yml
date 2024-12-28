@@ -45,9 +45,10 @@ fedora_base_pkgs:
   - lm_sensors
   - nautilus
   - nautilus-gsconnect
-  - power-profiles-daemon
   - sqlite
   - sushi
+  - tuned
+  - tuned-ppd
   - unzip
   - xdg-desktop-portal-gnome
 
