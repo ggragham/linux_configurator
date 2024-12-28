@@ -56,6 +56,7 @@ fedora_extra_pkgs:
   - bat
   - bleachbit
   - cups
+  - fastfetch
   - google-noto-color-emoji-fonts
   - google-noto-emoji-fonts
   - webp-pixbuf-loader
