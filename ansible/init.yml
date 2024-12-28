@@ -24,6 +24,9 @@
               blockinfile:
                 block: "{{ lookup('file', '{{ system_conf_path }}/dnf.conf') }}"
                 path: /etc/dnf/dnf.conf
+            - name: Install python3-libdnf5
+              shell:
+                cmd: rpm -q python3-libdnf5 || dnf install -y python3-libdnf5
             - name: Disable OpenH264 repo
               shell:
                 cmd: |
