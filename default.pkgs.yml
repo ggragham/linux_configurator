@@ -130,11 +130,11 @@ debian_base_pkgs:
   - mate-tweak
   - mate-utils
   - network-manager-gnome
-  - network-manager-openvpn-gnome
+  # - network-manager-openvpn-gnome
   - pluma
-  - pulseaudio
+  # - pulseaudio
   - rng-tools
-  - tlp
+  # - tlp
   - unzip
 
 debian_extra_p1_pkgs:
@@ -147,10 +147,10 @@ debian_extra_p1_pkgs:
   - vainfo
 
 debian_extra_p2_pkgs:
-  - ibus
-  - ibus-gtk
-  - ibus-gtk3
-  - ibus-kkc
+  # - ibus
+  # - ibus-gtk
+  # - ibus-gtk3
+  # - ibus-kkc
   - libimage-exiftool-perl
   - neofetch
   - redshift-gtk
