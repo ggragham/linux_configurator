@@ -318,10 +318,15 @@
             update_cache: true
 
         - name: Enable TLP
-          service:
-            name: tlp
-            state: started
-            enabled: true
+          block:
+            - name: Check if TLP package is installed
+              package_facts:
+            - name: Enable TLP
+              service:
+                name: tlp
+                state: started
+                enabled: true
+              when: "'tlp' in ansible_facts.packages"
 
       become: true
       when: ansible_distribution=="Debian"
