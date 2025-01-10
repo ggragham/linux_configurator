@@ -170,8 +170,8 @@
             - name: enable contrib and non-free repo
               shell:
                 cmd: |
-                  apt-add-repository contrib
-                  apt-add-repository non-free
+                  apt-add-repository -y contrib
+                  apt-add-repository -y non-free
 
         - name: Install firmware
           block:
