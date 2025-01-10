@@ -17,7 +17,8 @@
       tags: prepare
 
   tasks:
-    - block:
+    - name: Fedora
+      block:
         - name: Configure dnf
           block:
             - name: Apply dnf config
@@ -146,7 +147,8 @@
       when: ansible_distribution=="Fedora"
       tags: init
 
-    - block:
+    - name: Debian
+      block:
         - name: Generate locales
           locale_gen:
             name: '{{ item }}'
