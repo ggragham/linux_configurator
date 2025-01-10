@@ -221,12 +221,28 @@
                     update_cache: true
                     install_recommends: false
                   when: "'ATI' in gpu_info.stdout or 'Radeon' in gpu_info.stdout"
-                - name: Install Intel GPU firmware
-                  apt:
-                    name: '{{ debian_intel_gpu_firmware }}'
-                    state: latest
-                    update_cache: true
-                    install_recommends: false
+                - name: Configure Intel GPU
+                  block:
+                    - name: Install Intel GPU firmware
+                      apt:
+                        name: '{{ debian_intel_gpu_firmware }}'
+                        state: latest
+                        update_cache: true
+                        install_recommends: false
+                    - name: Apply Intel xorg config
+                      block:
+                        - name: Create xorg config dir
+                          file:
+                            path: /etc/X11/xorg.conf.d
+                            state: directory
+                            mode: 0755
+                        - name: Apply xorg config
+                          copy:
+                            src: '{{ system_conf_path }}/xorg/{{ item }}.conf'
+                            dest: /etc/X11/xorg.conf.d/{{ item }}.conf
+                            mode: 0644
+                          with_items:
+                            - 20-intel
                   when: "'Intel' in gpu_info.stdout"
                 - name: Warning for unsupported GPU
                   debug:
@@ -287,7 +303,8 @@
                 src: '{{ system_conf_path }}/xorg/{{ item }}.conf'
                 dest: /etc/X11/xorg.conf.d/{{ item }}.conf
                 mode: 0644
-              with_items: [20-intel, 30-touchpad]
+              with_items:
+                - 30-touchpad
 
         - name: Config sysctl
           blockinfile:
