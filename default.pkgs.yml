@@ -103,12 +103,12 @@ fedora_pyenv_deps_pkgs:
 
 debian_core_pkgs:
   - bash-completion
-  - firmware-misc-nonfree
-  - intel-microcode
   - xfonts-base
   - xserver-xorg-input-libinput
-  - xserver-xorg-video-intel
   - zram-tools
+
+debian_firmware_pkgs:
+  - firmware-misc-nonfree
 
 debian_base_pkgs:
   - atril

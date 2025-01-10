@@ -173,6 +173,66 @@
                   apt-add-repository contrib
                   apt-add-repository non-free
 
+        - name: Install firmware
+          block:
+            - name: Install base firmware pkgs
+              apt:
+                name: '{{ debian_firmware_pkgs }}'
+                state: latest
+                update_cache: true
+                install_recommends: false
+
+            - name: Install CPU firmware
+              block:
+                - name: Install AMD CPU firmware
+                  apt:
+                    name: '{{ debian_amd_cpu_firmware }}'
+                    state: latest
+                    update_cache: true
+                    install_recommends: false
+                  when: "'AuthenticAMD' in ansible_processor"
+                - name: Install Intel CPU firmware
+                  apt:
+                    name: '{{ debian_intel_cpu_firmware }}'
+                    state: latest
+                    update_cache: true
+                    install_recommends: false
+                  when: "'GenuineIntel' in ansible_processor"
+                - name: Warning for unsupported CPU
+                  debug:
+                    msg: 'CPU: {{ ansible_processor[1] }} is not supported.'
+                  when: "'AuthenticAMD' not in ansible_processor and 'GenuineIntel' not in ansible_processor"
+
+            - name: Install GPU firmware
+              block:
+                - name: Install pciutils
+                  apt:
+                    name: pciutils
+                    state: latest
+                    update_cache: true
+                    install_recommends: false
+                - name: Gather GPU information
+                  shell: lspci -nn | grep -i vga
+                  register: gpu_info
+                - name: Install AMD GPU firmware
+                  apt:
+                    name: '{{ debian_amd_gpu_firmware }}'
+                    state: latest
+                    update_cache: true
+                    install_recommends: false
+                  when: "'ATI' in gpu_info.stdout or 'Radeon' in gpu_info.stdout"
+                - name: Install Intel GPU firmware
+                  apt:
+                    name: '{{ debian_intel_gpu_firmware }}'
+                    state: latest
+                    update_cache: true
+                    install_recommends: false
+                  when: "'Intel' in gpu_info.stdout"
+                - name: Warning for unsupported GPU
+                  debug:
+                    msg: GPU is not supported.
+                  when: "'ATI' not in gpu_info.stdout and 'Radeon' not in gpu_info.stdout and 'Intel' not in gpu_info.stdout and 'NVIDIA' not in gpu_info.stdout"
+
         - name: Install core pkgs
           apt:
             name: '{{ debian_core_pkgs }}'
