@@ -31,6 +31,7 @@
             update_cache: true
             install_weak_deps: false
             disable_gpg_check: true
+          when: ansible_distribution=="Fedora"
 
         - name: Hide grub during boot
           lineinfile:
@@ -38,6 +39,7 @@
             regexp: ^GRUB_TIMEOUT=
             line: GRUB_TIMEOUT=0
             state: present
+          when: ansible_distribution=="Fedora"
 
       become: true
       tags: prepare
