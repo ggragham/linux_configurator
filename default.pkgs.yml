@@ -129,14 +129,16 @@ debian_base_p1_pkgs:
   - mate-tweak
   - mate-utils
   - network-manager-gnome
+  - pipewire-pulse
   - pluma
   - rng-tools
   - unzip
+  - wireplumber
 
 debian_base_p2_pkgs:
   - blueman
   # - network-manager-openvpn-gnome
-  - pulseaudio
+  # - pulseaudio
   # - tlp
 
 debian_extra_p1_pkgs:
