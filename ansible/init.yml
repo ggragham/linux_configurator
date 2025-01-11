@@ -31,7 +31,7 @@
             - name: Disable OpenH264 repo
               shell:
                 cmd: |
-                  dnf config-manager --set-disabled fedora-cisco-openh264
+                  dnf config-manager setopt fedora-cisco-openh264.enabled=0
                   dnf clean all
             - name: Install RPMFusion repo
               dnf:
