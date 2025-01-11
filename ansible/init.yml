@@ -311,11 +311,19 @@
             block: "{{ lookup('file', '{{ system_conf_path }}/sysctl.conf') }}"
             path: /etc/sysctl.d/99-sysctl.conf
 
-        - name: Install base pkgs
-          apt:
-            name: '{{ debian_base_pkgs }}'
-            state: latest
-            update_cache: true
+        - name: Install base pkgs to Debian
+          block:
+            - name: Install Debian base pkgs [1/2]
+              apt:
+                name: '{{ debian_base_p1_pkgs }}'
+                state: latest
+                update_cache: true
+            - name: Install Debian base pkgs [2/2]
+              apt:
+                name: '{{ debian_base_p2_pkgs }}'
+                state: latest
+                update_cache: true
+                install_recommends: false
 
         - name: Enable TLP
           block:

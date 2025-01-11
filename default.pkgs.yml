@@ -110,9 +110,8 @@ debian_core_pkgs:
 debian_firmware_pkgs:
   - firmware-misc-nonfree
 
-debian_base_pkgs:
+debian_base_p1_pkgs:
   - atril
-  - blueman
   - caja-open-terminal
   - engrampa
   - eom
@@ -130,12 +129,15 @@ debian_base_pkgs:
   - mate-tweak
   - mate-utils
   - network-manager-gnome
-  # - network-manager-openvpn-gnome
   - pluma
-  # - pulseaudio
   - rng-tools
-  # - tlp
   - unzip
+
+debian_base_p2_pkgs:
+  - blueman
+  # - network-manager-openvpn-gnome
+  - pulseaudio
+  # - tlp
 
 debian_extra_p1_pkgs:
   - bat
