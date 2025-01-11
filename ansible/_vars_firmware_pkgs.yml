@@ -38,5 +38,9 @@ debian_intel_gpu_firmware:
   - intel-media-va-driver-non-free
 
 debian_nvidia_firmware:
+  - libnvcuvid1
+  - libnvidia-encode1
+  - mesa-va-drivers
   - nvidia-driver
   - nvidia-settings
+  - vdpau-driver-all

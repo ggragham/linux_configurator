@@ -143,3 +143,15 @@
           become: true
 
       when: ansible_distribution=="Fedora"
+
+    - name: Install NVIDIA to Debian
+      block:
+        - name: Install NVIDIA Dirver to Debian
+          apt:
+            name: '{{ debian_nvidia_firmware }}'
+            state: latest
+            update_cache: true
+          become: true
+
+      tags: nvidia_firmware
+      when: ansible_distribution=="Debian"
