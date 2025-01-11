@@ -112,4 +112,14 @@
               become: true
           when: ansible_distribution=="Fedora"
 
+        - name: Debian-specific Hardening
+          block:
+            - name: APT seccomp-bpf
+              copy:
+                src: '{{ system_conf_path }}/apt/apt.conf.d/40sandbox.conf'
+                dest: /etc/apt/apt.conf.d/40sandbox.conf
+                mode: 0640
+              become: true
+          when: ansible_os_family == 'Debian'
+
       tags: hardening
