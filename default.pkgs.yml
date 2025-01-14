@@ -109,6 +109,7 @@ debian_core_pkgs:
 
 debian_firmware_pkgs:
   - firmware-misc-nonfree
+  - xserver-xorg-video-vesa
 
 debian_base_p1_pkgs:
   - atril
@@ -136,7 +137,7 @@ debian_base_p1_pkgs:
   - wireplumber
 
 debian_base_p2_pkgs:
-  - blueman
+  # - blueman
   # - network-manager-openvpn-gnome
   # - pulseaudio
   # - tlp
@@ -157,7 +158,7 @@ debian_extra_p2_pkgs:
   # - ibus-kkc
   - libimage-exiftool-perl
   - neofetch
-  - redshift-gtk
+  # - redshift-gtk
 
 debian_devops_pkgs:
   - awscli
