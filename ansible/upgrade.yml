@@ -51,5 +51,3 @@
         - name: Update pyenv
           shell: "{{ lookup('env', 'PYENV_ROOT') }}/bin/pyenv update"
           when: pyenv.stat.exists
-
-      when: ansible_os_family == "Debian"
