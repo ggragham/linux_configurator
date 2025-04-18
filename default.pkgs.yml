@@ -4,7 +4,8 @@
 ###################
 
 fedora_core_pkgs:
-  - abattis-cantarell-fonts
+  - adwaita-mono-fonts
+  - adwaita-sans-fonts
   - bash-completion
   - gdm
   - git
@@ -30,7 +31,6 @@ fedora_base_pkgs:
   - NetworkManager-wifi
   - baobab
   - ffmpegthumbnailer
-  - file-roller
   - gnome-bluetooth
   - gnome-calculator
   - gnome-calendar
@@ -44,7 +44,6 @@ fedora_base_pkgs:
   - lm_sensors
   - nautilus
   - nautilus-gsconnect
-  - sqlite
   - sushi
   - tuned
   - tuned-ppd
@@ -55,9 +54,8 @@ fedora_extra_pkgs:
   - bat
   - bleachbit
   - cups
+  - default-fonts-core
   - fastfetch
-  - google-noto-color-emoji-fonts
-  - google-noto-emoji-fonts
   - webp-pixbuf-loader
   - jetbrains-mono-fonts
   - liberation-fonts-all
