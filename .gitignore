@@ -1,3 +1,5 @@
 backup/*
 *.tmp
 .vagrant/
+*pkgs.yml
+!default.pkgs.yml
