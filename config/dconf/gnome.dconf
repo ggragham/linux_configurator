@@ -26,6 +26,7 @@ night-light-temperature=uint32 2850
 idle-delay=uint32 900
 
 [org/gnome/desktop/interface]
+accent-color='blue'
 clock-format='12h'
 clock-show-seconds=true
 clock-show-weekday=true
@@ -40,6 +41,7 @@ focus-mode='sloppy'
 
 [org/gnome/mutter]
 edge-tiling=false
+experimental-features=['variable-refresh-rate']
 
 [org/gnome/desktop/input-sources]
 mru-sources=[('xkb', 'us'), ('xkb', 'ru')]
@@ -69,6 +71,7 @@ maximize=['<Super>f']
 maximize-horizontally=['<Super>bracketleft']
 maximize-vertically=['<Super>bracketright']
 minimize=['<Shift><Super>z']
+unmaximize=['<Super>space'] 
 move-to-monitor-down=['<Shift><Super>j']                                        
 move-to-monitor-left=['<Shift><Super>h']                                        
 move-to-monitor-right=['<Shift><Super>l']                                       
@@ -94,8 +97,8 @@ open-application-menu=['<Shift><Super>F9']
 toggle-application-view=['<Super>d']
 
 [org/gnome/mutter/keybindings]
-toggle-tiled-left=['<Super>h']
-toggle-tiled-right=['<Super>l']
+toggle-tiled-left=@as []
+toggle-tiled-right=@as []
 
 [org/gnome/settings-daemon/plugins/media-keys]
 control-center=['Tools']
