@@ -28,8 +28,7 @@
             - name: Get wifi mac addres
               shell:
                 cmd: |
-                  INTERFACE_NAME=$(ip link show | grep "wl" | awk '{print $2}' | tr -d ':')
-                  ip link show "$INTERFACE_NAME" 2>/dev/null | awk '/permaddr/ {print $6}'
+                  ip -o link show | awk -F': ' '/wl/ {print $2}' | xargs -I{} cat /sys/class/net/{}/address
               register: getMacAddr
             - set_fact:
                 MAC_ADDR: '{{ getMacAddr.stdout }}'
