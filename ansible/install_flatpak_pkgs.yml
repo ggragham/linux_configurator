@@ -58,31 +58,31 @@
     # Media
     - name: Media pkgs
       block:
-        - name: Amberol
-          block:
-            - name: Install Amberol
-              flatpak:
-                name: io.bassi.Amberol
-                state: present
-            - name: Configure Amberol permissions [Wayland]
-              shell:
-                cmd: >
-                  flatpak override --user \
-                    --unshare=network \
-                    --unshare=ipc \
-                    --nosocket=x11 \
-                    --nosocket=fallback-x11 \
-                    io.bassi.Amberol
-              when: wsp_name=="wayland"
-            - name: Configure Amberol permissions [X11]
-              shell:
-                cmd: >
-                  flatpak override --user \
-                    --unshare=network \
-                    --nosocket=wayland \
-                    io.bassi.Amberol
-              when: wsp_name=="x11"
-          when: ansible_distribution=="Fedora"
+        # - name: Amberol
+        #   block:
+        #     - name: Install Amberol
+        #       flatpak:
+        #         name: io.bassi.Amberol
+        #         state: present
+        #     - name: Configure Amberol permissions [Wayland]
+        #       shell:
+        #         cmd: >
+        #           flatpak override --user \
+        #             --unshare=network \
+        #             --unshare=ipc \
+        #             --nosocket=x11 \
+        #             --nosocket=fallback-x11 \
+        #             io.bassi.Amberol
+        #       when: wsp_name=="wayland"
+        #     - name: Configure Amberol permissions [X11]
+        #       shell:
+        #         cmd: >
+        #           flatpak override --user \
+        #             --unshare=network \
+        #             --nosocket=wayland \
+        #             io.bassi.Amberol
+        #       when: wsp_name=="x11"
+        #   when: ansible_distribution=="Fedora"
 
         - name: Rhythmbox
           block:
