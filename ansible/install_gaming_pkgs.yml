@@ -35,6 +35,8 @@
             cmd: >
               flatpak override --user \
                 --filesystem=xdg-data/applications \
+                --filesystem=~/.local/games \
+                --filesystem=/mnt/storage/games \
                 com.usebottles.bottles
       tags: bottles
 

@@ -150,7 +150,6 @@
                     --nosocket=fallback-x11 \
                     --nodevice=all \
                     --device=dri \
-                    --nofilesystem=xdg-pictures \
                     io.github.celluloid_player.Celluloid
               when: wsp_name=="wayland"
             - name: Configure Celluloid permissions [X11]
@@ -161,7 +160,6 @@
                     --nosocket=wayland \
                     --nodevice=all \
                     --device=dri \
-                    --nofilesystem=xdg-pictures \
                     io.github.celluloid_player.Celluloid
               when: wsp_name=="x11"
 
@@ -180,6 +178,7 @@
               flatpak override --user \
                 --unshare=ipc \
                 --nosocket=cups \
+                --nosocket=pcsc \
                 --nofilesystem=host-etc \
                 --nofilesystem=xdg-desktop \
                 --nofilesystem=xdg-documents \
@@ -194,6 +193,7 @@
             cmd: >
               flatpak override --user \
                 --nosocket=wayland \
+                --nosocket=pcsc \
                 --nosocket=cups \
                 --nofilesystem=host-etc \
                 --nofilesystem=xdg-desktop \
@@ -222,6 +222,7 @@
                 --nosocket=x11 \
                 --nosocket=fallback-x11 \
                 --nosocket=pcsc \
+                --nosocket=cups \
                 io.gitlab.librewolf-community
           when: wsp_name=="wayland"
         - name: Configure Librewolf permissions [X11]
@@ -230,6 +231,7 @@
               flatpak override --user \
                 --nosocket=wayland \
                 --nosocket=pcsc \
+                --nosocket=cups \
                 io.gitlab.librewolf-community
           when: wsp_name=="x11"
 
@@ -247,6 +249,7 @@
             cmd: >
               flatpak override --user \
                 --unshare=ipc \
+                --nodevice=all \
                 com.bitwarden.desktop
           when: wsp_name=="wayland"
         - name: Configure Bitwarden permissions [X11]
@@ -255,6 +258,7 @@
               flatpak override --user \
                 --unshare=ipc \
                 --nosocket=wayland \
+                --nodevice=all \
                 com.bitwarden.desktop
           when: wsp_name=="x11"
 
@@ -274,7 +278,7 @@
                 --unshare=ipc \
                 --nosocket=x11 \
                 --nofilesystem=host \
-                --filesystem=home:ro \
+                --filesystem=xdg-download \
                 org.telegram.desktop
           when: wsp_name=="wayland"
         - name: Configure Telegram permissions [X11]
@@ -283,7 +287,7 @@
               flatpak override --user \
                 --nosocket=wayland \
                 --nofilesystem=host \
-                --filesystem=home:ro \
+                --filesystem=xdg-download \
                 --env=IBUS_USE_PORTAL=1 \
                 org.telegram.desktop
           when: wsp_name=="x11"
