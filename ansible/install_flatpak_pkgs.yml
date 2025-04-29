@@ -373,3 +373,21 @@
           when: wsp_name=="x11"
 
       tags: libreoffice
+
+    # OnlyOffice
+    - name: OnlyOffice
+      block:
+        - name: Install OnlyOffice
+          flatpak:
+            name: org.onlyoffice.desktopeditors
+            state: present
+        - name: Configure OnlyOffice permissions
+          shell:
+            cmd: >
+              flatpak override --user \
+                --unshare=network \
+                --nosocket=pulseaudio \
+                --socket=cups \
+                org.onlyoffice.desktopeditors
+
+      tags: onlyoffice

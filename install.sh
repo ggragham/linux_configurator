@@ -340,6 +340,7 @@ installFlatpakPkgs() {
 		menuItem "7" "Spotify"
 		menuItem "8" "FreeTube"
 		menuItem "9" "LibreOffice"
+		menuItem "10" "OnlyOffice"
 		echo
 		menuItem "0" "Back"
 		echo
@@ -387,6 +388,11 @@ installFlatpakPkgs() {
 			;;
 		9)
 			runAnsiblePlaybook "install_flatpak_pkgs" "libreoffice"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		10)
+			runAnsiblePlaybook "install_flatpak_pkgs" "onlyoffice"
 			pressAnyKeyToContinue
 			select="*"
 			;;
