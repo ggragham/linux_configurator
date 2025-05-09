@@ -163,12 +163,12 @@ www='<Mod4>b'
 [org/mate/panel/toplevels/top]
 expand=true
 orientation='top'
-size=24
+size=26
 
 [org/mate/panel/toplevels/bottom]
 expand=true
 orientation='bottom'
-size=24
+size=26
 
 [org/mate/panel/general]
 default-layout='fedora'

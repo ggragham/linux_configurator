@@ -170,8 +170,84 @@
             - name: enable contrib and non-free repo
               shell:
                 cmd: |
-                  apt-add-repository contrib
-                  apt-add-repository non-free
+                  apt-add-repository -y contrib
+                  apt-add-repository -y non-free
+
+        - name: Install firmware
+          block:
+            - name: Install base firmware pkgs
+              apt:
+                name: '{{ debian_firmware_pkgs }}'
+                state: latest
+                update_cache: true
+                install_recommends: false
+
+            - name: Install CPU firmware
+              block:
+                - name: Install AMD CPU firmware
+                  apt:
+                    name: '{{ debian_amd_cpu_firmware }}'
+                    state: latest
+                    update_cache: true
+                    install_recommends: false
+                  when: "'AuthenticAMD' in ansible_processor"
+                - name: Install Intel CPU firmware
+                  apt:
+                    name: '{{ debian_intel_cpu_firmware }}'
+                    state: latest
+                    update_cache: true
+                    install_recommends: false
+                  when: "'GenuineIntel' in ansible_processor"
+                - name: Warning for unsupported CPU
+                  debug:
+                    msg: 'CPU: {{ ansible_processor[1] }} is not supported.'
+                  when: "'AuthenticAMD' not in ansible_processor and 'GenuineIntel' not in ansible_processor"
+
+            - name: Install GPU firmware
+              block:
+                - name: Install pciutils
+                  apt:
+                    name: pciutils
+                    state: latest
+                    update_cache: true
+                    install_recommends: false
+                - name: Gather GPU information
+                  shell: lspci -nn | grep -i vga
+                  register: gpu_info
+                - name: Install AMD GPU firmware
+                  apt:
+                    name: '{{ debian_amd_gpu_firmware }}'
+                    state: latest
+                    update_cache: true
+                    install_recommends: false
+                  when: "'ATI' in gpu_info.stdout or 'Radeon' in gpu_info.stdout"
+                - name: Configure Intel GPU
+                  block:
+                    - name: Install Intel GPU firmware
+                      apt:
+                        name: '{{ debian_intel_gpu_firmware }}'
+                        state: latest
+                        update_cache: true
+                        install_recommends: false
+                    - name: Apply Intel xorg config
+                      block:
+                        - name: Create xorg config dir
+                          file:
+                            path: /etc/X11/xorg.conf.d
+                            state: directory
+                            mode: 0755
+                        - name: Apply xorg config
+                          copy:
+                            src: '{{ system_conf_path }}/xorg/{{ item }}.conf'
+                            dest: /etc/X11/xorg.conf.d/{{ item }}.conf
+                            mode: 0644
+                          with_items:
+                            - 20-intel
+                  when: "'Intel' in gpu_info.stdout"
+                - name: Warning for unsupported GPU
+                  debug:
+                    msg: GPU is not supported.
+                  when: "'ATI' not in gpu_info.stdout and 'Radeon' not in gpu_info.stdout and 'Intel' not in gpu_info.stdout and 'NVIDIA' not in gpu_info.stdout"
 
         - name: Install core pkgs
           apt:
@@ -227,24 +303,38 @@
                 src: '{{ system_conf_path }}/xorg/{{ item }}.conf'
                 dest: /etc/X11/xorg.conf.d/{{ item }}.conf
                 mode: 0644
-              with_items: [20-intel, 30-touchpad]
+              with_items:
+                - 30-touchpad
 
         - name: Config sysctl
           blockinfile:
             block: "{{ lookup('file', '{{ system_conf_path }}/sysctl.conf') }}"
             path: /etc/sysctl.d/99-sysctl.conf
 
-        - name: Install base pkgs
-          apt:
-            name: '{{ debian_base_pkgs }}'
-            state: latest
-            update_cache: true
+        - name: Install base pkgs to Debian
+          block:
+            - name: Install Debian base pkgs [1/2]
+              apt:
+                name: '{{ debian_base_p1_pkgs }}'
+                state: latest
+                update_cache: true
+            - name: Install Debian base pkgs [2/2]
+              apt:
+                name: '{{ debian_base_p2_pkgs }}'
+                state: latest
+                update_cache: true
+                install_recommends: false
 
         - name: Enable TLP
-          service:
-            name: tlp
-            state: started
-            enabled: true
+          block:
+            - name: Check if TLP package is installed
+              package_facts:
+            - name: Enable TLP
+              service:
+                name: tlp
+                state: started
+                enabled: true
+              when: "'tlp' in ansible_facts.packages"
 
       become: true
       when: ansible_distribution=="Debian"

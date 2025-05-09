@@ -1,4 +1,5 @@
 ---
+# Fedora
 fedora_amd_cpu_firmware: amd-ucode-firmware
 fedora_amd_gpu_firmware: amd-gpu-firmware
 fedora_intel_cpu_firmware: microcode_ctl
@@ -18,3 +19,28 @@ fedora_nvidia_firmware:
   - nvidia-settings
 
 fedora_nvidia_cuda: xorg-x11-drv-nvidia-cuda
+
+# Debian
+debian_amd_cpu_firmware: amd64-microcode
+debian_intel_cpu_firmware: intel-microcode
+
+debian_amd_gpu_firmware:
+  - firmware-amd-graphics
+  - libgl1-mesa-dri
+  - libglx-mesa0
+  - mesa-va-drivers
+  - mesa-vulkan-drivers
+  - vdpau-driver-all
+  - xserver-xorg-video-amdgpu
+
+debian_intel_gpu_firmware:
+  - intel-media-va-driver
+  - intel-media-va-driver-non-free
+
+debian_nvidia_firmware:
+  - libnvcuvid1
+  - libnvidia-encode1
+  - mesa-va-drivers
+  - nvidia-driver
+  - nvidia-settings
+  - vdpau-driver-all
