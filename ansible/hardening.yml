@@ -10,13 +10,13 @@
       block:
         - name: Update login.defs settings
           block:
-            - name: Set umask to 027
-              lineinfile:
-                path: /etc/login.defs
-                regexp: ^#?UMASK
-                line: UMASK 027
-                state: present
-                backrefs: true
+#            - name: Set umask to 027
+#              lineinfile:
+#                path: /etc/login.defs
+#                regexp: ^#?UMASK
+#                line: UMASK 027
+#                state: present
+#                backrefs: true
             - name: Set home mode to 0700
               lineinfile:
                 path: /etc/login.defs
