@@ -7,7 +7,7 @@
     - _vars_firmware_pkgs.yml
 
   vars:
-    - mok_password: ''
+    mok_password: null
 
   pre_tasks:
     - name: Preparatory steps
