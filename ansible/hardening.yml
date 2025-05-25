@@ -6,7 +6,7 @@
     - _vars_base.yml
 
   tasks:
-    - name: Fedora Hardening
+    - name: Base hardening
       block:
         - name: Update login.defs settings
           block:
@@ -73,41 +73,53 @@
 #                mode: 0640
           become: true
 
-        - name: Harden and enable pam faillock
+        - name: Fedora-specific Hardening
           block:
-            - name: Apply faillock config
-              copy:
-                src: '{{ system_conf_path }}/security/faillock.conf'
-                dest: /etc/security/faillock.conf
-                mode: 0640
-            - name: Apply pwquality config
-              copy:
-                src: '{{ system_conf_path }}/security/pwquality.conf'
-                dest: /etc/security/pwquality.conf
-                mode: 0640
-            - name: Enbale faillock
-              command: authselect enable-feature with-faillock
-          become: true
+            - name: Harden and enable pam faillock
+              block:
+                - name: Apply faillock config
+                  copy:
+                    src: '{{ system_conf_path }}/security/faillock.conf'
+                    dest: /etc/security/faillock.conf
+                    mode: 0640
+                - name: Apply pwquality config
+                  copy:
+                    src: '{{ system_conf_path }}/security/pwquality.conf'
+                    dest: /etc/security/pwquality.conf
+                    mode: 0640
+                - name: Enbale faillock
+                  command: authselect enable-feature with-faillock
+              become: true
 
-        - name: firewalld
+            - name: firewalld
+              block:
+                - name: Apply firewalld default zone config
+                  copy:
+                    src: '{{ system_conf_path }}/firewalld/zones/public.xml'
+                    dest: /etc/firewalld/zones/public.xml
+                    mode: 0640
+                - name: Ensure firewalld is running
+                  service:
+                    name: firewalld
+                    state: restarted
+                    enabled: true
+                - name: Set default zone to public
+                  firewalld:
+                    zone: public
+                    state: enabled
+                    permanent: true
+                    immediate: true
+              become: true
+          when: ansible_distribution=="Fedora"
+
+        - name: Debian-specific Hardening
           block:
-            - name: Apply firewalld default zone config
+            - name: APT seccomp-bpf
               copy:
-                src: '{{ system_conf_path }}/firewalld/zones/public.xml'
-                dest: /etc/firewalld/zones/public.xml
+                src: '{{ system_conf_path }}/apt/apt.conf.d/40sandbox.conf'
+                dest: /etc/apt/apt.conf.d/40sandbox.conf
                 mode: 0640
-            - name: Ensure firewalld is running
-              service:
-                name: firewalld
-                state: restarted
-                enabled: true
-            - name: Set default zone to public
-              firewalld:
-                zone: public
-                state: enabled
-                permanent: true
-                immediate: true
-          become: true
+              become: true
+          when: ansible_os_family == 'Debian'
 
-      when: ansible_distribution=="Fedora"
       tags: hardening

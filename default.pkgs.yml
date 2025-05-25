@@ -102,16 +102,16 @@ fedora_pyenv_deps_pkgs:
 
 debian_core_pkgs:
   - bash-completion
-  - firmware-misc-nonfree
-  - intel-microcode
   - xfonts-base
   - xserver-xorg-input-libinput
-  - xserver-xorg-video-intel
   - zram-tools
 
-debian_base_pkgs:
+debian_firmware_pkgs:
+  - firmware-misc-nonfree
+  - xserver-xorg-video-vesa
+
+debian_base_p1_pkgs:
   - atril
-  - blueman
   - caja-open-terminal
   - engrampa
   - eom
@@ -129,12 +129,17 @@ debian_base_pkgs:
   - mate-tweak
   - mate-utils
   - network-manager-gnome
-  - network-manager-openvpn-gnome
+  - pipewire-pulse
   - pluma
-  - pulseaudio
   - rng-tools
-  - tlp
   - unzip
+  - wireplumber
+
+debian_base_p2_pkgs:
+  # - blueman
+  # - network-manager-openvpn-gnome
+  # - pulseaudio
+  # - tlp
 
 debian_extra_p1_pkgs:
   - bat
@@ -146,13 +151,13 @@ debian_extra_p1_pkgs:
   - vainfo
 
 debian_extra_p2_pkgs:
-  - ibus
-  - ibus-gtk
-  - ibus-gtk3
-  - ibus-kkc
+  # - ibus
+  # - ibus-gtk
+  # - ibus-gtk3
+  # - ibus-kkc
   - libimage-exiftool-perl
   - neofetch
-  - redshift-gtk
+  # - redshift-gtk
 
 debian_devops_pkgs:
   - awscli

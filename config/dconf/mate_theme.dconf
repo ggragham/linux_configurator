@@ -1,6 +1,6 @@
 [org/mate/desktop/interface]
 gtk-theme='Matcha-dark-aliz'
-icon-theme='Qogir-ubuntu-dark'
+icon-theme='Qogir-Ubuntu-Dark'
 
 [org/mate/desktop/peripherals/mouse]
 cursor-theme='Qogir'
