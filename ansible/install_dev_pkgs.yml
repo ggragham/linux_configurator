@@ -319,6 +319,41 @@
             - name: Install {{ pkg_name }}
               include_tasks: '{{ ansible_path }}/_install_pkg_from_github.yml'
 
+        - name: Install helm
+          block:
+            - name: Get latest Helm version
+              uri:
+                url: https://get.helm.sh/helm-latest-version
+                return_content: true
+              register: helm_latest_version
+            - name: Set helm version
+              set_fact:
+                helm_version: '{{ helm_latest_version.content | trim }}'
+            - name: Make tmp directory
+              file:
+                path: /tmp/helm_{{ helm_version }}
+                state: directory
+              register: helm_tmp_dir
+            - name: Download Helm
+              get_url:
+                url: https://get.helm.sh/helm-{{ helm_version }}-linux-amd64.tar.gz
+                dest: '{{ helm_tmp_dir.path }}/helm.tar.gz'
+            - name: Extract Helm
+              unarchive:
+                src: '{{ helm_tmp_dir.path }}/helm.tar.gz'
+                dest: '{{ helm_tmp_dir.path }}'
+                remote_src: true
+            - name: Install helm
+              copy:
+                remote_src: true
+                src: '{{ helm_tmp_dir.path }}/linux-amd64/helm'
+                dest: '{{ local_bin_path }}/helm'
+                mode: '0750'
+            - name: Remove tmp directory
+              file:
+                path: /tmp/helm_{{ helm_version }}
+                state: absent
+
         - name: Apply kubernetes zsh config
           block:
             - name: Set config name
