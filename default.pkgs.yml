@@ -66,6 +66,7 @@ fedora_extra_pkgs:
   - s-tui
   - tree
   - unrar
+  - xclip
   - zip
 
 fedora_devops_pkgs:
