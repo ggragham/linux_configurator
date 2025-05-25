@@ -66,11 +66,11 @@
                     src: '{{ system_conf_path }}/coredump.conf'
                     dest: /etc/systemd/coredump.conf
                     mode: 0640
-            - name: Ulimit coredump config
-              copy:
-                src: '{{ system_conf_path }}/security/limits.d/99-disable-coredump.conf'
-                dest: /etc/security/limits.d/99-disable-coredump.conf
-                mode: 0640
+#            - name: Ulimit coredump config
+#              copy:
+#                src: '{{ system_conf_path }}/security/limits.d/99-disable-coredump.conf'
+#                dest: /etc/security/limits.d/99-disable-coredump.conf
+#                mode: 0640
           become: true
 
         - name: Harden and enable pam faillock
