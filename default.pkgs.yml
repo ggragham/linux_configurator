@@ -1,7 +1,7 @@
 ---
-###################
+####################
 ### Fedora PKGs  ###
-###################
+####################
 
 fedora_core_pkgs:
   - adwaita-mono-fonts
@@ -96,9 +96,9 @@ fedora_pyenv_deps_pkgs:
   - gdbm-devel
   - libnsl2-devel
 
-###################
+####################
 ### Debian PKGs  ###
-###################
+####################
 
 debian_core_pkgs:
   - bash-completion
