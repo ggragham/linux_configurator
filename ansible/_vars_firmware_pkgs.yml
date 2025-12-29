@@ -1,6 +1,12 @@
 ---
 fedora_amd_cpu_firmware: amd-ucode-firmware
-fedora_amd_gpu_firmware: amd-gpu-firmware
+
+fedora_amd_gpu_firmware:
+  - amd-gpu-firmware
+  - mesa-dri-drivers
+  - mesa-vulkan-drivers
+  - vulkan-tools
+
 fedora_intel_cpu_firmware: microcode_ctl
 fedora_intel_gpu_firmware: intel-gpu-firmware
 
