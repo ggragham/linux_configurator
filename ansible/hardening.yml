@@ -4,110 +4,17 @@
 
   vars_files:
     - _vars_base.yml
+    - default.hardening.vars.yml
 
-  tasks:
-    - name: Fedora Hardening
+  pre_tasks:
+    - name: Preparatory steps
       block:
-        - name: Update login.defs settings
-          block:
-#            - name: Set umask to 027
-#              lineinfile:
-#                path: /etc/login.defs
-#                regexp: ^#?UMASK
-#                line: UMASK 027
-#                state: present
-#                backrefs: true
-            - name: Set home mode to 0700
-              lineinfile:
-                path: /etc/login.defs
-                regexp: ^#?HOME_MODE
-                line: HOME_MODE 0700
-                state: present
-                backrefs: true
-            - name: Set yescrypt cost factor to 11
-              lineinfile:
-                path: /etc/login.defs
-                regexp: ^#?YESCRYPT_COST_FACTOR
-                line: YESCRYPT_COST_FACTOR 11
-                state: present
-                backrefs: true
-          become: true
+        - name: Include pkgs list
+          include_vars: '{{ item }}'
+          with_fileglob:
+            - '{{ repo_root_path }}/hardening.vars.yml'
+      tags: prepare
 
-        - name: Blacklist unused modules
-          copy:
-            src: '{{ system_conf_path }}/modprobe.d/blacklist.conf'
-            dest: /etc/modprobe.d/blacklist.conf
-            mode: 0640
-          become: true
-
-        - name: Hardening kernel settings
-          copy:
-            src: '{{ system_conf_path }}/sysctl.d/hardening.conf'
-            dest: /etc/sysctl.d/hardening.conf
-            mode: 0640
-          become: true
-
-        - name: Disable core dumps
-          block:
-            - name: Systemd coredump config
-              block:
-                - name: Get current timestamp
-                  set_fact:
-                    timestamp: "{{ lookup('pipe', 'date +%d_%m_%Y_%H_%M_%S') }}"
-                - name: Backup systemd coredump config with timestamp
-                  fetch:
-                    src: /etc/systemd/coredump.conf
-                    dest: '{{ backup_path }}/coredump.conf_{{ timestamp }}'
-                    mode: 0644
-                    flat: true
-                  ignore_errors: true
-                - name: Apply systemd coredump config
-                  copy:
-                    src: '{{ system_conf_path }}/coredump.conf'
-                    dest: /etc/systemd/coredump.conf
-                    mode: 0640
-#            - name: Ulimit coredump config
-#              copy:
-#                src: '{{ system_conf_path }}/security/limits.d/99-disable-coredump.conf'
-#                dest: /etc/security/limits.d/99-disable-coredump.conf
-#                mode: 0640
-          become: true
-
-        - name: Harden and enable pam faillock
-          block:
-            - name: Apply faillock config
-              copy:
-                src: '{{ system_conf_path }}/security/faillock.conf'
-                dest: /etc/security/faillock.conf
-                mode: 0640
-            - name: Apply pwquality config
-              copy:
-                src: '{{ system_conf_path }}/security/pwquality.conf'
-                dest: /etc/security/pwquality.conf
-                mode: 0640
-            - name: Enbale faillock
-              command: authselect enable-feature with-faillock
-          become: true
-
-        - name: firewalld
-          block:
-            - name: Apply firewalld default zone config
-              copy:
-                src: '{{ system_conf_path }}/firewalld/zones/public.xml'
-                dest: /etc/firewalld/zones/public.xml
-                mode: 0640
-            - name: Ensure firewalld is running
-              service:
-                name: firewalld
-                state: restarted
-                enabled: true
-            - name: Set default zone to public
-              firewalld:
-                zone: public
-                state: enabled
-                permanent: true
-                immediate: true
-          become: true
-
-      when: ansible_distribution=="Fedora"
+  roles:
+    - role: hardening_ansible_role
       tags: hardening

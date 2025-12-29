@@ -580,6 +580,7 @@ applyConfig() {
 			select="*"
 			;;
 		3)
+			ansible-galaxy install --force git+https://github.com/ggragham/hardening_ansible_role.git
 			runAnsiblePlaybook "hardening" "hardening"
 			pressAnyKeyToContinue
 			select="*"

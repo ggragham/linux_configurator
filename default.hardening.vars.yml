@@ -1,0 +1,24 @@
+---
+USERNAME: '{{ user }}'  # Default system user.
+HARDENING_MISC_CONFIG_ENABLED: true  # Enable or disable miscellaneous hardening tasks.
+HARDENING_MISC_YESCRYPT_HOST_FACTOR: 8  # Yescrypt factor for password hashing difficulty.
+HARDENING_MISC_NODE_TYPE: desktop  # Specify the type of node (server or desktop).
+HARDENING_AUTH_FAILLOCK_CONFIG_ENABLED: true  # Enable or disable faillock.
+HARDENING_AUTH_FAILLOCK_MAX_ATTEMPTS: 3  # Maximum number of failed login attempts.
+HARDENING_AUTH_FAILLOCK_UNLOCK_TIME: 600  # Time (in seconds) to unlock after exceeding attempts.
+HARDENING_NETWORK_CONFIG_ENABLED: true  # Enable or disable network configuration.
+HARDENING_NETWORK_DISABLE_IPV6: true  # Enable or disable IPv6 stack disabling.
+HARDENING_DEBIAN_HARDENING_ENABLED: true  # Enable or disable Debian-based configuration.
+HARDENING_REDHAT_HARDENING_ENABLED: true  # Enable or disable RedHat-based configuration.
+HARDENING_SSH_CONFIG_ENABLED: false  # Enable or disable SSH configuration.
+HARDENING_FAIL2BAN_ENABLED: false  # Enable or disable Fail2Ban installation.
+HARDENING_CHRONY_ENABLED: true  # Enable or disable Chrony installation.
+HARDENING_FIREWALL_ENABLED: true  # Enable or disable firewall hardening.
+# Specify the firewall backend (options: ufw, firewalld, iptables).
+# Leave empty to autodetect. Fails if no supported firewall is found.
+HARDENING_FIREWALL_BACKEND: ''
+HARDENING_FIREWALL_RESET: false  # Enable or disable resetting the firewall rules.
+HARDENING_FIREWALL_OPEN_SSH_PORT: false  # Enable or disable opening the SSH port in the firewall.
+HARDENING_FIREWALL_INTERFACE_LIST:  # List of network interfaces to apply firewall rules to.
+  - eth0
+  - wlp2s0
