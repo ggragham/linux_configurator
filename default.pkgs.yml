@@ -56,11 +56,13 @@ fedora_extra_pkgs:
   - cups
   - default-fonts-core
   - fastfetch
-  - webp-pixbuf-loader
+  - glycin-thumbnailer
   - jetbrains-mono-fonts
   - liberation-fonts-all
+  - libheif-freeworld
   - net-tools
   - nmap
+  - nvtop
   - p7zip
   - perl-Image-ExifTool
   - s-tui
