@@ -40,11 +40,13 @@ fedora_base_pkgs:
   - gnome-tweaks
   - gnome-weather
   - gvfs-mtp
+  - gvfs-smb
   - htop
   - lm_sensors
   - nautilus
   - nautilus-gsconnect
   - sushi
+  - tar
   - tuned
   - tuned-ppd
   - unzip
