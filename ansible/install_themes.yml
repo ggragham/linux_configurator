@@ -5,21 +5,62 @@
   vars_files:
     - _vars_base.yml
 
+  pre_tasks:
+    - name: Install dbus-tools
+      dnf:
+        name: dbus-tools
+        state: latest
+        update_cache: true
+        install_weak_deps: false
+      become: true
+      when: ansible_distribution=="Fedora"
+      tags: prepare
+
   tasks:
     # Fedora (Gnome)
     - name: Install Fedora themes
       block:
-        - name: Install themes
-          dnf:
-            # name: [ papirus-icon-theme ]
-            name:
-              - adw-gtk3-theme
-              - yaru-icon-theme
-              - yaru-sound-theme
-            state: latest
-            update_cache: true
-            install_weak_deps: false
-          become: true
+        - name: Install adw-gtk3-theme
+          block:
+            - name: Install adw-gtk3-theme to Fedora
+              dnf:
+                # name: [ papirus-icon-theme ]
+                name: adw-gtk3-theme
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+              become: true
+            - name: Apply adw-gtk3-theme on Gnome DE
+              community.general.dconf:
+                key: /org/gnome/desktop/interface/gtk-theme
+                value: "'adw-gtk3-dark'"
+                state: present
+          tags: adw-gtk3
+
+        - name: Install yaru-theme
+          block:
+            - name: Install yaru-theme to Fedora
+              dnf:
+                name: yaru-theme
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+              become: true
+            - name: Apply yaru-theme on Gnome DE
+              community.general.dconf:
+                key: '{{ dconf_setting.key }}'
+                value: '{{ dconf_setting.value }}'
+              loop:
+                - {key: /org/gnome/desktop/interface/accent-color, value: "'orange'"}
+                - {key: /org/gnome/desktop/interface/color-scheme, value: "'prefer-dark'"}
+                - {key: /org/gnome/desktop/interface/cursor-theme, value: "'Yaru'"}
+                - {key: /org/gnome/desktop/interface/gtk-theme, value: "'Yaru-dark'"}
+                - {key: /org/gnome/desktop/interface/icon-theme, value: "'Yaru-dark'"}
+                - {key: /org/gnome/desktop/sound/theme-name, value: "'Yaru'"}
+                - {key: /org/gnome/shell/extensions/user-theme/name, value: "'Yaru-dark'"}
+              loop_control:
+                loop_var: dconf_setting
+          tags: yaru
 
         # - name: Install flatpak themes
         #   block:
@@ -37,14 +78,15 @@
         #             state: present
         #       when: flatpak_return.stdout=="0"
 
-        - name: Enable themes
-          shell:
-            cmd: dconf load / <"{{ dconf_path }}/gnome_theme.dconf"
-          environment:
-            DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
+        # - name: Enable themes
+        #   shell:
+        #     cmd: dconf load / <"{{ dconf_path }}/gnome_theme.dconf"
+        #   environment:
+        #     DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
 
-      when: ansible_distribution=="Fedora"
-      tags: themes
+      when:
+        - ansible_distribution=="Fedora"
+        - (ansible_env.XDG_SESSION_DESKTOP | default('')) == 'gnome'
 
     # Debian (Mate)
     - name: Install themes

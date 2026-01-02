@@ -407,6 +407,38 @@ installFlatpakPkgs() {
 	done
 }
 
+installThemes() {
+	local select="*"
+	while :; do
+		printHeader
+		menuItem "1" "adw-gtk3-theme"
+		menuItem "2" "Yaru"
+		echo
+		menuItem "0" "Back"
+		echo
+
+		case $select in
+		1)
+			runAnsiblePlaybook "install_themes" "adw-gtk3"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		2)
+			runAnsiblePlaybook "install_themes" "yaru"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		0)
+			return 0
+			;;
+		*)
+			read -rp "> " select
+			continue
+			;;
+		esac
+	done
+}
+
 installGamingPkgs() {
 	local select="*"
 	while :; do
@@ -623,7 +655,7 @@ installAddPkgs() {
 			select="*"
 			;;
 		4)
-			runAnsiblePlaybook "install_themes" "themes"
+			installThemes
 			pressAnyKeyToContinue
 			select="*"
 			;;

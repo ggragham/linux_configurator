@@ -1,7 +1,0 @@
-[org/gnome/desktop/interface]
-cursor-theme='Yaru'
-gtk-theme='adw-gtk3-dark'
-icon-theme='Yaru-blue-dark'
-
-[org/gnome/desktop/sound]
-theme-name='Yaru'
