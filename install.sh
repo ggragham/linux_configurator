@@ -411,19 +411,25 @@ installThemes() {
 	local select="*"
 	while :; do
 		printHeader
-		menuItem "1" "adw-gtk3-theme"
-		menuItem "2" "Yaru"
+		menuItem "1" "Default Adwaita"
+		menuItem "2" "adw-gtk3-theme"
+		menuItem "3" "Yaru"
 		echo
 		menuItem "0" "Back"
 		echo
 
 		case $select in
 		1)
-			runAnsiblePlaybook "install_themes" "adw-gtk3"
+			runAnsiblePlaybook "install_themes" "adwaita"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		2)
+			runAnsiblePlaybook "install_themes" "adw-gtk3"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		3)
 			runAnsiblePlaybook "install_themes" "yaru"
 			pressAnyKeyToContinue
 			select="*"

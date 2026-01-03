@@ -20,6 +20,22 @@
     # Fedora (Gnome)
     - name: Install Fedora themes
       block:
+        - name: Set Adwaita theme
+          community.general.dconf:
+            key: '{{ dconf_setting.key }}'
+            value: '{{ dconf_setting.value }}'
+          loop:
+            - {key: /org/gnome/desktop/interface/accent-color, value: "'blue'"}
+            - {key: /org/gnome/desktop/interface/color-scheme, value: "'prefer-dark'"}
+            - {key: /org/gnome/desktop/interface/cursor-theme, value: "'Adwaita'"}
+            - {key: /org/gnome/desktop/interface/gtk-theme, value: "'Adwaita'"}
+            - {key: /org/gnome/desktop/interface/icon-theme, value: "'Adwaita'"}
+            - {key: /org/gnome/desktop/sound/theme-name, value: "'freedesktop'"}
+            - {key: /org/gnome/shell/extensions/user-theme/name, value: "''"}
+          loop_control:
+            loop_var: dconf_setting
+          tags: adwaita
+
         - name: Install adw-gtk3-theme
           block:
             - name: Install adw-gtk3-theme to Fedora
