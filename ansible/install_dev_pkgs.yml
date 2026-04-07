@@ -189,17 +189,9 @@
 
         - name: Install docker to Fedora
           block:
-            - name: Add repo to Fedora
-              yum_repository:
-                name: docker
-                description: docker repository
-                baseurl: https://download.docker.com/linux/{{ distro_name }}/$releasever/$basearch/stable
-                enabled: true
-                gpgcheck: true
-                gpgkey: https://download.docker.com/linux/{{ distro_name }}/gpg
             - name: Install docker to Fedora
               dnf:
-                name: '{{ docker_pkgs }}'
+                name: '{{ fedora_docker_pkgs }}'
                 state: latest
                 update_cache: true
                 install_weak_deps: false

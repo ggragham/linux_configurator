@@ -75,6 +75,11 @@ fedora_virt_pkgs:
 fedora_devops_pkgs:
   - awscli
 
+fedora_docker_pkgs:
+  - moby-engine
+  - docker-cli
+  - docker-compose
+
 fedora_pyenv_deps_pkgs:
   - make
   - gcc
