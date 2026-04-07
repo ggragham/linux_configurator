@@ -2,6 +2,7 @@ backup/*
 *.tmp
 .vagrant/
 *pkgs.yml
+!_*_pkgs.yml
 !default.pkgs.yml
 *.vars.yml
 !default.vars.yml

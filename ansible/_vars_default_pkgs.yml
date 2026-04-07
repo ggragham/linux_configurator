@@ -1,0 +1,94 @@
+---
+####################
+### Fedora PKGs  ###
+####################
+
+fedora_amd_cpu_firmware: amd-ucode-firmware
+
+fedora_amd_gpu_firmware:
+  - amd-gpu-firmware
+  - mesa-dri-drivers
+  - mesa-vulkan-drivers
+  - vulkan-tools
+
+fedora_intel_cpu_firmware: microcode_ctl
+fedora_intel_gpu_firmware: intel-gpu-firmware
+
+fedora_nvidia_secureboot_tools:
+  - kmodtool
+  - akmods
+  - mokutil
+  - openssl
+
+fedora_nvidia_firmware:
+  - akmod-nvidia
+  - xorg-x11-drv-nvidia
+  - xorg-x11-drv-nvidia-libs
+  - xorg-x11-drv-nvidia-power
+  - nvidia-settings
+
+fedora_nvidia_cuda: xorg-x11-drv-nvidia-cuda
+
+fedora_core_pkgs:
+  - adwaita-mono-fonts
+  - adwaita-sans-fonts
+  - bash-completion
+  - gdm
+  - git
+  - gnome-shell
+  - mesa-dri-drivers
+  - plymouth-theme-spinner
+  - ptyxis
+
+fedora_base_pkgs:
+  - NetworkManager-openvpn-gnome
+  - NetworkManager-wifi
+  - baobab
+  - ffmpegthumbnailer
+  - gnome-bluetooth
+  - gnome-calculator
+  - gnome-calendar
+  - gnome-clocks
+  - gnome-disk-utility
+  - gnome-firmware
+  - gnome-tweaks
+  - gnome-weather
+  - gvfs-mtp
+  - gvfs-smb
+  - htop
+  - lm_sensors
+  - nautilus
+  - nautilus-gsconnect
+  - sushi
+  - tar
+  - tuned
+  - tuned-ppd
+  - unzip
+  - xdg-desktop-portal-gnome
+
+fedora_virt_pkgs:
+  - gnome-boxes
+  - vagrant
+  - vagrant-libvirt
+  - vagrant-sshfs
+
+fedora_devops_pkgs:
+  - awscli
+
+fedora_pyenv_deps_pkgs:
+  - make
+  - gcc
+  - patch
+  - zlib-devel
+  - bzip2
+  - bzip2-devel
+  - readline-devel
+  - sqlite
+  - sqlite-devel
+  - openssl-devel
+  - tk-devel
+  - libffi-devel
+  - xz-devel
+  - libuuid-devel
+  - gdbm-devel
+  - libnsl2-devel

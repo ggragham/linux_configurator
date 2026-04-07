@@ -3,17 +3,6 @@
 ### Fedora PKGs  ###
 ####################
 
-fedora_core_pkgs:
-  - adwaita-mono-fonts
-  - adwaita-sans-fonts
-  - bash-completion
-  - gdm
-  - git
-  - gnome-shell
-  - mesa-dri-drivers
-  - plymouth-theme-spinner
-  - ptyxis
-
 fedora_firmware_pkgs:
   - linux-firmware
   # - atheros-firmware
@@ -25,32 +14,6 @@ fedora_firmware_pkgs:
   # - mt7xxx-firmware
   # - realtek-firmware
   # - tiwilink-firmware
-
-fedora_base_pkgs:
-  - NetworkManager-openvpn-gnome
-  - NetworkManager-wifi
-  - baobab
-  - ffmpegthumbnailer
-  - gnome-bluetooth
-  - gnome-calculator
-  - gnome-calendar
-  - gnome-clocks
-  - gnome-disk-utility
-  - gnome-firmware
-  - gnome-tweaks
-  - gnome-weather
-  - gvfs-mtp
-  - gvfs-smb
-  - htop
-  - lm_sensors
-  - nautilus
-  - nautilus-gsconnect
-  - sushi
-  - tar
-  - tuned
-  - tuned-ppd
-  - unzip
-  - xdg-desktop-portal-gnome
 
 fedora_extra_pkgs:
   - bat
@@ -72,33 +35,6 @@ fedora_extra_pkgs:
   - unrar
   - xclip
   - zip
-
-fedora_devops_pkgs:
-  - awscli
-
-fedora_virt_pkgs:
-  - gnome-boxes
-  - vagrant
-  - vagrant-libvirt
-  - vagrant-sshfs
-
-fedora_pyenv_deps_pkgs:
-  - make
-  - gcc
-  - patch
-  - zlib-devel
-  - bzip2
-  - bzip2-devel
-  - readline-devel
-  - sqlite
-  - sqlite-devel
-  - openssl-devel
-  - tk-devel
-  - libffi-devel
-  - xz-devel
-  - libuuid-devel
-  - gdbm-devel
-  - libnsl2-devel
 
 ####################
 ### Debian PKGs  ###
