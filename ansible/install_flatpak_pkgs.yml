@@ -14,8 +14,8 @@
 
         - name: Get window system protocol and DE name
           set_fact:
-            wsp_name: '{{ ansible_env.XDG_SESSION_TYPE }}'
-            de_name: '{{ ansible_env.XDG_CURRENT_DESKTOP | lower }}'
+            wsp_name: '{{ ansible_facts.env.XDG_SESSION_TYPE }}'
+            de_name: '{{ ansible_facts.env.XDG_CURRENT_DESKTOP | lower }}'
 
         - name: Include pkgs list
           include_vars: '{{ item }}'
