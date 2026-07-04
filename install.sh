@@ -332,15 +332,7 @@ installFlatpakPkgs() {
 	while :; do
 		printHeader
 		menuItem "1" "Base pkgs"
-		menuItem "2" "Media pkgs"
-		menuItem "3" "Brave"
-		menuItem "4" "Librewolf"
-		menuItem "5" "Bitwarden"
-		menuItem "6" "Telegram"
-		menuItem "7" "Spotify"
-		menuItem "8" "FreeTube"
-		menuItem "9" "LibreOffice"
-		menuItem "10" "OnlyOffice"
+		menuItem "2" "Other pkgs"
 		echo
 		menuItem "0" "Back"
 		echo
@@ -352,47 +344,7 @@ installFlatpakPkgs() {
 			select="*"
 			;;
 		2)
-			runAnsiblePlaybook "install_flatpak_pkgs" "media"
-			pressAnyKeyToContinue
-			select="*"
-			;;
-		3)
-			runAnsiblePlaybook "install_flatpak_pkgs" "brave"
-			pressAnyKeyToContinue
-			select="*"
-			;;
-		4)
-			runAnsiblePlaybook "install_flatpak_pkgs" "librewolf"
-			pressAnyKeyToContinue
-			select="*"
-			;;
-		5)
-			runAnsiblePlaybook "install_flatpak_pkgs" "bitwarden"
-			pressAnyKeyToContinue
-			select="*"
-			;;
-		6)
-			runAnsiblePlaybook "install_flatpak_pkgs" "telegram"
-			pressAnyKeyToContinue
-			select="*"
-			;;
-		7)
-			runAnsiblePlaybook "install_flatpak_pkgs" "spotify"
-			pressAnyKeyToContinue
-			select="*"
-			;;
-		8)
-			runAnsiblePlaybook "install_flatpak_pkgs" "freetube"
-			pressAnyKeyToContinue
-			select="*"
-			;;
-		9)
-			runAnsiblePlaybook "install_flatpak_pkgs" "libreoffice"
-			pressAnyKeyToContinue
-			select="*"
-			;;
-		10)
-			runAnsiblePlaybook "install_flatpak_pkgs" "onlyoffice"
+			runAnsiblePlaybook "install_flatpak_pkgs" "other_flatpak_pkgs"
 			pressAnyKeyToContinue
 			select="*"
 			;;

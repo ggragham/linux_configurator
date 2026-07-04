@@ -120,6 +120,23 @@ debian_pyenv_deps_pkgs:
   - libffi-dev
   - liblzma-dev
 
+#####################
+### Flatpak PKGs  ###
+#####################
+flatpak_pkgs:
+  - org.gnome.Loupe
+  # - io.bassi.Amberol
+  # - org.gnome.Rhythmbox3
+  # - io.github.celluloid_player.Celluloid
+  - com.brave.Browser
+  - io.gitlab.librewolf-community
+  - com.bitwarden.desktop
+  - org.telegram.desktop
+  - com.spotify.Client
+  - io.freetubeapp.FreeTube
+  # - org.libreoffice.LibreOffice
+  - org.onlyoffice.desktopeditors
+
 ##################
 ### Other PKGs  ###
 ##################

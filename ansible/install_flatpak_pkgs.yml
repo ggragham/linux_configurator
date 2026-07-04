@@ -4,6 +4,7 @@
 
   vars_files:
     - _vars_base.yml
+    - '{{ repo_root_path }}/default.pkgs.yml'
 
   pre_tasks:
     - name: Prepare steps
@@ -16,10 +17,13 @@
             wsp_name: '{{ ansible_env.XDG_SESSION_TYPE }}'
             de_name: '{{ ansible_env.XDG_CURRENT_DESKTOP | lower }}'
 
+        - name: Include pkgs list
+          include_vars: '{{ item }}'
+          with_fileglob:
+            - '{{ repo_root_path }}/pkgs.yml'
       tags: prepare
 
   tasks:
-    # Base
     - name: Base pkgs
       block:
         - name: Flatseal
@@ -55,41 +59,43 @@
 
       tags: base_flatpak_pkgs
 
-    # Media
-    - name: Media pkgs
-      block:
-        # - name: Amberol
-        #   block:
-        #     - name: Install Amberol
-        #       flatpak:
-        #         name: io.bassi.Amberol
-        #         state: present
-        #     - name: Configure Amberol permissions [Wayland]
-        #       shell:
-        #         cmd: >
-        #           flatpak override --user \
-        #             --unshare=network \
-        #             --unshare=ipc \
-        #             --nosocket=x11 \
-        #             --nosocket=fallback-x11 \
-        #             io.bassi.Amberol
-        #       when: wsp_name=="wayland"
-        #     - name: Configure Amberol permissions [X11]
-        #       shell:
-        #         cmd: >
-        #           flatpak override --user \
-        #             --unshare=network \
-        #             --nosocket=wayland \
-        #             io.bassi.Amberol
-        #       when: wsp_name=="x11"
-        #   when: ansible_distribution=="Fedora"
+    - name: Install Flatpak PKGs from list
+      flatpak:
+        name: '{{ flatpak_pkgs }}'
+        state: present
+      when:
+        - flatpak_pkgs is defined
+        - flatpak_pkgs | length > 0
+      tags: other_flatpak_pkgs
 
+    - name: override flatpak PKGs settings
+      block:
+        # Amberol
+        - name: Amberol
+          block:
+            - name: Configure Amberol permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    io.bassi.Amberol
+              when: wsp_name=="wayland"
+            - name: Configure Amberol permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --nosocket=wayland \
+                    io.bassi.Amberol
+              when: wsp_name=="x11"
+          when: "'io.bassi.Amberol' in flatpak_pkgs"
+
+        # Rhythmbox
         - name: Rhythmbox
           block:
-            - name: Install Rhythmbox
-              flatpak:
-                name: org.gnome.Rhythmbox3
-                state: present
             - name: Configure Rhythmbox permissions [Wayland]
               shell:
                 cmd: >
@@ -108,14 +114,11 @@
                     --nosocket=wayland \
                     org.gnome.Rhythmbox
               when: wsp_name=="x11"
-          when: ansible_distribution=="Debian"
+          when: "'org.gnome.Rhythmbox3' in flatpak_pkgs"
 
+        # Loupe
         - name: Loupe
           block:
-            - name: Install Loupe
-              flatpak:
-                name: org.gnome.Loupe
-                state: present
             - name: Configure Loupe permissions [Wayland]
               shell:
                 cmd: >
@@ -132,14 +135,11 @@
                     --nosocket=wayland \
                     org.gnome.Loupe
               when: wsp_name=="x11"
-          when: ansible_distribution=="Fedora"
+          when: "'org.gnome.Loupe' in flatpak_pkgs"
 
+        # Celluloid
         - name: Celluloid
           block:
-            - name: Install Celluloid
-              flatpak:
-                name: io.github.celluloid_player.Celluloid
-                state: present
             - name: Configure Celluloid permissions [Wayland]
               shell:
                 cmd: >
@@ -162,232 +162,192 @@
                     --device=dri \
                     io.github.celluloid_player.Celluloid
               when: wsp_name=="x11"
+          when: "'io.github.celluloid_player.Celluloid' in flatpak_pkgs"
 
-      tags: media
+        # Brave
+        - name: Brave
+          block:
+            - name: Configure Brave permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=cups \
+                    --nosocket=pcsc \
+                    --nofilesystem=host-etc \
+                    --nofilesystem=xdg-desktop \
+                    --nofilesystem=xdg-documents \
+                    --nofilesystem=xdg-videos \
+                    --nofilesystem=xdg-music \
+                    --system-no-talk-name=org.freedesktop.UPower \
+                    --system-no-talk-name=org.freedesktop.Avahi \
+                    com.brave.Browser
+              when: wsp_name=="wayland"
+            - name: Configure Brave permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --nosocket=wayland \
+                    --nosocket=pcsc \
+                    --nosocket=cups \
+                    --nofilesystem=host-etc \
+                    --nofilesystem=xdg-desktop \
+                    --nofilesystem=xdg-documents \
+                    --nofilesystem=xdg-videos \
+                    --nofilesystem=xdg-music \
+                    --system-no-talk-name=org.freedesktop.UPower \
+                    --system-no-talk-name=org.freedesktop.Avahi \
+                    com.brave.Browser
+              when: wsp_name=="x11"
+          when: "'com.brave.Browser' in flatpak_pkgs"
 
-    # Brave
-    - name: Brave
-      block:
-        - name: Install Brave
-          flatpak:
-            name: com.brave.Browser
-            state: present
-        - name: Configure Brave permissions [Wayland]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --unshare=ipc \
-                --nosocket=cups \
-                --nosocket=pcsc \
-                --nofilesystem=host-etc \
-                --nofilesystem=xdg-desktop \
-                --nofilesystem=xdg-documents \
-                --nofilesystem=xdg-videos \
-                --nofilesystem=xdg-music \
-                --system-no-talk-name=org.freedesktop.UPower \
-                --system-no-talk-name=org.freedesktop.Avahi \
-                com.brave.Browser
-          when: wsp_name=="wayland"
-        - name: Configure Brave permissions [X11]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --nosocket=wayland \
-                --nosocket=pcsc \
-                --nosocket=cups \
-                --nofilesystem=host-etc \
-                --nofilesystem=xdg-desktop \
-                --nofilesystem=xdg-documents \
-                --nofilesystem=xdg-videos \
-                --nofilesystem=xdg-music \
-                --system-no-talk-name=org.freedesktop.UPower \
-                --system-no-talk-name=org.freedesktop.Avahi \
-                com.brave.Browser
-          when: wsp_name=="x11"
+        # Librewolf
+        - name: Librewolf
+          block:
+            - name: Configure Librewolf permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    --nosocket=pcsc \
+                    --nosocket=cups \
+                    io.gitlab.librewolf-community
+              when: wsp_name=="wayland"
+            - name: Configure Librewolf permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --nosocket=wayland \
+                    --nosocket=pcsc \
+                    --nosocket=cups \
+                    io.gitlab.librewolf-community
+              when: wsp_name=="x11"
+          when: "'io.gitlab.librewolf-community' in flatpak_pkgs"
 
-      tags: brave
+        # Bitwarden
+        - name: Bitwarden
+          block:
+            - name: Configure Bitwarden permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nodevice=all \
+                    com.bitwarden.desktop
+              when: wsp_name=="wayland"
+            - name: Configure Bitwarden permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=wayland \
+                    --nodevice=all \
+                    com.bitwarden.desktop
+              when: wsp_name=="x11"
+          when: "'com.bitwarden.desktop' in flatpak_pkgs"
 
-    # Librewolf
-    - name: Librewolf
-      block:
-        - name: Install Librewolf
-          flatpak:
-            name: io.gitlab.librewolf-community
-            state: present
-        - name: Configure Librewolf permissions [Wayland]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --unshare=ipc \
-                --nosocket=x11 \
-                --nosocket=fallback-x11 \
-                --nosocket=pcsc \
-                --nosocket=cups \
-                io.gitlab.librewolf-community
-          when: wsp_name=="wayland"
-        - name: Configure Librewolf permissions [X11]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --nosocket=wayland \
-                --nosocket=pcsc \
-                --nosocket=cups \
-                io.gitlab.librewolf-community
-          when: wsp_name=="x11"
+        # Telegram
+        - name: Telegram
+          block:
+            - name: Configure Telegram permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nofilesystem=host \
+                    --filesystem=xdg-download \
+                    org.telegram.desktop
+              when: wsp_name=="wayland"
+            - name: Configure Telegram permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --nosocket=wayland \
+                    --nofilesystem=host \
+                    --filesystem=xdg-download \
+                    --env=IBUS_USE_PORTAL=1 \
+                    org.telegram.desktop
+              when: wsp_name=="x11"
+          when: "'org.telegram.desktop' in flatpak_pkgs"
 
-      tags: librewolf
+        # Spotify
+        - name: Spotify
+          block:
+            - name: Configure Spotify permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nofilesystem=xdg-pictures \
+                    com.spotify.Client
+              when: wsp_name=="wayland"
+            - name: Configure Spotify permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=wayland \
+                    --nofilesystem=xdg-pictures \
+                    com.spotify.Client
+              when: wsp_name=="x11"
+          when: "'com.spotify.Client' in flatpak_pkgs"
 
-    # Bitwarden
-    - name: Bitwarden
-      block:
-        - name: Install Bitwarden
-          flatpak:
-            name: com.bitwarden.desktop
-            state: present
-        - name: Configure Bitwarden permissions [Wayland]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --unshare=ipc \
-                --nodevice=all \
-                com.bitwarden.desktop
-          when: wsp_name=="wayland"
-        - name: Configure Bitwarden permissions [X11]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --unshare=ipc \
-                --nosocket=wayland \
-                --nodevice=all \
-                com.bitwarden.desktop
-          when: wsp_name=="x11"
+        # FreeTube
+        - name: FreeTube
+          block:
+            - name: Configure FreeTube permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    io.freetubeapp.FreeTube
+              when: wsp_name=="wayland"
+          when: "'io.freetubeapp.FreeTube' in flatpak_pkgs"
 
-      tags: bitwarden
+        # LibreOffice
+        - name: LibreOffice
+          block:
+            - name: Configure LibreOffice permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    --nosocket=pulseaudio \
+                    --socket=cups \
+                    --nofilesystem=host \
+                    --filesystem=home \
+                    org.libreoffice.LibreOffice
+              when: wsp_name=="wayland"
+            - name: Configure LibreOffice permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --nosocket=wayland \
+                    --nosocket=pulseaudio \
+                    --socket=cups \
+                    --nofilesystem=host \
+                    --filesystem=home \
+                    org.libreoffice.LibreOffice
+              when: wsp_name=="x11"
+          when: "'org.libreoffice.LibreOffice' in flatpak_pkgs"
 
-    # Telegram
-    - name: Telegram
-      block:
-        - name: Install Telegram
-          flatpak:
-            name: org.telegram.desktop
-            state: present
-        - name: Configure Telegram permissions [Wayland]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --unshare=ipc \
-                --nosocket=x11 \
-                --nofilesystem=host \
-                --filesystem=xdg-download \
-                org.telegram.desktop
-          when: wsp_name=="wayland"
-        - name: Configure Telegram permissions [X11]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --nosocket=wayland \
-                --nofilesystem=host \
-                --filesystem=xdg-download \
-                --env=IBUS_USE_PORTAL=1 \
-                org.telegram.desktop
-          when: wsp_name=="x11"
-
-      tags: telegram
-
-    # Spotify
-    - name: Spotify
-      block:
-        - name: Install Spotify
-          flatpak:
-            name: com.spotify.Client
-            state: present
-        - name: Configure Spotify permissions [Wayland]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --unshare=ipc \
-                --nofilesystem=xdg-pictures \
-                com.spotify.Client
-          when: wsp_name=="wayland"
-        - name: Configure Spotify permissions [X11]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --unshare=ipc \
-                --nosocket=wayland \
-                --nofilesystem=xdg-pictures \
-                com.spotify.Client
-          when: wsp_name=="x11"
-
-      tags: spotify
-
-    # FreeTube
-    - name: FreeTube
-      block:
-        - name: Install FreeTube
-          flatpak:
-            name: io.freetubeapp.FreeTube
-            state: present
-        - name: Configure FreeTube permissions [Wayland]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --unshare=ipc \
-                io.freetubeapp.FreeTube
-          when: wsp_name=="wayland"
-
-      tags: freetube
-
-    # LibreOffice
-    - name: LibreOffice
-      block:
-        - name: Install LibreOffice
-          flatpak:
-            name: org.libreoffice.LibreOffice
-            state: present
-        - name: Configure LibreOffice permissions [Wayland]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --unshare=network \
-                --unshare=ipc \
-                --nosocket=x11 \
-                --nosocket=fallback-x11 \
-                --nosocket=pulseaudio \
-                --socket=cups \
-                --nofilesystem=host \
-                --filesystem=home \
-                org.libreoffice.LibreOffice
-          when: wsp_name=="wayland"
-        - name: Configure LibreOffice permissions [X11]
-          shell:
-            cmd: >
-              flatpak override --user \
-                --unshare=network \
-                --nosocket=wayland \
-                --nosocket=pulseaudio \
-                --socket=cups \
-                --nofilesystem=host \
-                --filesystem=home \
-                org.libreoffice.LibreOffice
-          when: wsp_name=="x11"
-
-      tags: libreoffice
-
-    # OnlyOffice
-    - name: OnlyOffice
-      block:
-        - name: Install OnlyOffice
-          flatpak:
-            name: org.onlyoffice.desktopeditors
-            state: present
-        - name: Configure OnlyOffice permissions
-          shell:
-            cmd: >
-              flatpak override --user \
-                --unshare=network \
-                --nosocket=pulseaudio \
-                --socket=cups \
-                org.onlyoffice.desktopeditors
-
-      tags: onlyoffice
+        # OnlyOffice
+        - name: OnlyOffice
+          block:
+            - name: Configure OnlyOffice permissions
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=network \
+                    --nosocket=pulseaudio \
+                    --socket=cups \
+                    org.onlyoffice.desktopeditors
+          when: "'org.onlyoffice.desktopeditors' in flatpak_pkgs"
+      tags: other_flatpak_pkgs
