@@ -15,7 +15,7 @@
             - '{{ repo_root_path }}/pkgs.yml'
 
         - name: Create local dirs
-          include_tasks: '{{ ansible_path }}/_create_local_dirs.yml'
+          include_tasks: '{{ playbook_dir }}/_create_local_dirs.yml'
 
       tags: prepare
 
@@ -63,7 +63,7 @@
             regexp: ^AutoEnable=
             line: AutoEnable=false
             state: present
-          when: ansible_distribution=="Debian"
+          when: ansible_facts["distribution"]=="Debian"
 
       become: true
       tags: system_config
@@ -80,7 +80,7 @@
           block:
             - name: DE name
               set_fact:
-                de_name: '{{ ansible_env.XDG_CURRENT_DESKTOP | lower }}'
+                de_name: '{{ ansible_facts["env"].XDG_CURRENT_DESKTOP | lower }}'
             - name: Dconf
               block:
                 - name: Backup dconf
@@ -94,7 +94,7 @@
                   environment:
                     DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/{{ uid }}/bus
               when: (de_name=='gnome') or (de_name=='mate')
-          when: ( ansible_env.XDG_CURRENT_DESKTOP is defined )
+          when: ( ansible_facts["env"].XDG_CURRENT_DESKTOP is defined )
 
         - name: Download some scripts
           get_url:
@@ -135,6 +135,6 @@
                     src: '{{ config_path }}/autostart/ibus-daemon.desktop'
                     dest: '{{ home_path }}/.config/autostart/ibus-daemon.desktop'
                     mode: 0644
-          when: ansible_distribution=="Debian"
+          when: ansible_facts["distribution"]=="Debian"
 
       tags: local_config
