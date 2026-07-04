@@ -68,7 +68,7 @@
         - flatpak_pkgs | length > 0
       tags: other_flatpak_pkgs
 
-    - name: override flatpak PKGs settings
+    - name: Override flatpak PKGs settings
       block:
         # Amberol
         - name: Amberol
@@ -172,15 +172,12 @@
                 cmd: >
                   flatpak override --user \
                     --unshare=ipc \
-                    --nosocket=cups \
                     --nosocket=pcsc \
                     --nofilesystem=host-etc \
                     --nofilesystem=xdg-desktop \
                     --nofilesystem=xdg-documents \
                     --nofilesystem=xdg-videos \
                     --nofilesystem=xdg-music \
-                    --system-no-talk-name=org.freedesktop.UPower \
-                    --system-no-talk-name=org.freedesktop.Avahi \
                     com.brave.Browser
               when: wsp_name=="wayland"
             - name: Configure Brave permissions [X11]
@@ -189,14 +186,11 @@
                   flatpak override --user \
                     --nosocket=wayland \
                     --nosocket=pcsc \
-                    --nosocket=cups \
                     --nofilesystem=host-etc \
                     --nofilesystem=xdg-desktop \
                     --nofilesystem=xdg-documents \
                     --nofilesystem=xdg-videos \
                     --nofilesystem=xdg-music \
-                    --system-no-talk-name=org.freedesktop.UPower \
-                    --system-no-talk-name=org.freedesktop.Avahi \
                     com.brave.Browser
               when: wsp_name=="x11"
           when: "'com.brave.Browser' in flatpak_pkgs"
@@ -212,7 +206,6 @@
                     --nosocket=x11 \
                     --nosocket=fallback-x11 \
                     --nosocket=pcsc \
-                    --nosocket=cups \
                     io.gitlab.librewolf-community
               when: wsp_name=="wayland"
             - name: Configure Librewolf permissions [X11]
@@ -221,7 +214,6 @@
                   flatpak override --user \
                     --nosocket=wayland \
                     --nosocket=pcsc \
-                    --nosocket=cups \
                     io.gitlab.librewolf-community
               when: wsp_name=="x11"
           when: "'io.gitlab.librewolf-community' in flatpak_pkgs"
@@ -235,6 +227,14 @@
                   flatpak override --user \
                     --unshare=ipc \
                     --nodevice=all \
+                    --nofilesystem=xdg-config/microsoft-edge/NativeMessagingHosts \
+                    --nofilesystem=~/.var/app/org.mozilla.firefox/.mozilla \
+                    --nofilesystem=xdg-config/google-chrome/NativeMessagingHosts \
+                    --nofilesystem=xdg-download \
+                    --nofilesystem=~/.var/app/org.chromium.Chromium/config/chromium/NativeMessagingHosts \
+                    --nofilesystem=~/.var/app/com.microsoft.Edge/config/microsoft-edge/NativeMessagingHosts \
+                    --nofilesystem=xdg-config/chromium/NativeMessagingHosts \
+                    --nofilesystem=~/.var/app/com.google.Chrome/config/google-chrome/NativeMessagingHosts \
                     com.bitwarden.desktop
               when: wsp_name=="wayland"
             - name: Configure Bitwarden permissions [X11]
@@ -244,6 +244,14 @@
                     --unshare=ipc \
                     --nosocket=wayland \
                     --nodevice=all \
+                    --nofilesystem=xdg-config/microsoft-edge/NativeMessagingHosts \
+                    --nofilesystem=~/.var/app/org.mozilla.firefox/.mozilla \
+                    --nofilesystem=xdg-config/google-chrome/NativeMessagingHosts \
+                    --nofilesystem=xdg-download \
+                    --nofilesystem=~/.var/app/org.chromium.Chromium/config/chromium/NativeMessagingHosts \
+                    --nofilesystem=~/.var/app/com.microsoft.Edge/config/microsoft-edge/NativeMessagingHosts \
+                    --nofilesystem=xdg-config/chromium/NativeMessagingHosts \
+                    --nofilesystem=~/.var/app/com.google.Chrome/config/google-chrome/NativeMessagingHosts \
                     com.bitwarden.desktop
               when: wsp_name=="x11"
           when: "'com.bitwarden.desktop' in flatpak_pkgs"
@@ -303,8 +311,18 @@
                 cmd: >
                   flatpak override --user \
                     --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
                     io.freetubeapp.FreeTube
               when: wsp_name=="wayland"
+            - name: Configure FreeTube permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=wayland \
+                    io.freetubeapp.FreeTube
+              when: wsp_name=="x11"
           when: "'io.freetubeapp.FreeTube' in flatpak_pkgs"
 
         # LibreOffice
