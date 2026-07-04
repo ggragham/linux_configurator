@@ -70,6 +70,27 @@
 
     - name: Override flatpak PKGs settings
       block:
+        # Decibels
+        - name: Decibels
+          block:
+            - name: Configure Decibels permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    org.gnome.Decibels
+              when: wsp_name=="wayland"
+            - name: Configure Decibels permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --nosocket=wayland \
+                    org.gnome.Decibels
+              when: wsp_name=="x11"
+          when: "'org.gnome.Decibels' in flatpak_pkgs"
+
         # Amberol
         - name: Amberol
           block:
@@ -137,6 +158,28 @@
               when: wsp_name=="x11"
           when: "'org.gnome.Loupe' in flatpak_pkgs"
 
+        # Showtime
+        - name: Showtime
+          block:
+            - name: Configure Showtime permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    org.gnome.Showtime
+              when: wsp_name=="wayland"
+            - name: Configure Showtime permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --nosocket=wayland \
+                    --nodevice=all \
+                    org.gnome.Showtime
+              when: wsp_name=="x11"
+          when: "'org.gnome.Showtime' in flatpak_pkgs"
+
         # Celluloid
         - name: Celluloid
           block:
@@ -163,6 +206,28 @@
                     io.github.celluloid_player.Celluloid
               when: wsp_name=="x11"
           when: "'io.github.celluloid_player.Celluloid' in flatpak_pkgs"
+
+        # JellyFin
+        - name: JellyFin
+          block:
+            - name: Configure JellyFin permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    org.jellyfin.JellyfinDesktop
+              when: wsp_name=="wayland"
+            - name: Configure JellyFin permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --nosocket=wayland \
+                    org.jellyfin.JellyfinDesktop
+              when: wsp_name=="x11"
+          when: "'org.jellyfin.JellyfinDesktop' in flatpak_pkgs"
+
 
         # Brave
         - name: Brave
@@ -368,4 +433,26 @@
                     --socket=cups \
                     org.onlyoffice.desktopeditors
           when: "'org.onlyoffice.desktopeditors' in flatpak_pkgs"
+
+        # Connections
+        - name: Connections
+          block:
+            - name: Configure Connections permissions [Wayland]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --unshare=ipc \
+                    --nosocket=x11 \
+                    --nosocket=fallback-x11 \
+                    org.gnome.Connections
+              when: wsp_name=="wayland"
+            - name: Configure Connections permissions [X11]
+              shell:
+                cmd: >
+                  flatpak override --user \
+                    --nosocket=wayland \
+                    org.gnome.Connections
+              when: wsp_name=="x11"
+          when: "'org.gnome.Connections' in flatpak_pkgs"
+
       tags: other_flatpak_pkgs
