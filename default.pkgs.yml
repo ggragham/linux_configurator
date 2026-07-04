@@ -125,9 +125,13 @@ debian_pyenv_deps_pkgs:
 #####################
 flatpak_pkgs:
   - org.gnome.Loupe
+  # - org.gnome.Decibels
   # - io.bassi.Amberol
   # - org.gnome.Rhythmbox3
+  # - org.gnome.Showtime
   # - io.github.celluloid_player.Celluloid
+  - org.jellyfin.JellyfinDesktop
+  # - org.gnome.Connections
   - com.brave.Browser
   - io.gitlab.librewolf-community
   - com.bitwarden.desktop
