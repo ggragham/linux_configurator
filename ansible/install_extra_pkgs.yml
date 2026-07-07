@@ -59,7 +59,12 @@
           block:
             - name: Remove nano and vi(m) from Fedora
               dnf:
-                name: [nano, vim*]
+                name:
+                  - default-editor
+                  - nano-default-editor
+                  - vim-default-editor
+                  - nano
+                  - vim*
                 state: absent
             - name: Install NeoVim to Fedora
               dnf:
