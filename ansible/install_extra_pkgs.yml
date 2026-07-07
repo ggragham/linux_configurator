@@ -102,7 +102,11 @@
               echo -e '#!/bin/sh\nexec nvim -d "$@"' >vimdiff
               chmod 755 ex view vimdiff
             creates: '{{ system_bin_path }}/vimdiff'
-          when: ansible_distribution=="Fedora"
+        - name: Exclude vi from dracut initramfs
+          copy:
+            src: '{{ system_conf_path }}/dracut.conf.d/99-no-vi.conf'
+            dest: /etc/dracut.conf.d/99-no-vi.conf
+            mode: '0640'
 
       become: true
       tags: neovim
