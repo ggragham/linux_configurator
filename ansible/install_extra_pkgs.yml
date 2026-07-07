@@ -27,7 +27,7 @@
                 state: latest
                 update_cache: true
                 install_weak_deps: false
-          when: ansible_distribution=="Fedora"
+          when: ansible_facts["distribution"]=="Fedora"
 
         - name: Install extra pkgs to Debian
           block:
@@ -47,7 +47,7 @@
                 src: /usr/bin/batcat
                 dest: /usr/bin/bat
                 state: link
-          when: ansible_distribution=="Debian"
+          when: ansible_facts["distribution"]=="Debian"
 
       become: true
       tags: extra_pkgs
@@ -72,7 +72,7 @@
                 state: latest
                 update_cache: true
                 install_weak_deps: false
-          when: ansible_distribution=="Fedora"
+          when: ansible_facts["distribution"]=="Fedora"
 
         - name: Remove other editors and install neovim to Debian
           block:
@@ -88,7 +88,7 @@
                 state: latest
                 update_cache: true
                 install_recommends: false
-          when: ansible_distribution=="Debian"
+          when: ansible_facts["distribution"]=="Debian"
 
         - name: Config neovim symlinks
           shell:
@@ -107,6 +107,7 @@
             src: '{{ system_conf_path }}/dracut.conf.d/99-no-vi.conf'
             dest: /etc/dracut.conf.d/99-no-vi.conf
             mode: '0640'
+          when: ansible_facts["distribution"]=="Fedora"
 
       become: true
       tags: neovim
@@ -124,7 +125,7 @@
             update_cache: true
             install_weak_deps: false
           become: true
-          when: ansible_distribution=="Fedora"
+          when: ansible_facts["distribution"]=="Fedora"
 
         - name: Install zsh to Debian
           apt:
@@ -132,7 +133,7 @@
             state: latest
             update_cache: true
           become: true
-          when: ansible_distribution=="Debian"
+          when: ansible_facts["distribution"]=="Debian"
 
         - name: Set zsh
           user:
@@ -162,7 +163,7 @@
               block:
                 - name: Get distro_name name
                   set_fact:
-                    distro_name: '{{ ansible_distribution | lower }}'
+                    distro_name: '{{ ansible_facts["distribution"] | lower }}'
                 - name: Create omz config directory
                   file:
                     path: '{{ local_config_path }}/omz'
@@ -198,14 +199,14 @@
             state: latest
             update_cache: true
             install_weak_deps: false
-          when: ansible_distribution=="Fedora"
+          when: ansible_facts["distribution"]=="Fedora"
 
         - name: Install iwd to Debian
           apt:
             name: iwd
             state: latest
             update_cache: true
-          when: ansible_distribution=="Debian"
+          when: ansible_facts["distribution"]=="Debian"
 
         - name: Config iwd
           block:
