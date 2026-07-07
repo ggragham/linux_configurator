@@ -347,6 +347,22 @@
                 path: /tmp/helm_{{ helm_version }}
                 state: absent
 
+        - name: Install FreeLens
+          block:
+            - name: Get latest FreeLens release
+              uri:
+                url: https://api.github.com/repos/freelensapp/freelens/releases/latest
+                return_content: true
+              register: freelens_latest_release
+            - name: Set FreeLens version
+              set_fact:
+                freelens_version: "{{ freelens_latest_release.json.tag_name | regex_replace('^v', '') }}"
+            - name: Download FreeLens
+              get_url:
+                url: https://github.com/freelensapp/freelens/releases/download/v{{ freelens_version }}/Freelens-{{ freelens_version }}-linux-amd64.AppImage
+                dest: '{{ local_bin_path }}/lens'
+                mode: '0750'
+
         - name: Apply kubernetes zsh config
           block:
             - name: Set config name
