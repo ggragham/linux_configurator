@@ -9,6 +9,7 @@
     "redhat.telemetry.enabled": false,
     "telemetry.enableTelemetry": false,
     "telemetry.telemetryLevel": "off",
+	"keyboard.dispatch": "keyCode",
     "explorer.confirmDelete": false,
     "files.associations": {
         "*.yml": "yaml"
@@ -40,5 +41,10 @@
         "latex",
         "plaintext"
     ],
-    "continue.telemetryEnabled": false
+    "continue.telemetryEnabled": false,
+    "yaml.schemas": {
+        "file:///home/ggragham/.vscode-oss/extensions/continue.continue-2.0.0-linux-x64/config-yaml-schema.json": [
+            ".continue/**/*.yaml"
+        ]
+    }
 }
