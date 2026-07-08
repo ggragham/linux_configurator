@@ -220,9 +220,10 @@ installOtherPkgs() {
 	while :; do
 		printHeader
 		menuItem "1" "Extra"
-		menuItem "2" "Neovim"
-		menuItem "3" "Oh My Zsh"
-		menuItem "4" "iNet wireless daemon"
+		menuItem "2" "Vim"
+		menuItem "3" "Neovim"
+		menuItem "4" "Oh My Zsh"
+		menuItem "5" "iNet wireless daemon"
 		echo
 		menuItem "0" "Back"
 		echo
@@ -234,16 +235,21 @@ installOtherPkgs() {
 			select="*"
 			;;
 		2)
-			runAnsiblePlaybook "install_extra_pkgs" "neovim"
+			runAnsiblePlaybook "install_extra_pkgs" "vim"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		3)
-			runAnsiblePlaybook "install_extra_pkgs" "omz"
+			runAnsiblePlaybook "install_extra_pkgs" "neovim"
 			pressAnyKeyToContinue
 			select="*"
 			;;
 		4)
+			runAnsiblePlaybook "install_extra_pkgs" "omz"
+			pressAnyKeyToContinue
+			select="*"
+			;;
+		5)
 			runAnsiblePlaybook "install_extra_pkgs" "iwd"
 			pressAnyKeyToContinue
 			select="*"

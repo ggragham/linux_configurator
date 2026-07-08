@@ -52,12 +52,66 @@
       become: true
       tags: extra_pkgs
 
+    # Vim
+    - name: Remove other editors and install vim
+      block:
+        - name: Remove other editors and install vim to Fedora
+          block:
+            - name: Remove redundant editors from Fedora
+              dnf:
+                name:
+                  - default-editor
+                  - nano-default-editor
+                  - vim-default-editor
+                  - nano
+                  - vim-minimal
+                  - neovim
+                state: absent
+            - name: Install vim to Fedora
+              dnf:
+                name: vim
+                state: latest
+                update_cache: true
+                install_weak_deps: false
+          when: ansible_facts["distribution"]=="Fedora"
+
+        - name: Remove other editors and install vim to Debian
+          block:
+            - name: Remove redundant editors from Debian
+              apt:
+                name: [nano, vim*, neovim]
+                state: absent
+                autoremove: true
+                purge: true
+            - name: Install vim to Debian
+              apt:
+                name: vim
+                state: latest
+                update_cache: true
+                install_recommends: false
+          when: ansible_facts["distribution"]=="Debian"
+
+        - name: Config vim symlinks
+          shell:
+            cmd: |
+              cd "{{ system_bin_path }}" || exit "$?"
+              for link in edit vedit; do
+                  ln -s vim "$link"
+              done
+              echo -e '#!/bin/sh\nexec vim -e "$@"' >ex
+              echo -e '#!/bin/sh\nexec vim -R "$@"' >view
+              chmod 755 ex view
+          when: ansible_facts["distribution"]=="Fedora"
+
+      become: true
+      tags: vim
+
     # Neovim
     - name: Remove other editors and install neovim
       block:
         - name: Remove other editors and install neovim to Fedora
           block:
-            - name: Remove nano and vi(m) from Fedora
+            - name: Remove redundant editors from Fedora
               dnf:
                 name:
                   - default-editor
@@ -76,7 +130,7 @@
 
         - name: Remove other editors and install neovim to Debian
           block:
-            - name: Remove nano and vi(m) from Debian
+            - name: Remove redundant editors from Debian
               apt:
                 name: [nano, vim*]
                 state: absent
@@ -101,7 +155,6 @@
               echo -e '#!/bin/sh\nexec nvim -R "$@"' >view
               echo -e '#!/bin/sh\nexec nvim -d "$@"' >vimdiff
               chmod 755 ex view vimdiff
-            creates: '{{ system_bin_path }}/vimdiff'
           when: ansible_facts["distribution"]=="Fedora"
 
       become: true
