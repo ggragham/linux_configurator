@@ -74,6 +74,9 @@ fedora_virt_pkgs:
 
 fedora_devops_pkgs:
   - awscli
+  - bind-utils
+  - iperf3
+  - traceroute
 
 fedora_docker_pkgs:
   - moby-engine
