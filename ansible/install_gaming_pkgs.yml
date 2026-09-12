@@ -37,6 +37,7 @@
                 --filesystem=xdg-data/applications \
                 --filesystem=~/.local/games \
                 --filesystem=/mnt/storage/games \
+                --nofilesystem=~/Games/umu \
                 com.usebottles.bottles
       tags: bottles
 
