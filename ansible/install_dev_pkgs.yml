@@ -195,6 +195,27 @@
                 state: latest
                 update_cache: true
                 install_weak_deps: false
+
+            - name: Ensure Docker config directory exists
+              file:
+                path: /etc/docker
+                state: directory
+                owner: root
+                group: root
+                mode: '0750'
+
+            - name: Configure Docker to preserve IP forwarding rules
+              copy:
+                dest: /etc/docker/daemon.json
+                owner: root
+                group: root
+                mode: '0640'
+                content: |
+                  {
+                    "ip-forward-no-drop": true
+                  }
+                validate: dockerd --validate --config-file=%s
+
           when: ansible_facts["distribution"]=="Fedora"
 
         - name: Install docker to Debian
