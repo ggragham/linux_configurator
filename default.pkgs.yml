@@ -18,19 +18,24 @@ fedora_firmware_pkgs:
 fedora_extra_pkgs:
   - bat
   - bleachbit
+  - cifs-utils
   - cups
   - default-fonts-core
   - fastfetch
+  - fuse
+  - fuse-libs
   - glycin-thumbnailer
   - jetbrains-mono-fonts
   - liberation-fonts-all
   - libheif-freeworld
   - net-tools
   - nmap
+  - nvme-cli
   - nvtop
   - p7zip
   - perl-Image-ExifTool
   - s-tui
+  - smartmontools
   - tree
   - unrar
   - xclip
