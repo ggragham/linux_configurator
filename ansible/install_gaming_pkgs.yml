@@ -50,8 +50,16 @@
 
     # Steam
     - name: Install Steam
-      flatpak:
-        name: '{{ item }}'
-        state: present
-      with_items: [com.valvesoftware.Steam, com.github.Matoking.protontricks]
+      block:
+        - name: Install Steam
+          flatpak:
+            name: '{{ item }}'
+            state: present
+          with_items: [com.valvesoftware.Steam, com.github.Matoking.protontricks]
+
+        - name: Install steam-devices
+          package:
+            name: steam-devices
+            state: present
+          when: ansible_facts['distribution'] == 'Fedora'
       tags: steam
